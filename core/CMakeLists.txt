@@ -1,0 +1,3 @@
+SET(Core_SOURCES arch_info.cpp)
+SET(CMAKE_CXX_STANDARD 17)
+ADD_LIBRARY(wg_core STATIC ${Core_SOURCES})
