@@ -1,0 +1,6 @@
+<component name="CopyrightManager">
+  <copyright>
+    <option name="notice" value="Copyright (c) &amp;#36;originalComment.match(&quot;Copyright \(c\) (\d+)&quot;, 1, &quot;-&quot;, &quot;&amp;#36;today.year&quot;)&amp;#36;today.year. &#10;This file is part of The WhiteGear Studio software property. &#10;If you get unexpected access to this file, or part ot whole codebase, you should&#10;report this source code leak and delete all copies of source code from all your machines." />
+    <option name="myName" value="default-copyright" />
+  </copyright>
+</component>
