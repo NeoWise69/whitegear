@@ -7,6 +7,8 @@
  ******************************************************************************/
 #include "test_framework.hpp"
 
+#include "core_arch_support.hpp"
+
 auto successful_test() -> bool {
     return true;
 }
@@ -18,5 +20,6 @@ auto main(int argc, char** argv) -> int {
     TEST("core",
          TEST_PASS(successful_test)
          TEST_PASS_ERR(failed_test)
+         TEST_PASS(core_arch_support_test)
     );
 }
