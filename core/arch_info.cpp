@@ -6,7 +6,7 @@
  * report this source code leak and delete all copies of source code from all your machines.
  ******************************************************************************/
 
-#include "arch_info.hpp"
+#include "core.hpp"
 
 /**
  * CPUID function declaration.

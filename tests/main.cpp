@@ -8,6 +8,9 @@
 #include "test_framework.hpp"
 
 #include "core_arch_support.hpp"
+#include "core_logger.hpp"
+#include "containers_array_view.hpp"
+#include "containers_string_view.hpp"
 
 auto successful_test() -> bool {
     return true;
@@ -21,5 +24,8 @@ auto main(int argc, char** argv) -> int {
          TEST_PASS(successful_test)
          TEST_PASS_ERR(failed_test)
          TEST_PASS(core_arch_support_test)
+         TEST_PASS(core_logger_test)
+         TEST_PASS(containers_array_view_test)
+         TEST_PASS(containers_string_view_test)
     );
 }

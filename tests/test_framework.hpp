@@ -30,8 +30,8 @@ namespace test {
 }
 
 #define TEST(module_name, ...) { test::start(module_name); { __VA_ARGS__ } test::end(); }
-#define TEST_PASS(fnName) { test::pass(fnName, #fnName); }
-#define TEST_PASS_ERR(fnName) { test::pass(fnName, #fnName, true); }
+#define TEST_PASS(fnName) test::pass(fnName, #fnName);
+#define TEST_PASS_ERR(fnName) test::pass(fnName, #fnName, true);
 
 // IMPLEMENTATION
 
