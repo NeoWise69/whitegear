@@ -11,15 +11,33 @@
 #include <mutex>
 #include <cstdarg>
 #include <chrono>
+#include <iostream>
+#include <ctime>
 
 namespace wg {
 
     namespace {
+
+        inline void localtime_(struct tm* t, time_t* time) {
+
+#ifdef _WIN32
+            localtime_s(t, time);
+#elif __APPLE__
+            localtime_r(time, t);
+#endif
+        }
+
+#ifdef _WIN32
+#   define fprintf_ fprintf_s
+#elif __APPLE__
+#   define fprintf_ fprintf
+#endif
+
         inline std::string get_date_time() {
             time_t     now = time(nullptr);
             struct tm  t = {};
             char       buf[80];
-            localtime_s(&t, &now);
+            localtime_(&t, &now);
             strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &t);
             return buf;
         }
@@ -33,7 +51,7 @@ namespace wg {
         char buf[2048] = {};
         va_list ap;
         va_start(ap, fmt);
-        vsprintf_s(buf, fmt, ap);
+        vsnprintf(buf, 2048, fmt, ap);
         va_end(ap);
 
         std::string_view sv = {};
@@ -46,7 +64,7 @@ namespace wg {
             case LOG_LEVEL_ERROR: sv = "[error]"; stream = stderr; break;
             case LOG_LEVEL_PANIC: sv = "[panic]"; stream = stderr; break;
         }
-        fprintf_s(stream, "%s.%s: %s\n", get_date_time().c_str(), sv.data(), buf);
+        fprintf_(stream, "%s.%s: %s\n", get_date_time().c_str(), sv.data(), buf);
         return *this;
     }
 
@@ -56,11 +74,11 @@ namespace wg {
         char buf[2048] = {};
         va_list ap;
         va_start(ap, fmt);
-        vsprintf_s(buf, fmt, ap);
+        vsnprintf(buf, 2048, fmt, ap);
         va_end(ap);
 
         std::string_view sv = "[trace]";
-        fprintf_s(stdout, "%s.%s: %s\n", get_date_time().c_str(), sv.data(), buf);
+        fprintf_(stdout, "%s.%s: %s\n", get_date_time().c_str(), sv.data(), buf);
         return *this;
     }
 
@@ -69,12 +87,12 @@ namespace wg {
 
         char buf[2048] = {};
         va_list ap;
-                va_start(ap, fmt);
-        vsprintf_s(buf, fmt, ap);
-                va_end(ap);
+        va_start(ap, fmt);
+        vsnprintf(buf, 2048, fmt, ap);
+        va_end(ap);
 
         std::string_view sv = "[info]";
-        fprintf_s(stdout, "%s.%s: %s\n", get_date_time().c_str(), sv.data(), buf);
+        fprintf_(stdout, "%s.%s: %s\n", get_date_time().c_str(), sv.data(), buf);
         return *this;
     }
 
@@ -83,12 +101,12 @@ namespace wg {
 
         char buf[2048] = {};
         va_list ap;
-                va_start(ap, fmt);
-        vsprintf_s(buf, fmt, ap);
-                va_end(ap);
+        va_start(ap, fmt);
+        vsnprintf(buf, 2048, fmt, ap);
+        va_end(ap);
 
         std::string_view sv = "[warning]";
-        fprintf_s(stdout, "%s.%s: %s\n", get_date_time().c_str(), sv.data(), buf);
+        fprintf_(stdout, "%s.%s: %s\n", get_date_time().c_str(), sv.data(), buf);
         return *this;
     }
 
@@ -97,12 +115,12 @@ namespace wg {
 
         char buf[2048] = {};
         va_list ap;
-                va_start(ap, fmt);
-        vsprintf_s(buf, fmt, ap);
-                va_end(ap);
+        va_start(ap, fmt);
+        vsnprintf(buf, 2048, fmt, ap);
+        va_end(ap);
 
         std::string_view sv = "[error]";
-        fprintf_s(stderr, "%s.%s: %s\n", get_date_time().c_str(), sv.data(), buf);
+        fprintf_(stderr, "%s.%s: %s\n", get_date_time().c_str(), sv.data(), buf);
         return *this;
     }
 
@@ -111,12 +129,12 @@ namespace wg {
 
         char buf[2048] = {};
         va_list ap;
-                va_start(ap, fmt);
-        vsprintf_s(buf, fmt, ap);
-                va_end(ap);
+        va_start(ap, fmt);
+        vsnprintf(buf, 2048, fmt, ap);
+        va_end(ap);
 
         std::string_view sv = "[panic]";
-        fprintf_s(stderr, "%s.%s: %s\n", get_date_time().c_str(), sv.data(), buf);
+        fprintf_(stderr, "%s.%s: %s\n", get_date_time().c_str(), sv.data(), buf);
         return *this;
     }
 }
