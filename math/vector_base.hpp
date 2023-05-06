@@ -11,7 +11,7 @@
 
 #include "scalar_base.hpp"
 
-#include <intrin.h>
+#include <xmmintrin.h>
 
 namespace wg {
     /**
