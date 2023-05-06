@@ -24,12 +24,12 @@ namespace test {
     };
 
     void start(const char* moduleName);
-    void end();
+    void end(std::chrono::duration<float, std::milli> testTime);
 
     void pass(const pass_function_t& fn, const char* fnName, bool expectedError = false);
 }
 
-#define TEST(module_name, ...) { test::start(module_name); { __VA_ARGS__ } test::end(); }
+#define TEST(module_name, ...) { test::start(module_name); const auto _start_time_ = test::timer::now(); { __VA_ARGS__ } const auto _test_time_ = std::chrono::duration_cast<std::chrono::duration<float, std::milli>>(test::timer::now() - _start_time_); test::end(_test_time_); }
 #define TEST_PASS(fnName) test::pass(fnName, #fnName);
 #define TEST_PASS_ERR(fnName) test::pass(fnName, #fnName, true);
 
@@ -68,8 +68,9 @@ namespace test {
         std::cout << "Started tests of \'" << moduleName << "\' module..." << std::endl;
     }
 
-    inline void end() {
-        std::cout << "All tests clear!" << std::endl;
+    inline void end(std::chrono::duration<float, std::milli> testTime) {
+        const auto timeStr = details::get_time_string(testTime);
+        std::cout << "All tests clear! (" << timeStr << " total)" << std::endl;
     }
 
     inline void pass(const pass_function_t& fn, const char* fnName, bool expectedError) {
