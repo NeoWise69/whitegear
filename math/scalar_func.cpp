@@ -1,0 +1,77 @@
+
+/*******************************************************************************
+ * Copyright (c) 2023.
+ * This file is part of The WhiteGear Studio software property.
+ * If you get unexpected access to this file, or part ot whole codebase, you should
+ * report this source code leak and delete all copies of source code from all your machines.
+ ******************************************************************************/
+
+#include <math/scalar_base.hpp>
+
+namespace wg {
+    scalar min(scalar a, scalar b) {
+        return a < b ? a : b;
+    }
+
+    scalar min(scalar a, scalar b, scalar c) {
+        return min(min(a, b), c);
+    }
+
+    scalar min(scalar a, scalar b, scalar c, scalar d) {
+        return min(min(a, b), min(c, d));
+    }
+
+    scalar max(scalar a, scalar b) {
+        return a > b ? a : b;
+    }
+
+    scalar max(scalar a, scalar b, scalar c) {
+        return max(max(a, b), c);
+    }
+
+    scalar max(scalar a, scalar b, scalar c, scalar d) {
+        return max(max(a, b), max(c, d));
+    }
+
+    scalar clamp(scalar x, scalar _min, scalar _max) {
+        return min(max(x, _min), _max);
+    }
+
+    scalar fract(scalar x) {
+        return x - floor(x);
+    }
+
+    scalar mix(scalar x, scalar y, scalar a) {
+        return (x * (1 - a)) + y * a;
+    }
+
+    scalar lerp(scalar x, scalar y, scalar a) {
+        return (x * (1 - a)) + y * a;
+    }
+
+    scalar slerp(scalar x, scalar y, scalar a) {
+        scalar d = y - x;
+        d = fmod(d, constants<scalar>::two_pi);
+        d = fmod(d + constants<scalar>::three_pi, constants<scalar>::two_pi) - constants<scalar>::pi;
+        return x + a * d;
+    }
+
+    scalar rsqrt(scalar x) {
+        scalar t(x);
+        const scalar xhalf(t * scalar(0.5));
+        const uint* p = reinterpret_cast<uint*>(const_cast<scalar*>(&x));
+        const uint i = uint(0x5f375a86) - (*p >> uint(1));
+        const auto* t2 = reinterpret_cast<const scalar*>(&i);
+        t = *t2;
+        return t * (scalar(1.5) - xhalf * t * t);
+    }
+
+    bool equal(scalar a, scalar b, scalar eps) {
+        return abs(a - b) <= eps;
+    }
+
+    bool nequal(scalar a, scalar b, scalar eps) {
+        return abs(a - b) > eps;
+    }
+
+}

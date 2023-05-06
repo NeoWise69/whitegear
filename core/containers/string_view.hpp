@@ -10,6 +10,7 @@
 #define WHITEGEAR_STRING_VIEW_HPP
 
 #include "array_view.hpp"
+#include <cctype>
 
 namespace wg {
     template<class Char = char>

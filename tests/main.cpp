@@ -11,6 +11,7 @@
 #include "core_logger.hpp"
 #include "containers_array_view.hpp"
 #include "containers_string_view.hpp"
+#include "math_vectors.hpp"
 
 auto successful_test() -> bool {
     return true;
@@ -27,5 +28,6 @@ auto main(int argc, char** argv) -> int {
          TEST_PASS(core_logger_test)
          TEST_PASS(containers_array_view_test)
          TEST_PASS(containers_string_view_test)
+         TEST_PASS(math_vectors_test)
     );
 }
