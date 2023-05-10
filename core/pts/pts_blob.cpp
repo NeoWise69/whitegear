@@ -11,31 +11,30 @@
 #include <fstream>
 
 namespace wg {
+
     pts_blob::pts_blob(const wg::string_view &filename) : mFile() {
         reopen(filename);
     }
 
     void pts_blob::release() {
-        if (mFile) {
-            fclose(mFile);
-            mFile = nullptr;
+        if (mFile.is_opened()) {
+            mFile.close();
         }
     }
 
     bool pts_blob::reopen(const wg::string_view &filename) {
-        FILE* tf;
-        fopen_s(&tf, filename.c_str(), "ab+");
-        if (!tf) return false;
+        file t(filename, "ab+");
+        if (!t.is_opened()) return false;
         release();
-        mFile = tf;
+        mFile.swap(std::move(t));
         return true;
     }
 
     u8* pts_blob::get_data(uint start, uint size) const {
-        if (!mFile) return nullptr;
-        fseek(mFile, long(start), SEEK_SET);
+        if (!mFile.is_opened()) return nullptr;
+        mFile.seek(start);
         u8* data = new u8[size]();
-        fread(data, sizeof(u8), size, mFile);
+        mFile.read(data, size);
         return data;
     }
 
@@ -44,10 +43,10 @@ namespace wg {
     }
 
     uint pts_blob::write(const u8 *data, uint size) {
-        if (!mFile) return uint(-1);
-        fseek(mFile, 0, SEEK_END);
-        const uint pos = uint(ftell(mFile));
-        fwrite(data, 1, size, mFile);
+        if (!mFile.is_opened()) return uint(-1);
+        mFile.seek(0, SEEK_DIR_END);
+        const uint pos = mFile.pos();
+        mFile.write(data, size);
         return pos;
     }
 }

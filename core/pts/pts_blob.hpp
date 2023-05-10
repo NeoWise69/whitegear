@@ -11,14 +11,13 @@
 
 #include <core/typedefs.hpp>
 #include <core/containers/string_view.hpp>
-
-struct _iobuf;
+#include <core/io.hpp>
 
 namespace wg {
     class pts_entry;
     /**
-     * pts_blob is a simple data handler class
-     * that contains huge contiguous array of bytes.
+     * BLOB is a simple data handler class
+     * that helps with managing data inside blob file.
      */
     class pts_blob {
     public:
@@ -46,7 +45,7 @@ namespace wg {
         void release();
 
     private:
-        struct _iobuf* mFile;
+        file mFile;
     };
 }
 
