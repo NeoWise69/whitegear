@@ -11,20 +11,13 @@
 
 #include <core/typedefs.hpp>
 #include <core/containers/string_view.hpp>
-
-#if defined(_WIN32) || defined(_MSC_VER)
-struct _iobuf;
-#define __FILEREP _iobuf
-#elif defined(__APPLE__)
-struct __sFILE;
-#define __FILEREP __sFILE
-#endif
+#include <core/io.hpp>
 
 namespace wg {
     class pts_entry;
     /**
-     * pts_blob is a simple data handler class
-     * that contains huge contiguous array of bytes.
+     * BLOB is a simple data handler class
+     * that helps with managing data inside blob file.
      */
     class pts_blob {
     public:
@@ -52,7 +45,7 @@ namespace wg {
         void release();
 
     private:
-        __FILEREP* mFile;
+        file mFile;
     };
 }
 

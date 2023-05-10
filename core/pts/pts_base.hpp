@@ -17,13 +17,77 @@
 #define WHITEGEAR_PTS_BASE_HPP
 
 #include <core/core.hpp>
+#include <iterator>
 
 namespace wg {
     inline constexpr const uint MAX_NAME = 64u;
     inline constexpr const uint MAX_CHILDREN = 128u;
-
+    /**
+     * Entry is a simple unit that describes one point in a tree structure
+     * of PTS 'filesystem'. BTW, this is linked list-like structure that
+     * can have a single parent and multiple children at the same time.
+     * Just like usual filesystem :)
+     */
     class pts_entry {
     public:
+        class iterator {
+        public:
+            inline explicit iterator(pts_entry* ptr) : mPtr(ptr) {}
+
+            inline const pts_entry& operator*() const {
+                return *mPtr;
+            }
+            inline const pts_entry* operator->() const {
+                return mPtr;
+            }
+            inline pts_entry& operator*() {
+                return *mPtr;
+            }
+            inline pts_entry* operator->() {
+                return mPtr;
+            }
+
+            inline pts_entry* get() const {
+                return mPtr;
+            }
+
+            inline iterator& operator++() {
+                ++mPtr;
+                return *this;
+            }
+            inline iterator& operator--() {
+                --mPtr;
+                return *this;
+            }
+
+            inline iterator operator++(int) {
+                auto t = *this;
+                ++mPtr;
+                return t;
+            }
+            inline iterator operator--(int) {
+                auto t = *this;
+                --mPtr;
+                return t;
+            }
+
+            inline bool operator==(const iterator& other) const {
+                return mPtr == other.mPtr;
+            }
+            inline bool operator!=(const iterator& other) const {
+                return mPtr != other.mPtr;
+            }
+            inline bool operator<(const iterator& other) const {
+                return mPtr < other.mPtr;
+            }
+            inline bool operator>(const iterator& other) const {
+                return mPtr > other.mPtr;
+            }
+
+        private:
+            pts_entry* mPtr;
+        };
+
         inline pts_entry() : mIsDirectory(), mName(), mNameLen(), mIsCompressed(),
                             mMetaSize(), mMetaData(), mStartPos(), mBlobSize(),
                             pParent(), ppChildren(), mNumChildren()
@@ -59,6 +123,7 @@ namespace wg {
             mIsDirectory(is_dir), mIsCompressed(), mMetaSize(), mMetaData(), mStartPos(start), mBlobSize(size),
             mNumChildren(), pParent(), ppChildren()
         {
+            memset(ppChildren, 0, sizeof(ppChildren));
             const auto nm = wg::string_view(name);
             mNameLen = u8(min(nm.size(), 255));
             for (int i = 0; i < MAX_NAME && i < mNameLen; ++i)
@@ -66,12 +131,16 @@ namespace wg {
             mName[mNameLen] = 0;
         }
 
+        /**
+         * This method releases resources for all children, and deletes itself.
+         * (NO EFFECTS TO BLOB)
+         */
         inline void release() {
             /**
              * Firstly-first, recursive go down till last child, and release it
              * with 'down->top' model.
              */
-            for (uint i = 0; i < mNumChildren; ++i) {
+            for (uint i = 0; i < MAX_CHILDREN && i < mNumChildren; ++i) {
                 pts_entry* child = ppChildren[i];
                 child->release();
             }
@@ -84,32 +153,46 @@ namespace wg {
             memcpy(mName, name.c_str(), min(name.size(), MAX_NAME));
         }
 
+        /**
+         * Addicts a new child object to children list, but if there is no
+         * empty space for new ones, it reserves single entry for a new
+         * directory entry, in order to not to stuck with 'filled space'
+         * PTS structure that can't grow.
+         * @return pointer to created child inside this entry, otherwise NULL.
+         */
         inline pts_entry* add_child(const pts_entry& child) {
             if (((mNumChildren + 1) >= MAX_CHILDREN) && !child.mIsDirectory) return nullptr;
 
-            pts_entry*& nc = ppChildren[mNumChildren++];
-            nc = new pts_entry(child);
-            nc->pParent = this;
-            return nc;
+            const auto id = mNumChildren++;
+            ppChildren[id] = new pts_entry(child);
+            ppChildren[id]->pParent = this;
+            return ppChildren[id];
         }
 
+        /**
+         * Address of data inside associated blob object.
+         */
         inline uint get_address() const { return mStartPos; }
+        /**
+         * Size(in bytes) of data which is pointed by entry.
+         */
         inline uint get_size() const { return mBlobSize; }
+        inline uint get_children_count() const { return mNumChildren; }
+        inline uint get_meta_size() const { return mMetaSize; }
 
         string_view get_name() const { return { mName, mNameLen }; }
 
-        pts_entry* begin() const { return *ppChildren; }
-        pts_entry* end() const { return *(ppChildren + mNumChildren); }
+        iterator begin() const { return iterator(ppChildren[0]); }
+        iterator end() const { return iterator(ppChildren[mNumChildren]); }
+        pts_entry* get_child(uint i) const { return ppChildren[i]; }
         pts_entry* get_parent() const { return pParent; }
 
         inline bool is_root() const { return pParent == nullptr; }
         inline bool is_dir() const { return mIsDirectory; }
         inline bool is_compressed() const { return mIsCompressed; }
 
-        template<class T>
-        inline bool get_meta(T& meta_info) const {
-            meta_info = *(T*)(mMetaData);
-            // is this really working?
+        char* get_meta_data() const {
+            return mMetaData;
         }
 
         template<class T>
@@ -143,9 +226,11 @@ namespace wg {
         pts_entry* pParent;     // pointer to the parent entry (NULL in root)
         pts_entry* ppChildren[MAX_CHILDREN]; // array of pointers to the children entries.
         uint mNumChildren;      // number of children
+
+        friend void read_entry(class file* fp, pts_entry* e);
     };
 
-    inline pts_entry* pts_tree_create(const char* name) {
+    inline pts_entry* pts_entry_create_tree(const char* name) {
         return new pts_entry(true, name, 0, 0);
     }
 }
