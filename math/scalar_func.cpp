@@ -9,16 +9,16 @@
 #include <math/scalar_base.hpp>
 
 namespace wg {
-    scalar min(scalar a, scalar b) {
+    scalar fmin(scalar a, scalar b) {
         return a < b ? a : b;
     }
 
-    scalar min(scalar a, scalar b, scalar c) {
-        return min(min(a, b), c);
+    scalar fmin(scalar a, scalar b, scalar c) {
+        return fmin(fmin(a, b), c);
     }
 
-    scalar min(scalar a, scalar b, scalar c, scalar d) {
-        return min(min(a, b), min(c, d));
+    scalar fmin(scalar a, scalar b, scalar c, scalar d) {
+        return fmin(fmin(a, b), fmin(c, d));
     }
 
     scalar max(scalar a, scalar b) {
@@ -34,7 +34,7 @@ namespace wg {
     }
 
     scalar clamp(scalar x, scalar _min, scalar _max) {
-        return min(max(x, _min), _max);
+        return fmin(max(x, _min), _max);
     }
 
     scalar fract(scalar x) {

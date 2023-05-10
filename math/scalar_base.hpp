@@ -64,15 +64,15 @@ namespace wg {
     /**
      * Returns minimal from given parameters.
      */
-    scalar min(scalar a, scalar b);
+    scalar fmin(scalar a, scalar b);
     /**
      * Returns minimal from given parameters.
      */
-    scalar min(scalar a, scalar b, scalar c);
+    scalar fmin(scalar a, scalar b, scalar c);
     /**
      * Returns minimal from given parameters.
      */
-    scalar min(scalar a, scalar b, scalar c, scalar d);
+    scalar fmin(scalar a, scalar b, scalar c, scalar d);
     /**
      * Returns maximal from given parameters.
      */

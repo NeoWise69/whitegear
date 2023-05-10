@@ -136,9 +136,9 @@ namespace wg {
     inline vec2 fmod(const vec2& x, const vec2& y) { return details::caller2<vec, 2>::call(std::fmod, x, y); }
     inline vec3 fmod(const vec3& x, const vec3& y) { return details::caller2<vec, 3>::call(std::fmod, x, y); }
     inline vec4 fmod(const vec4& x, const vec4& y) { return details::caller2<vec, 4>::call(std::fmod, x, y); }
-    inline vec2 min(const vec2& x, const vec2& y) { return details::caller2<vec, 2>::call(wg::min, x, y); }
-    inline vec3 min(const vec3& x, const vec3& y) { return details::caller2<vec, 3>::call(wg::min, x, y); }
-    inline vec4 min(const vec4& x, const vec4& y) { return details::caller2<vec, 4>::call(wg::min, x, y); }
+    inline vec2 fmin(const vec2& x, const vec2& y) { return details::caller2<vec, 2>::call(wg::fmin, x, y); }
+    inline vec3 fmin(const vec3& x, const vec3& y) { return details::caller2<vec, 3>::call(wg::fmin, x, y); }
+    inline vec4 fmin(const vec4& x, const vec4& y) { return details::caller2<vec, 4>::call(wg::fmin, x, y); }
     inline vec2 max(const vec2& x, const vec2& y) { return details::caller2<vec, 2>::call(wg::max, x, y); }
     inline vec3 max(const vec3& x, const vec3& y) { return details::caller2<vec, 3>::call(wg::max, x, y); }
     inline vec4 max(const vec4& x, const vec4& y) { return details::caller2<vec, 4>::call(wg::max, x, y); }
