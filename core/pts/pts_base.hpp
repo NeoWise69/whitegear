@@ -30,64 +30,6 @@ namespace wg {
      */
     class pts_entry {
     public:
-        class iterator {
-        public:
-            inline explicit iterator(pts_entry* ptr) : mPtr(ptr) {}
-
-            inline const pts_entry& operator*() const {
-                return *mPtr;
-            }
-            inline const pts_entry* operator->() const {
-                return mPtr;
-            }
-            inline pts_entry& operator*() {
-                return *mPtr;
-            }
-            inline pts_entry* operator->() {
-                return mPtr;
-            }
-
-            inline pts_entry* get() const {
-                return mPtr;
-            }
-
-            inline iterator& operator++() {
-                ++mPtr;
-                return *this;
-            }
-            inline iterator& operator--() {
-                --mPtr;
-                return *this;
-            }
-
-            inline iterator operator++(int) {
-                auto t = *this;
-                ++mPtr;
-                return t;
-            }
-            inline iterator operator--(int) {
-                auto t = *this;
-                --mPtr;
-                return t;
-            }
-
-            inline bool operator==(const iterator& other) const {
-                return mPtr == other.mPtr;
-            }
-            inline bool operator!=(const iterator& other) const {
-                return mPtr != other.mPtr;
-            }
-            inline bool operator<(const iterator& other) const {
-                return mPtr < other.mPtr;
-            }
-            inline bool operator>(const iterator& other) const {
-                return mPtr > other.mPtr;
-            }
-
-        private:
-            pts_entry* mPtr;
-        };
-
         inline pts_entry() : mIsDirectory(), mName(), mNameLen(), mIsCompressed(),
                             mMetaSize(), mMetaData(), mStartPos(), mBlobSize(),
                             pParent(), ppChildren(), mNumChildren()
@@ -111,10 +53,16 @@ namespace wg {
                 mMetaData = new char[mMetaSize]{};
                 memcpy(mMetaData, o.mMetaData, mMetaSize);
             }
+            else {
+                mMetaData = nullptr;
+            }
             // !copy meta
             // copy children
             if (mNumChildren > 0) {
                 memcpy(ppChildren, o.ppChildren, MAX_CHILDREN * 8);
+            }
+            else {
+                memset(ppChildren, 0, MAX_CHILDREN * 8);
             }
             // !copy children
         }
@@ -180,18 +128,16 @@ namespace wg {
         inline uint get_children_count() const { return mNumChildren; }
         inline uint get_meta_size() const { return mMetaSize; }
 
-        string_view get_name() const { return { mName, mNameLen }; }
+        inline string_view get_name() const { return { mName, mNameLen }; }
 
-        iterator begin() const { return iterator(ppChildren[0]); }
-        iterator end() const { return iterator(ppChildren[mNumChildren]); }
-        pts_entry* get_child(uint i) const { return ppChildren[i]; }
-        pts_entry* get_parent() const { return pParent; }
+        inline pts_entry* get_child(uint i) const { return ppChildren[i]; }
+        inline pts_entry* get_parent() const { return pParent; }
 
         inline bool is_root() const { return pParent == nullptr; }
         inline bool is_dir() const { return mIsDirectory; }
         inline bool is_compressed() const { return mIsCompressed; }
 
-        char* get_meta_data() const {
+        inline char* get_meta_data() const {
             return mMetaData;
         }
 
@@ -230,7 +176,7 @@ namespace wg {
         friend void read_entry(class file* fp, pts_entry* e);
     };
 
-    inline pts_entry* pts_entry_create_tree(const char* name) {
+    inline pts_entry* pts_entry_create_dir(const char* name) {
         return new pts_entry(true, name, 0, 0);
     }
 }

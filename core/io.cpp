@@ -20,6 +20,7 @@ namespace wg {
                 case SEEK_DIR_START: return SEEK_SET;
                 case SEEK_DIR_END: return SEEK_END;
             }
+            return SEEK_SET;
         }
     }
 
@@ -59,7 +60,7 @@ namespace wg {
     }
 
     int file::seek(wg::i64 offset, wg::file_seek_direction dir) const {
-        return fseek(F(mInternal), offset, SEEKDIR(dir));
+        return fseek(F(mInternal), long(offset), SEEKDIR(dir));
     }
 
     uint file::pos() const {
