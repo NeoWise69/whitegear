@@ -11,6 +11,16 @@
 #include <fstream>
 
 namespace wg {
+    namespace {
+        void fopen_(FILE** pp, const char* filename, const char* args) {
+#if defined(_WIN32) || defined(_MSC_VER)
+            fopen_s(pp, filename, args);
+#elif defined(__APPLE__)
+            *pp = fopen(filename, args);
+#endif
+        }
+    }
+
     pts_blob::pts_blob(const wg::string_view &filename) : mFile() {
         reopen(filename);
     }
@@ -24,7 +34,7 @@ namespace wg {
 
     bool pts_blob::reopen(const wg::string_view &filename) {
         FILE* tf;
-        fopen_s(&tf, filename.c_str(), "ab+");
+        fopen_(&tf, filename.c_str(), "ab+");
         if (!tf) return false;
         release();
         mFile = tf;

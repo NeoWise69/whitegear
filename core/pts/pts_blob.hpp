@@ -12,7 +12,13 @@
 #include <core/typedefs.hpp>
 #include <core/containers/string_view.hpp>
 
+#if defined(_WIN32) || defined(_MSC_VER)
 struct _iobuf;
+#define __FILEREP _iobuf
+#elif defined(__APPLE__)
+struct __sFILE;
+#define __FILEREP __sFILE
+#endif
 
 namespace wg {
     class pts_entry;
@@ -46,7 +52,7 @@ namespace wg {
         void release();
 
     private:
-        struct _iobuf* mFile;
+        __FILEREP* mFile;
     };
 }
 
