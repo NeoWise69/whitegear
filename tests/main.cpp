@@ -12,6 +12,7 @@
 #include "containers_array_view.hpp"
 #include "containers_string_view.hpp"
 #include "math_vectors.hpp"
+#include "pts.hpp"
 
 auto successful_test() -> bool {
     return true;
@@ -29,5 +30,6 @@ auto main(int argc, char** argv) -> int {
          TEST_PASS(containers_array_view_test)
          TEST_PASS(containers_string_view_test)
          TEST_PASS(math_vectors_test)
+         TEST_PASS(pts_test)
     );
 }

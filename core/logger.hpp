@@ -30,7 +30,7 @@ namespace wg {
         logger& panic(const char* fmt, ...);
     };
 
-    static logger log;
+    static logger out;
 }
 
 #endif //WHITEGEAR_LOGGER_HPP
