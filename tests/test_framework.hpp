@@ -46,7 +46,7 @@ namespace test {
                 pf = "s";
             }
             else if (d < 0.1f) {
-                return { "" };
+                return {};
             }
             return std::to_string(d) + pf;
         }
@@ -70,7 +70,12 @@ namespace test {
 
     inline void end(std::chrono::duration<float, std::milli> testTime) {
         const auto timeStr = details::get_time_string(testTime);
-        std::cout << "All tests clear! (" << timeStr << " total)" << std::endl;
+        if (!timeStr.empty()) {
+            std::cout << "All tests clear! (" << timeStr << " total)" << std::endl;
+        }
+        else {
+            std::cout << "All tests clear!" << std::endl;
+        }
     }
 
     inline void pass(const pass_function_t& fn, const char* fnName, bool expectedError) {
