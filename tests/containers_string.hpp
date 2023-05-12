@@ -13,10 +13,20 @@
 
 auto containers_string_test() -> bool {
 
-    wg::string s;
-    auto s1 = s;
+    try {
+        wg::string s = "Hello, world! - 1;  Hello, world! - 2;";
+        auto s1 = s;
+        s = "Hello, world! - 1;  Hello, world!";
+        s = s1;
 
-    s[0] = 's';
+        const auto c = s.c_str();
+
+        s[0] = 's';
+        s = "test =(";
+    }
+    catch (std::exception&) {
+        return false;
+    }
 
     return true;
 }
