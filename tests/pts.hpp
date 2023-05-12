@@ -18,13 +18,18 @@ auto pts_test() -> bool {
 
     pts_blob blob("test.bin");
 
-    auto tree = pts_entry_create_tree("test");
+    auto tree = new pts_entry();
+    {/*
+        const auto text = string_view("Hello, world!");
+        blob.write((u8*)text.c_str(), text.size());
+        tree->add_child(pts_entry(false, "gmsg.txt", 0, text.size()));
+    */}
 
     if (!pts_entry_load_from_file(tree, "test.pts")) {
         return false;
     }
 
-    pts_entry* gc = tree->find_child("greeting.txt");
+    pts_entry* gc = tree->find_child("gmsg.txt");
 
     if (gc) {
         u8 *greet = blob.get_data(gc);

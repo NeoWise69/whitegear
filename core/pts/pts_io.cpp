@@ -13,16 +13,16 @@ namespace wg {
     void write_entry(file* fp, const pts_entry* e) {
         const auto name = e->get_name();
         union {
-            uint solid = {};
             struct {
                 bool b0;
                 bool b1;
                 u8 u0;
             };
+            uint solid = {};
         } glue = {
-            .b0 = e->is_dir(),
-            .b1 = e->is_compressed(),
-            .u0 = (u8)name.size()
+            e->is_dir(),
+            e->is_compressed(),
+            (u8)name.size()
         };
 
         uint entry_plain[5] = {
@@ -72,10 +72,13 @@ namespace wg {
         e->mIsDirectory = glue.b0;
         e->mIsCompressed = glue.b1;
 
-        if (e->get_meta_size()) {
+        if (e->get_meta_size() > 0) {
             char* data = new char[e->get_meta_size()]{};
             fp->read(data, e->get_meta_size());
             e->mMetaData = data;
+        }
+        else {
+            e->mMetaData = nullptr;
         }
 
         for (uint i = 0; i < num_children; ++i) {

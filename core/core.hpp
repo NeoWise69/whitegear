@@ -17,6 +17,7 @@
 // containers
 #include "containers/array_view.hpp"
 #include "containers/string_view.hpp"
+#include "containers/string.hpp"
 
 // algorithms
 template<class A>
