@@ -10,6 +10,8 @@ of <b>"The WhiteGear Studio"</b>.
 ---
 ## <b>For developers</b>
 
+### + Dependencies: VulkanSDK
+
 ### + What IDE should I use to develop for this codebase?
 
 #### Answer:
