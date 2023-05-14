@@ -15,6 +15,8 @@ namespace wg {
 
     int editor_application::init() {
         const auto code = mCore.initialize();
+        if (code) return code;
+
         return 0;
     }
 
