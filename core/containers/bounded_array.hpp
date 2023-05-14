@@ -134,6 +134,8 @@ namespace wg {
         inline constexpr auto capacity() const { return N; }
         inline bool empty() const { return mSize == 0; }
 
+        inline auto data() const { return storage::get_type_data(0); }
+
     private:
         uint mSize = {};
     };
