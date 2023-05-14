@@ -14,15 +14,24 @@ namespace wg {
     }
 
     int editor_application::init() {
+        const auto code = mCore.initialize();
         return 0;
     }
 
     int editor_application::run() {
+        runtime_tick_info tick_info = {};
+
+        while (mCore.is_running()) {
+            if (const auto code = mCore.tick(&tick_info)) {
+                return code;
+            }
+        }
+
         return 0;
     }
 
     void editor_application::exit() {
-
+        mCore.exit();
     }
 
     editor_application::editor_application() {
