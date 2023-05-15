@@ -78,7 +78,7 @@ namespace wg {
 
     private:
         string clone() const;
-        char*& get_ptr();
+        char* get_ptr();
         char* get_ptr() const;
         u64 get_size() const;
         u64 get_alloc_size(u64 minimal) const;
