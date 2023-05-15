@@ -6,7 +6,11 @@ ADD_EXECUTABLE(wg_app ${Entry_SOURCES})
 LIST(APPEND WG_LIBS_TO_BUILD wg_core wg_math ${VK_LIB} wg_runtime wg_graphics glfw)
 
 IF(WG_BUILD_EDITOR)
-    SET(CMAKE_CXX_FLAGS "/D WG_BUILD_EDITOR")
+    IF(WIN32)
+        SET(CMAKE_CXX_FLAGS "/D WG_BUILD_EDITOR")
+    ELSE()
+        SET(CMAKE_CXX_FLAGS "-DWG_BUILD_EDITOR")
+    ENDIF()
     LIST(APPEND WG_LIBS_TO_BUILD wg_editor)
 ENDIF ()
 

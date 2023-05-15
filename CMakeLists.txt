@@ -31,8 +31,13 @@ IF ((NOT VK_SDK_PATH) OR (NOT EXISTS ${VK_SDK_PATH}))
     MESSAGE("++ If you're still messing around with this error, please check if your environment variables exports 'VK_SDK_PATH' variable.")
 ENDIF ()
 
-INCLUDE_DIRECTORIES(${VK_SDK_PATH}/Include)
-FIND_LIBRARY(VK_LIB NAMES vulkan-1 PATHS ${VK_SDK_PATH}/Lib)
+IF(WIN32)
+    INCLUDE_DIRECTORIES(${VK_SDK_PATH}/Include)
+    FIND_LIBRARY(VK_LIB NAMES vulkan-1 PATHS ${VK_SDK_PATH}/Lib)
+ELSE()
+    INCLUDE_DIRECTORIES(${VK_SDK_PATH}/include)
+    FIND_LIBRARY(VK_LIB NAMES vulkan PATHS ${VK_SDK_PATH}/lib)
+ENDIF()
 
 # !FIND VULKAN SDK STEP
 

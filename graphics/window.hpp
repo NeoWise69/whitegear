@@ -30,7 +30,7 @@ namespace wg::gfx {
         window(window_create_info* p_info);
         virtual ~window();
 
-        inline void open(window_create_info* p_info);
+        void open(window_create_info* p_info);
 
         inline uint get_width() const { return mInfo.w; }
         inline uint get_height() const { return mInfo.h; }

@@ -56,7 +56,7 @@ namespace wg {
         uint use_count = 1;
         bool is_static = true;
 
-        union {
+        union shared_data {
             struct heap_data {
                 char *ptr;
                 u64 size;
@@ -65,25 +65,25 @@ namespace wg {
             struct static_data {
                 char ptr[sizeof(heap_data)]{};
             } small = {};
-        };
+        } data;
 
         inline string_impl() = default;
         inline string_impl(const string_impl& o) {
             is_static = o.is_static;
             if (is_static) {
-                memcpy(small.ptr, o.small.ptr, 24);
+                memcpy(data.small.ptr, o.data.small.ptr, 24);
             }
             else {
-                auto& b = large;
-                b.size = o.large.size;
-                b.cap = o.large.cap;
+                auto& b = data.large;
+                b.size = o.data.large.size;
+                b.cap = o.data.large.cap;
                 b.ptr = new char[b.cap + 1]{};
-                memcpy(b.ptr, o.large.ptr, b.size);
+                memcpy(b.ptr, o.data.large.ptr, b.size);
             }
         }
         inline string_impl(const char* s, u64 len) {
             if (len > 24) {
-                auto& b = large;
+                auto& b = data.large;
                 if (len > b.cap) {
                     b.ptr = new char[len + 1]{};
                 }
@@ -96,7 +96,7 @@ namespace wg {
                 is_static = false;
             }
             else {
-                memcpy(small.ptr, s, len);
+                memcpy(data.small.ptr, s, len);
             }
         }
 };
@@ -105,7 +105,7 @@ namespace wg {
         --mImpl->use_count;
         if (mImpl->use_count == 0) {
             if (!mImpl->is_static) {
-                delete[] mImpl->large.ptr;
+                delete[] mImpl->data.large.ptr;
             }
             delete mImpl;
         }
@@ -134,14 +134,14 @@ namespace wg {
     }
 
     const char &string::operator[](i64 i) const {
-        return mImpl->is_static ? mImpl->small.ptr[i] : mImpl->large.ptr[i];
+        return mImpl->is_static ? mImpl->data.small.ptr[i] : mImpl->data.large.ptr[i];
     }
 
     char &string::operator[](i64 i) {
         if (mImpl->use_count > 1) {
             *this = clone();
         }
-        return mImpl->is_static ? mImpl->small.ptr[i] : mImpl->large.ptr[i];
+        return mImpl->is_static ? mImpl->data.small.ptr[i] : mImpl->data.large.ptr[i];
     }
 
     string string::clone() const {
@@ -171,24 +171,24 @@ namespace wg {
                 memcpy(tmp, get_ptr(), size());
                 memcpy(tmp + size(), s, len);
                 mImpl->is_static = false;
-                mImpl->large.ptr = tmp;
-                mImpl->large.size = len;
-                mImpl->large.cap = alloc_size;
+                mImpl->data.large.ptr = tmp;
+                mImpl->data.large.size = len;
+                mImpl->data.large.cap = alloc_size;
             }
-            else if (!mImpl->is_static && len < mImpl->large.cap) {
-                memset(get_ptr(), 0, mImpl->large.cap);
+            else if (!mImpl->is_static && len < mImpl->data.large.cap) {
+                memset(get_ptr(), 0, mImpl->data.large.cap);
                 memcpy(get_ptr(), s, len);
-                mImpl->large.size = len;
+                mImpl->data.large.size = len;
             }
-            else if (!mImpl->is_static && len >= mImpl->large.cap) {
+            else if (!mImpl->is_static && len >= mImpl->data.large.cap) {
                 const auto alloc_size = get_alloc_size(len + size());
                 char* tmp = new char[alloc_size]{};
-                memcpy(tmp, get_ptr(), mImpl->large.size);
-                memcpy(tmp + mImpl->large.size, s, len);
-                delete[] mImpl->large.ptr;
-                mImpl->large.ptr = tmp;
-                mImpl->large.size = len;
-                mImpl->large.cap = alloc_size;
+                memcpy(tmp, get_ptr(), mImpl->data.large.size);
+                memcpy(tmp + mImpl->data.large.size, s, len);
+                delete[] mImpl->data.large.ptr;
+                mImpl->data.large.ptr = tmp;
+                mImpl->data.large.size = len;
+                mImpl->data.large.cap = alloc_size;
             }
         }
         else {
@@ -199,21 +199,21 @@ namespace wg {
 
     char *string::get_ptr() {
         if (mImpl && mImpl->is_static) {
-            return (char*)mImpl->small.ptr;
+            return (char*)mImpl->data.small.ptr;
         }
-        return mImpl->large.ptr;
+        return mImpl->data.large.ptr;
     }
 
     char *string::get_ptr() const {
         if (mImpl && mImpl->is_static) {
-            return mImpl->small.ptr;
+            return mImpl->data.small.ptr;
         }
-        return mImpl->large.ptr;
+        return mImpl->data.large.ptr;
     }
 
 // TODO: update this to be more efficient!
     u64 string::get_size() const {
-        return mImpl->is_static ? strlen(mImpl->small.ptr) : mImpl->large.size;
+        return mImpl->is_static ? strlen(mImpl->data.small.ptr) : mImpl->data.large.size;
     }
 
     const u64 string::size() const {
@@ -253,7 +253,7 @@ namespace wg {
             const auto sz = size();
             if (len < (24 - sz)) {
                 for (u64 i = sz; i < len + sz; ++i) {
-                    mImpl->small.ptr[i] = c;
+                    mImpl->data.small.ptr[i] = c;
                 }
             }
             else {
@@ -263,9 +263,9 @@ namespace wg {
                 for (u64 i = sz; i < sz + len; ++i) {
                     tmp[i] = c;
                 }
-                mImpl->large.ptr = tmp;
-                mImpl->large.size = sz + len;
-                mImpl->large.cap = alloc_size;
+                mImpl->data.large.ptr = tmp;
+                mImpl->data.large.size = sz + len;
+                mImpl->data.large.cap = alloc_size;
             }
 
             mImpl->is_static = false;
@@ -273,7 +273,7 @@ namespace wg {
         else {
             if (len < (size() - capacity())) {
                 for (u64 i = size(); i < size() + len; ++i) {
-                    mImpl->large.ptr[i] = c;
+                    mImpl->data.large.ptr[i] = c;
                 }
             }
             else {
@@ -283,9 +283,9 @@ namespace wg {
                 for (u64 i = size(); i < size() + len; ++i) {
                     tmp[i] = c;
                 }
-                mImpl->large.ptr = tmp;
-                mImpl->large.size = size() + len;
-                mImpl->large.cap = alloc_size;
+                mImpl->data.large.ptr = tmp;
+                mImpl->data.large.size = size() + len;
+                mImpl->data.large.cap = alloc_size;
             }
         }
 
@@ -297,7 +297,7 @@ namespace wg {
     }
 
     const u64 string::capacity() const {
-        return mImpl->is_static ? 24 : mImpl->large.cap;
+        return mImpl->is_static ? 24 : mImpl->data.large.cap;
     }
 
     u64 string::get_alloc_size(u64 minimal) const {
@@ -312,32 +312,32 @@ namespace wg {
         if (mImpl->is_static) {
             const auto sz = size();
             if (len < (24 - sz)) {
-                memcpy(mImpl->small.ptr + sz, s, len);
+                memcpy(mImpl->data.small.ptr + sz, s, len);
             }
             else {
                 const auto alloc_size = get_alloc_size(sz + len);
                 char* tmp = new char[alloc_size]{};
                 memcpy(tmp, get_ptr(), sz);
                 memcpy(tmp + sz, s, len);
-                mImpl->large.ptr = tmp;
-                mImpl->large.size = sz + len;
-                mImpl->large.cap = alloc_size;
+                mImpl->data.large.ptr = tmp;
+                mImpl->data.large.size = sz + len;
+                mImpl->data.large.cap = alloc_size;
             }
 
             mImpl->is_static = false;
         }
         else {
             if (len < (size() - capacity())) {
-                memcpy(mImpl->large.ptr + size(), s, len);
+                memcpy(mImpl->data.large.ptr + size(), s, len);
             }
             else {
                 const auto alloc_size = get_alloc_size(size() + len);
                 char* tmp = new char[alloc_size]{};
                 memcpy(tmp, get_ptr(), size());
                 memcpy(tmp + size(), s, len);
-                mImpl->large.ptr = tmp;
-                mImpl->large.size = size() + len;
-                mImpl->large.cap = alloc_size;
+                mImpl->data.large.ptr = tmp;
+                mImpl->data.large.size = size() + len;
+                mImpl->data.large.cap = alloc_size;
             }
         }
 
@@ -458,49 +458,49 @@ namespace wg {
 
     string stringify(i16 v) {
         char buf[5]{};
-        sprintf_s(buf, "%d", v);
+        snprintf(buf, 5, "%d", v);
         return { buf, 5 };
     }
 
     string stringify(u16 v) {
         char buf[5]{};
-        sprintf_s(buf, "%d", v);
+        snprintf(buf, 5, "%d", v);
         return { buf, 5 };
     }
 
     string stringify(i32 v) {
         char buf[10]{};
-        sprintf_s(buf, "%d", v);
+        snprintf(buf, 10, "%d", v);
         return { buf, 10 };
     }
 
     string stringify(u32 v) {
         char buf[10]{};
-        sprintf_s(buf, "%d", v);
+        snprintf(buf, 10, "%d", v);
         return { buf, 10 };
     }
 
     string stringify(i64 v) {
         char buf[19]{};
-        sprintf_s(buf, "%lli", v);
+        snprintf(buf, 19, "%lli", v);
         return { buf, 19 };
     }
 
     string stringify(u64 v) {
         char buf[19]{};
-        sprintf_s(buf, "%llu", v);
+        snprintf(buf, 19, "%llu", v);
         return { buf, 19 };
     }
 
     string stringify(float v) {
         char buf[10]{};
-        sprintf_s(buf, "%f", v);
+        snprintf(buf, 10, "%f", v);
         return { buf, 23 };
     }
 
     string stringify(double v) {
         char buf[20]{};
-        sprintf_s(buf, "%f", v);
+        snprintf(buf, 20, "%f", v);
         return { buf, 23 };
     }
 
