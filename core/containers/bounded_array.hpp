@@ -94,8 +94,8 @@ namespace wg {
                 storage::deconstruct_data_at(i);
         }
 
-        inline bounded_array(std::initializer_list<T> ilist) {
-            for (auto e : ilist) {
+        inline bounded_array(std::initializer_list<T> list) {
+            for (auto e : list) {
                 emplace_back(e);
             }
         }
@@ -135,6 +135,11 @@ namespace wg {
         inline bool empty() const { return mSize == 0; }
 
         inline auto data() const { return storage::get_type_data(0); }
+        inline auto at(uint i) { return storage::get_type_data(i); }
+        inline auto at(uint i) const { return storage::get_type_data(i); }
+
+        inline auto operator[](uint i) { return at(i); }
+        inline auto operator[](uint i) const { return at(i); }
 
     private:
         uint mSize = {};
