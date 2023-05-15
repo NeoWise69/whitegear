@@ -44,6 +44,79 @@ namespace wg::gfx {
 
     device::device(instance* p_inst) {
         find_physical_device(p_inst);
+
+        queue_family_indices indices = find_queue_families(mPhysical);
+
+        bounded_array<VkDeviceQueueCreateInfo, 4> queue_infos;
+
+        if (indices.graphics_family.has_value()) {
+            // Setup graphics queue
+            VkDeviceQueueCreateInfo info = { VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO };
+            info.queueFamilyIndex = *indices.graphics_family;
+            info.queueCount = 1;
+
+            queue_infos.emplace_back(info);
+        }
+        if (indices.compute_family.has_value()) {
+            // Setup graphics queue
+            VkDeviceQueueCreateInfo info = { VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO };
+            info.queueFamilyIndex = *indices.compute_family;
+            info.queueCount = 1;
+
+            queue_infos.emplace_back(info);
+        }
+        if (indices.transfer_family.has_value()) {
+            // Setup graphics queue
+            VkDeviceQueueCreateInfo info = { VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO };
+            info.queueFamilyIndex = *indices.transfer_family;
+            info.queueCount = 1;
+
+            queue_infos.emplace_back(info);
+        }
+        if (indices.present_family.has_value()) {
+            // Setup graphics queue
+            VkDeviceQueueCreateInfo info = { VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO };
+            info.queueFamilyIndex = *indices.present_family;
+            info.queueCount = 1;
+
+            queue_infos.emplace_back(info);
+        }
+
+        float priorities[4] = {1, 1, 1, 1 };
+        float counter = 1.0f;
+        for (uint i = 0; i < queue_infos.size(); ++i) {
+            auto& qi = queue_infos[i];
+            priorities[i] = counter;
+
+            qi.pQueuePriorities = &priorities[i];
+
+            counter -= (1.0f / 4.0f);
+        }
+
+        VkPhysicalDeviceFeatures features = {  };
+
+        VkDeviceCreateInfo device_info = { VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO };
+        device_info.pQueueCreateInfos = queue_infos.data();
+        device_info.queueCreateInfoCount = queue_infos.size();
+        device_info.pEnabledFeatures = &features;
+
+        const auto code = vkCreateDevice(mPhysical, &device_info, nullptr, &mLogical);
+        if (code != VK_SUCCESS) {
+            throw std::runtime_error("Failed to create device! (ERR_LOGICAL_CREATION)");
+        }
+
+        if (indices.graphics_family.has_value()) {
+            vkGetDeviceQueue(mLogical, indices.graphics_family.value(), 0, &mGraphicsQueue);
+        }
+        if (indices.compute_family.has_value()) {
+            vkGetDeviceQueue(mLogical, indices.compute_family.value(), 0, &mComputeQueue);
+        }
+        if (indices.transfer_family.has_value()) {
+            vkGetDeviceQueue(mLogical, indices.transfer_family.value(), 0, &mTransferQueue);
+        }
+        if (indices.present_family.has_value()) {
+            vkGetDeviceQueue(mLogical, indices.present_family.value(), 0, &mPresentQueue);
+        }
     }
     /**
      * Performs checks for compatibility on every single
@@ -98,8 +171,9 @@ namespace wg::gfx {
             throw std::runtime_error("Failed to find a suitable GPU!");
         }
     }
-    device::~device() {
 
+    device::~device() {
+        vkDestroyDevice(mLogical, nullptr);
     }
 
     queue_family_indices device::find_queue_families(VkPhysicalDevice phys) {

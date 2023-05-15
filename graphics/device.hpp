@@ -58,10 +58,16 @@ namespace wg::gfx {
     private:
         static uint get_gpu_score(instance* instance, VkPhysicalDevice phys);
         void find_physical_device(instance* instance);
-        queue_family_indices find_queue_families(VkPhysicalDevice phys);
+        static queue_family_indices find_queue_families(VkPhysicalDevice phys);
     private:
         VkPhysicalDevice mPhysical = VK_NULL_HANDLE;
         VkDevice mLogical = VK_NULL_HANDLE;
+
+        VkQueue mGraphicsQueue = VK_NULL_HANDLE;
+        VkQueue mComputeQueue = VK_NULL_HANDLE;
+        VkQueue mTransferQueue = VK_NULL_HANDLE;
+        VkQueue mPresentQueue = VK_NULL_HANDLE;
+
         uint mFeatures[_DV_MAX] = {};
     };
 }
