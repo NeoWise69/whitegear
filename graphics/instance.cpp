@@ -28,7 +28,7 @@ wg::bounded_array<const char*, 1> GVkValidationLayers = {
 
 };
 
-#if _DEBUG
+#if (!NDEBUG) || (_DEBUG)
 inline static bool GVkEnableValidationLayers = true;
 #else
 inline static bool GVkEnableValidationLayers = false;
@@ -96,6 +96,8 @@ namespace wg::gfx {
     }
 
     instance::instance() {
+        acquire_support();
+
         create_instance();
         setup_debug();
     }
@@ -107,6 +109,49 @@ namespace wg::gfx {
         if (mInstance) {
             vkDestroyInstance(mInstance, nullptr);
             mInstance = VK_NULL_HANDLE;
+        }
+    }
+    /**
+     * Here is I'm trying create a new vkInstance
+     * for every support flag. If instance was
+     * successfully created -> this feature is supported,
+     * otherwise not.
+     */
+    void instance::acquire_support() {
+        const char* support_extensions[] = {
+                VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME,
+        };
+
+        for (uint i = 0; i < _HW_MAX; ++i) {
+            bool& res = mSupportMap[i];
+            const char* ext_name = support_extensions[i];
+            VkInstanceCreateInfo instance_info = {
+                    VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
+                    nullptr,
+                     VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR };
+
+#if __APPLE__
+            const char* exts[2] = {
+                    VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME,
+                    ext_name
+            };
+
+            instance_info.enabledExtensionCount = 2;
+            instance_info.ppEnabledExtensionNames = exts;
+#else
+            instance_info.enabledExtensionCount = 1;
+            instance_info.ppEnabledExtensionNames = &ext_name;
+#endif
+
+            VkInstance tmp = VK_NULL_HANDLE;
+            const auto vk_res = vkCreateInstance(&instance_info, nullptr, &tmp);
+            if (vk_res == VK_SUCCESS && tmp) {
+                res = true;
+                vkDestroyInstance(tmp, nullptr);
+            }
+            else {
+                res = false;
+            }
         }
     }
 
