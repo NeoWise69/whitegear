@@ -19,6 +19,7 @@
 #include <type_traits> // std::forward, std::is_pod_v
 #include <initializer_list> // std::initializer_list
 #include <cassert> // assert
+#include <new> // placement new
 
 namespace wg {
     /**
