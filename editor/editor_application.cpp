@@ -27,6 +27,8 @@ namespace wg {
             mWindow.open(&wnd_info);
         }
 
+        mRenderer.init(&mWindow);
+
         const auto code = mCore.initialize();
         if (code) return code;
 
@@ -50,6 +52,7 @@ namespace wg {
 
     void editor_application::exit() {
         mCore.exit();
+        mRenderer.exit();
     }
 
     editor_application::editor_application() {
