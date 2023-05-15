@@ -11,6 +11,7 @@
 
 #include <core/core.hpp>
 #include <runtime/runtime_core.hpp>
+#include <graphics/window.hpp>
 
 namespace wg {
     class editor_application {
@@ -26,6 +27,7 @@ namespace wg {
 
     private:
         runtime_core mCore;
+        gfx::window mWindow;
     };
 }
 

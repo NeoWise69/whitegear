@@ -17,6 +17,7 @@ namespace wg {
             }
         }
 
+        mIsRunning = true;
         return 0;
     }
 

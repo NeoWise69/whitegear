@@ -197,12 +197,18 @@ namespace wg {
         return *this;
     }
 
-    char *&string::get_ptr() {
-        return mImpl->is_static ? (char*&)mImpl->small.ptr : mImpl->large.ptr;
+    char *string::get_ptr() {
+        if (mImpl && mImpl->is_static) {
+            return (char*)mImpl->small.ptr;
+        }
+        return mImpl->large.ptr;
     }
 
     char *string::get_ptr() const {
-        return mImpl->is_static ? (char*&)mImpl->small.ptr : mImpl->large.ptr;
+        if (mImpl && mImpl->is_static) {
+            return mImpl->small.ptr;
+        }
+        return mImpl->large.ptr;
     }
 
 // TODO: update this to be more efficient!

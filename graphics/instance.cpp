@@ -38,11 +38,13 @@ namespace wg::gfx {
         glfw_exts = glfwGetRequiredInstanceExtensions(&glfw_ext_count);
 
         bounded_array<const char*, 8> required_exts;
-        for (auto i = 0; i < glfw_ext_count; ++i)
+        for (auto i = 0u; i < glfw_ext_count; ++i)
             required_exts.emplace_back(glfw_exts[i]);
 
+#if __APPLE__
         required_exts.emplace_back(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
         instance_info.flags |= VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR;
+#endif
 
         instance_info.enabledExtensionCount = required_exts.size();
         instance_info.ppEnabledExtensionNames = required_exts.data();
