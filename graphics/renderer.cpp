@@ -12,7 +12,7 @@
 namespace wg {
     void renderer::init(gfx::window *p_window) {
         mInstance = new gfx::instance();
-        mDevice = new gfx::device(mInstance);
+        mDevice = new gfx::device(mInstance, p_window);
     }
 
     void renderer::exit() {

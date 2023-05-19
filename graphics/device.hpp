@@ -16,6 +16,7 @@
 
 namespace wg::gfx {
     class instance;
+    class window;
 
     enum device_feature_indices {
         DV_FEATURE_,
@@ -49,7 +50,7 @@ namespace wg::gfx {
 
     class device {
     public:
-        device(instance* p_inst);
+        device(instance* p_inst, window* wnd);
         virtual ~device();
 
         inline auto get_logical() const { return mLogical; }
@@ -58,8 +59,9 @@ namespace wg::gfx {
     private:
         static uint get_gpu_score(instance* instance, VkPhysicalDevice phys);
         void find_physical_device(instance* instance);
-        static queue_family_indices find_queue_families(VkPhysicalDevice phys);
+        queue_family_indices find_queue_families(VkPhysicalDevice phys);
     private:
+        instance* pInstance = nullptr;
         VkPhysicalDevice mPhysical = VK_NULL_HANDLE;
         VkDevice mLogical = VK_NULL_HANDLE;
 
@@ -67,6 +69,8 @@ namespace wg::gfx {
         VkQueue mComputeQueue = VK_NULL_HANDLE;
         VkQueue mTransferQueue = VK_NULL_HANDLE;
         VkQueue mPresentQueue = VK_NULL_HANDLE;
+
+        VkSurfaceKHR mSurface = VK_NULL_HANDLE;
 
         uint mFeatures[_DV_MAX] = {};
     };

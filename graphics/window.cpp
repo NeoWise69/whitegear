@@ -8,7 +8,11 @@
 
 #include <graphics/window.hpp>
 
+#define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
+
+#include <graphics/instance.hpp>
+
 #include <stdexcept>
 
 bool GIsGLFWInitialized = false;
@@ -61,7 +65,7 @@ namespace wg::gfx {
         glfwSetWindowCloseCallback(tmp, [](GLFWwindow* window){
             auto* info = (window_info*)glfwGetWindowUserPointer(window);
             if (info) {
-                info->alive = false;
+                info->alive = false;GLFW_KEY_0
             }
         });
 
@@ -83,5 +87,14 @@ namespace wg::gfx {
 
         mWindow = tmp;
         mInfo.alive = true;
+    }
+
+    void window::get_vk_surface(instance *instance, VkSurfaceKHR *out_surface) {
+        const auto code = glfwCreateWindowSurface(instance->get(), mWindow, nullptr, out_surface);
+        if (code != VK_SUCCESS) {
+            out
+            .error("failed to create window's surface (vulkan)!")
+            .trace("instance=0x%08 out=0x%08", (void*)instance, (void*)out_surface);
+        }
     }
 }

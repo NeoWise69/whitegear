@@ -8,6 +8,7 @@
 
 #include <graphics/instance.hpp>
 #include <graphics/device.hpp>
+#include <graphics/window.hpp>
 #include <core/containers/bounded_array.hpp>
 
 #include <stdexcept>
@@ -42,7 +43,9 @@ namespace wg::gfx {
         return score;
     }
 
-    device::device(instance* p_inst) {
+    device::device(instance* p_inst, window* wnd) : pInstance(p_inst) {
+        wnd->get_vk_surface(p_inst, &mSurface);
+
         find_physical_device(p_inst);
 
         queue_family_indices indices = find_queue_families(mPhysical);
@@ -173,6 +176,7 @@ namespace wg::gfx {
     }
 
     device::~device() {
+        vkDestroySurfaceKHR(pInstance->get(), mSurface, nullptr);
         vkDestroyDevice(mLogical, nullptr);
     }
 
@@ -200,12 +204,11 @@ namespace wg::gfx {
                 indices.transfer_family = i;
             }
 
-            // TODO: add check for presentation support.
-            // VkBool32 is_present_support = false;
-            // vkGetPhysicalDeviceSurfaceSupportKHR(mDevice, i, mSurface, &is_present_support);
-            // if (is_present_support) {
-            //     indices.present_family = i;
-            // }
+            VkBool32 is_present_support = false;
+            vkGetPhysicalDeviceSurfaceSupportKHR(phys, i, mSurface, &is_present_support);
+            if (is_present_support) {
+                indices.present_family = i;
+            }
 
             ++i;
         }
