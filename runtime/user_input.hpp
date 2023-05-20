@@ -11,6 +11,7 @@
 
 #include <core/typedefs.hpp>
 #include <core/containers/string_view.hpp>
+#include <core/containers/bounded_array.hpp>
 
 namespace wg::gfx {
     class window;
@@ -171,6 +172,10 @@ namespace wg {
              * ASCII representation of last typed button from keyboard.
              */
             string_view symbolic;
+            /**
+             * This is required for fast and simple statechange(released->idle)
+             */
+            bounded_array<key, 16> released_keys;
         };
         /**
          * Check if passed param K is pressed, or not. (true or false)
@@ -212,9 +217,29 @@ namespace wg {
     public:
         inline input() = default;
         inline ~input() = default;
-
+        /**
+         * Access to keyboard instance.
+         */
         inline auto& get_keyboard() {
             return mKeyboard;
+        }
+        /**
+         * Less-type version of get_keyboard().is_pressed(...)
+         */
+        inline bool kbd_is_pressed(key k) const {
+            return mKeyboard.is_pressed(k);
+        }
+        /**
+         * Less-type version of get_keyboard().is_released(...)
+         */
+        inline bool kbd_is_released(key k) const {
+            return mKeyboard.is_released(k);
+        }
+        /**
+         * Less-type version of get_keyboard().is_idle(...)
+         */
+        inline bool kbd_is_idle(key k) const {
+            return mKeyboard.is_idle(k);
         }
 
         static input& get();

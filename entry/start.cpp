@@ -7,8 +7,14 @@
  ******************************************************************************/
 
 #include <editor/editor_application.hpp>
+#include <core/arch_info.hpp>
 
 int main() {
+    if (!wg::is_support(wg::HW_SSE)) {
+        wg::out
+        .panic("failed to execute wg_app, current machine CPU is not support SSE instructions.");
+    }
+
 #if WG_BUILD_EDITOR
     static wg::editor_application app;
 #endif

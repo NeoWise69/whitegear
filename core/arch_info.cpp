@@ -109,13 +109,26 @@ namespace wg {
                 b_HW_FMA4  = (info[2] & ((int)1 << 16)) != 0;
                 b_HW_XOP   = (info[2] & ((int)1 << 11)) != 0;
             }
+
+            out
+            .warning("currently running machine feature support: \nMMX[%d], X64[%d], ABM[%d], RDRAND[%d], SSE[%d], \nSSE2[%d], SSE3[%d], SSSE3[%d], SSE4.1[%d], SSE4.2[%d], \nSSE4a[%d], AES[%d], SHA[%d], AVX[%d], AVX2[%d], \nAVX512F[%d], AVX512CD[%d], AVX512PF[%d], AVX512ER[%d], AVX512VL[%d], \nAVX512BW[%d], AVX512DQ[%d], AVX512IFMA[%d], AVX512VBMI[%d]",
+                   b_HW_MMX,        b_HW_x64,       b_HW_ABM,           b_HW_RDRAND,        b_HW_SSE,
+                   b_HW_SSE2,       b_HW_SSE3,      b_HW_SSSE3,         b_HW_SSE41,         b_HW_SSE42,
+                   b_HW_SSE4a,      b_HW_AES,       b_HW_SHA,           b_HW_AVX,           b_HW_AVX2,
+                   b_HW_AVX512F,    b_HW_AVX512CD,  b_HW_AVX512PF,      b_HW_AVX512ER,      b_HW_AVX512VL,
+                   b_HW_AVX512BW,   b_HW_AVX512DQ,  b_HW_AVX512IFMA,    b_HW_AVX512VBMI                 );
             return false;
         }
 
-        bool _ = acquire_info();
+        bool GIsInitialized = false;
     }
 
     bool is_support(e_hardware_support f) {
+        if (!GIsInitialized) {
+            acquire_info();
+            GIsInitialized = true;
+        }
+
         switch (f) {
             case HW_NONE: return false;
             case HW_MMX: return b_HW_MMX;

@@ -6,17 +6,11 @@
  * report this source code leak and delete all copies of source code from all your machines.
  ******************************************************************************/
 
-#include <graphics/renderer.hpp>
-#include <graphics/window.hpp>
+#include <runtime/user_input.hpp>
 
 namespace wg {
-    void renderer::init(gfx::window *p_window) {
-        mInstance = new gfx::instance();
-        mDevice = new gfx::device(mInstance, p_window);
-    }
-
-    void renderer::exit() {
-        delete mDevice;
-        delete mInstance;
+    input &input::get() {
+        static input instance = {};
+        return instance;
     }
 }

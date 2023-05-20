@@ -8,8 +8,6 @@
 
 #include <editor/editor_application.hpp>
 
-#include <graphics/instance.hpp>
-
 namespace wg {
     int editor_application::pre_init() {
 
@@ -19,7 +17,7 @@ namespace wg {
     int editor_application::init() {
 
         {
-            gfx::window_create_info wnd_info = {};
+            window_create_info wnd_info = {};
             wnd_info.w = 800;
             wnd_info.h = 600;
             wnd_info.title = "ed";
@@ -27,7 +25,6 @@ namespace wg {
             mWindow.open(&wnd_info);
         }
 
-        mRenderer.init(&mWindow);
 
         const auto code = mCore.initialize();
         if (code) return code;
@@ -40,7 +37,11 @@ namespace wg {
         runtime_tick_info tick_info = {};
 
         while (mCore.is_running() && mWindow.is_alive()) {
-            gfx::platform_update();
+            window::platform_update();
+
+            if (input::get().kbd_is_released(KEY_ESCAPE)) {
+                exit();
+            }
 
             if (const auto code = mCore.tick(&tick_info)) {
                 return code;
@@ -51,8 +52,8 @@ namespace wg {
     }
 
     void editor_application::exit() {
+        mWindow.request_close();
         mCore.exit();
-        mRenderer.exit();
     }
 
     editor_application::editor_application() {

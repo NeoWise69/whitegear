@@ -11,28 +11,18 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
-#include <graphics/instance.hpp>
-
 #include <stdexcept>
 
 bool GIsGLFWInitialized = false;
 
-namespace wg::gfx {
+namespace wg {
 
-    void platform_update() {
-        glfwPollEvents();
-    }
-
-    window::window(gfx::window_create_info *p_info) {
+    window::window(window_create_info *p_info) {
         open(p_info);
     }
 
     window::~window() {
-        glfwDestroyWindow(mWindow);
-        if (GIsGLFWInitialized) {
-            glfwTerminate();
-            GIsGLFWInitialized = false;
-        }
+        request_close();
     }
 
     void window::open(window_create_info *p_info) {
@@ -65,7 +55,7 @@ namespace wg::gfx {
         glfwSetWindowCloseCallback(tmp, [](GLFWwindow* window){
             auto* info = (window_info*)glfwGetWindowUserPointer(window);
             if (info) {
-                info->alive = false;GLFW_KEY_0
+                info->alive = false;
             }
         });
 
@@ -85,16 +75,71 @@ namespace wg::gfx {
             }
         });
 
+        glfwSetKeyCallback(tmp, [](GLFWwindow* window, int _key, int scancode, int action, int mods) {
+            auto* info = (window_info*)glfwGetWindowUserPointer(window);
+            if (info) {
+                /**
+                 * btw window here is useless)
+                 */
+            }
+
+            auto& kbd = input::get().get_keyboard();
+            auto& kbd_state = kbd.get_state();
+            switch (action) {
+                case GLFW_REPEAT:
+                case GLFW_PRESS: {
+                    kbd_state.keys[_key] = keyboard_input::KEY_STATE_PRESSED;
+                    break;
+                }
+                case GLFW_RELEASE: {
+                    kbd_state.keys[_key] = keyboard_input::KEY_STATE_RELEASED;
+                    kbd_state.released_keys.emplace_back(key(_key));
+                    break;
+                }
+                default:
+                    break;
+            }
+        });
+
         mWindow = tmp;
         mInfo.alive = true;
+
+        out
+        .trace("window[%s, %dx%d] has been created.", p_info->title.c_str(), p_info->w, p_info->h)
+        ;
     }
 
-    void window::get_vk_surface(instance *instance, VkSurfaceKHR *out_surface) {
+    void window::platform_update() {
+        auto& kbd = input::get().get_keyboard();
+        auto& kbd_state = kbd.get_state();
+        auto& released_keys = kbd_state.released_keys;
+        for (u8 i = 0; i < released_keys.size(); ++i) {
+            key& k = released_keys[i];
+            kbd_state.keys[k] = keyboard_input::KEY_STATE_IDLE;
+        }
+        released_keys.clear();
+
+        glfwPollEvents();
+    }
+
+    void window::request_close() {
+        mInfo.alive = false;
+        if (mWindow) {
+            glfwDestroyWindow(mWindow);
+            mWindow = nullptr;
+        }
+        if (GIsGLFWInitialized) {
+            glfwTerminate();
+            GIsGLFWInitialized = false;
+        }
+    }
+
+/* void window::get_vk_surface(instance *instance, VkSurfaceKHR *out_surface) {
         const auto code = glfwCreateWindowSurface(instance->get(), mWindow, nullptr, out_surface);
         if (code != VK_SUCCESS) {
             out
             .error("failed to create window's surface (vulkan)!")
             .trace("instance=0x%08 out=0x%08", (void*)instance, (void*)out_surface);
         }
-    }
+    }*/
 }

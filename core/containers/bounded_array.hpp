@@ -57,6 +57,12 @@ namespace wg {
             return p;
         }
         /**
+         * Completely corrupts and clear storage raw memory.
+         */
+        inline void clear() {
+            memset(mRaw, 0, (sizeof(T) * N) * sizeof(char));
+        }
+        /**
         * Deconstruct non-POD object types by calling destructor,
         * and release POD types just by setting it to ZERO.
         */
@@ -91,8 +97,7 @@ namespace wg {
 
         inline bounded_array() = default;
         virtual ~bounded_array() {
-            for (uint i = 0; i < mSize; ++i)
-                storage::deconstruct_data_at(i);
+            storage::clear();
         }
 
         inline bounded_array(std::initializer_list<T> list) {
@@ -138,6 +143,10 @@ namespace wg {
         inline auto data() const { return storage::get_type_data(0); }
         inline auto& at(uint i) { return *storage::get_type_data(i); }
         inline auto at(uint i) const { return *storage::get_type_data(i); }
+        inline void clear() {
+            storage::clear();
+            mSize = 0;
+        }
 
         inline auto& operator[](uint i) { return at(i); }
         inline auto operator[](uint i) const { return at(i); }

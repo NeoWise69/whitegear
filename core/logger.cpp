@@ -34,18 +34,19 @@ namespace wg {
 #endif
 
         inline std::string get_date_time() {
-            time_t     now = time(nullptr);
-            struct tm  t = {};
-            char       buf[80];
-            localtime_(&t, &now);
-            strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &t);
-            return buf;
+            time_t      now = time(nullptr);
+            struct tm   t = {};
+            char        buf[80];
+            localtime_  (&t, &now);
+            strftime    (buf, sizeof(buf), "%Y-%m-%d.%X", &t);
+            return      buf;
         }
 
         static std::mutex sMtx = {};
     }
 
     logger& logger::log(log_level lvl, const char *fmt, ...) {
+#ifndef NDEBUG
         std::scoped_lock lock(sMtx);
 
         char buf[2048] = {};
@@ -65,10 +66,12 @@ namespace wg {
             case LOG_LEVEL_PANIC: sv = "[panic]"; stream = stderr; break;
         }
         fprintf_(stream, "%s.%s: %s\n", get_date_time().c_str(), sv.data(), buf);
+#endif
         return *this;
     }
 
     logger& logger::trace(const char *fmt, ...) {
+#ifndef NDEBUG
         std::scoped_lock lock(sMtx);
 
         char buf[2048] = {};
@@ -79,10 +82,12 @@ namespace wg {
 
         std::string_view sv = "[trace]";
         fprintf_(stdout, "%s.%s: %s\n", get_date_time().c_str(), sv.data(), buf);
+#endif
         return *this;
     }
 
     logger& logger::info(const char *fmt, ...) {
+#ifndef NDEBUG
         std::scoped_lock lock(sMtx);
 
         char buf[2048] = {};
@@ -93,10 +98,12 @@ namespace wg {
 
         std::string_view sv = "[info]";
         fprintf_(stdout, "%s.%s: %s\n", get_date_time().c_str(), sv.data(), buf);
+#endif
         return *this;
     }
 
     logger& logger::warning(const char *fmt, ...) {
+#ifndef NDEBUG
         std::scoped_lock lock(sMtx);
 
         char buf[2048] = {};
@@ -107,10 +114,12 @@ namespace wg {
 
         std::string_view sv = "[warning]";
         fprintf_(stdout, "%s.%s: %s\n", get_date_time().c_str(), sv.data(), buf);
+#endif
         return *this;
     }
 
     logger& logger::error(const char *fmt, ...) {
+#ifndef NDEBUG
         std::scoped_lock lock(sMtx);
 
         char buf[2048] = {};
@@ -121,6 +130,7 @@ namespace wg {
 
         std::string_view sv = "[error]";
         fprintf_(stderr, "%s.%s: %s\n", get_date_time().c_str(), sv.data(), buf);
+#endif
         return *this;
     }
 
@@ -135,6 +145,8 @@ namespace wg {
 
         std::string_view sv = "[panic]";
         fprintf_(stderr, "%s.%s: %s\n", get_date_time().c_str(), sv.data(), buf);
+
+        abort();
         return *this;
     }
 }

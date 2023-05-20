@@ -10,12 +10,11 @@
 #define WHITEGEAR_WINDOW_HPP
 
 #include <core/core.hpp>
-#include <graphics/instance.hpp>
+#include <runtime/user_input.hpp>
 
 struct GLFWwindow;
 
-namespace wg::gfx {
-    class instance;
+namespace wg {
 
     struct window_create_info {
         int x, y;
@@ -39,13 +38,16 @@ namespace wg::gfx {
         inline uint get_height() const { return mInfo.h; }
         inline bool is_alive() const { return mInfo.alive; }
 
-        void get_vk_surface(instance* instance, VkSurfaceKHR* out_surface);
+        void request_close();
 
+        // void get_vk_surface(instance* instance, VkSurfaceKHR* out_surface);
+
+        static void platform_update();
     private:
         window_info mInfo = {};
         GLFWwindow* mWindow = {};
     };
-    void platform_update();
+
 }
 
 #endif //WHITEGEAR_WINDOW_HPP
