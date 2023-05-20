@@ -13,10 +13,6 @@
 #include <core/containers/string_view.hpp>
 #include <core/containers/bounded_array.hpp>
 
-namespace wg::gfx {
-    class window;
-}
-
 namespace wg {
     enum key {
         KEY_SPACE              = 32,
