@@ -7,6 +7,7 @@
  ******************************************************************************/
 
 #include <graphics/window.hpp>
+#include <graphics/cursor.hpp>
 
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
@@ -75,31 +76,71 @@ namespace wg {
             }
         });
 
-        glfwSetKeyCallback(tmp, [](GLFWwindow* window, int _key, int scancode, int action, int mods) {
-            auto* info = (window_info*)glfwGetWindowUserPointer(window);
-            if (info) {
-                /**
-                 * btw window here is useless)
-                 */
-            }
-
+        glfwSetKeyCallback(tmp, [](GLFWwindow*, int _key, int, int action, int) {
             auto& kbd = input::get().get_keyboard();
             auto& kbd_state = kbd.get_state();
+            kbd_state.source = IDEVICE_KEYBOARD;
             switch (action) {
                 case GLFW_REPEAT:
                 case GLFW_PRESS: {
-                    kbd_state.keys[_key] = keyboard_input::KEY_STATE_PRESSED;
+                    kbd_state.keys[_key] = KEY_STATE_PRESSED;
                     break;
                 }
                 case GLFW_RELEASE: {
-                    kbd_state.keys[_key] = keyboard_input::KEY_STATE_RELEASED;
-                    kbd_state.released_keys.emplace_back(key(_key));
+                    kbd_state.keys[_key] = KEY_STATE_RELEASED;
+                    kbd_state.release_keys.emplace_back(key(_key));
                     break;
                 }
                 default:
                     break;
             }
         });
+
+        glfwSetMouseButtonCallback(tmp, [](GLFWwindow* window, int button, int action, int mods) {
+            auto& ms = input::get().get_mouse();
+            auto& ms_state = ms.get_state();
+            ms_state.source = IDEVICE_MOUSE;
+            switch (action) {
+                case GLFW_REPEAT:
+                case GLFW_PRESS: {
+                    ms_state.keys[button] = KEY_STATE_PRESSED;
+                    break;
+                }
+                case GLFW_RELEASE: {
+                    ms_state.keys[button] = KEY_STATE_RELEASED;
+                    ms_state.release_keys.emplace_back(key(button));
+                    break;
+                }
+                default:
+                    break;
+            }
+        });
+
+        glfwSetCursorPosCallback(tmp, [](GLFWwindow*, double xpos, double ypos) {
+            auto& ms = input::get().get_mouse();
+            auto& ms_state = ms.get_state();
+            ms_state.source = IDEVICE_MOUSE;
+            ms_state.value = {float(xpos), float(ypos), 0.0f};
+        });
+
+        // TODO: configurable cursor
+        { // Setup default cursor.
+            color32 cursor_pixels[256] = {};
+            get_cursor(cursor_pixels, CURSOR_DEFAULT, CURSOR_STATE_NORMAL);
+            u8* raw_cursor_pixels = (u8*)cursor_pixels;
+
+            GLFWimage cursor_image = {};
+            cursor_image.width = 16;
+            cursor_image.height = 16;
+            cursor_image.pixels = raw_cursor_pixels;
+
+            GLFWcursor* cursor = glfwCreateCursor(&cursor_image, 0, 0);
+            glfwSetCursor(tmp, cursor);
+        }
+
+        if (glfwRawMouseMotionSupported()) {
+            glfwSetInputMode(tmp, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+        }
 
         mWindow = tmp;
         mInfo.alive = true;
@@ -111,13 +152,9 @@ namespace wg {
 
     void window::platform_update() {
         auto& kbd = input::get().get_keyboard();
-        auto& kbd_state = kbd.get_state();
-        auto& released_keys = kbd_state.released_keys;
-        for (u8 i = 0; i < released_keys.size(); ++i) {
-            key& k = released_keys[i];
-            kbd_state.keys[k] = keyboard_input::KEY_STATE_IDLE;
-        }
-        released_keys.clear();
+        auto& ms = input::get().get_mouse();
+        kbd.process_release_keys();
+        ms.process_release_keys();
 
         glfwPollEvents();
     }
