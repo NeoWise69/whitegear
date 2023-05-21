@@ -24,7 +24,7 @@ namespace wg {
         CURSOR_STATE_LAST
     };
 
-    void get_cursor(color32 pixels[256], cursor cur, cursor_state state);
+    void get_cursor(color32* pixels, cursor cur, cursor_state state);
 }
 
 #endif //WHITEGEAR_CURSOR_HPP

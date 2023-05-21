@@ -125,13 +125,14 @@ namespace wg {
 
         // TODO: configurable cursor
         { // Setup default cursor.
-            color32 cursor_pixels[256] = {};
+            constexpr auto cursor_size = 24;
+            color32 cursor_pixels[cursor_size * cursor_size] = {};
             get_cursor(cursor_pixels, CURSOR_DEFAULT, CURSOR_STATE_NORMAL);
             u8* raw_cursor_pixels = (u8*)cursor_pixels;
 
             GLFWimage cursor_image = {};
-            cursor_image.width = 16;
-            cursor_image.height = 16;
+            cursor_image.width = cursor_size;
+            cursor_image.height = cursor_size;
             cursor_image.pixels = raw_cursor_pixels;
 
             GLFWcursor* cursor = glfwCreateCursor(&cursor_image, 0, 0);

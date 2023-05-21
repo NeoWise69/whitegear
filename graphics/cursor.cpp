@@ -7,21 +7,21 @@
  ******************************************************************************/
 
 #include <graphics/cursor.hpp>
-#include <cstring>
 
-#include "cursor_default_normal.hpp"
+#include "cursor_default.hpp"
 
 namespace wg {
 
-    static const bounded_array<color32, 256> cursors[CURSOR_LAST][CURSOR_STATE_LAST] = {
+    static const bounded_array<color32, 1024> cursors[CURSOR_LAST][CURSOR_STATE_LAST] = {
             { // CURSOR_DEFAULT
                     { // CURSOR_STATE_NORMAL
-                        cursor_default_normal,
+                        cursor_default,
                     }, // !CURSOR_STATE_NORMAL
                 }, // !CURSOR_DEFAULT
     };
 
-    void get_cursor(color32 pixels[256], cursor cur, cursor_state state) {
-        memcpy(pixels, cursors[cur][state].data(), sizeof(color32) * 256);
+    void get_cursor(color32* pixels, cursor cur, cursor_state state) {
+        const auto& selected_cursor = cursors[cur][state];
+        memcpy(pixels, selected_cursor.data(), sizeof(color32) * selected_cursor.size());
     }
 }
