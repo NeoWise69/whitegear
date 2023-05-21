@@ -107,6 +107,13 @@ namespace wg {
             }
         }
 
+        template<uint M>
+        inline bounded_array(const bounded_array<T, M>& om) {
+            for (uint i = 0; i < om.size() && i < N; ++i) {
+                emplace_back(om[i]);
+            }
+        }
+
         template<class...Args>
         inline explicit bounded_array(uint num, Args&&...args) {
             for (uint i = 0; i < num; ++i)
