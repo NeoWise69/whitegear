@@ -27,7 +27,7 @@ namespace {
             "\tinline static const bounded_array<color32, "
     };
     const char* ending = {
-            "\t};\n"
+            "\r\t};\n"
             "}\n"
             "\n#endif\n"
     };
@@ -58,7 +58,7 @@ auto main(int argc, char** argv) -> int {
 
     image_filename[strlen(image_filename) - 4] = 0;
 
-    fprintf(fd, "%s%d> %s = {\n\t", header, int(w*h), image_filename);
+    fprintf(fd, "%s%d> %s = {\n\t\t", header, int(w*h), image_filename);
 
     const uint pixel_count = w * h;
 
@@ -69,8 +69,8 @@ auto main(int argc, char** argv) -> int {
                 *(raw + 2), *(raw + 1), *(raw + 0), *(raw + 3));
 
         ++counter;
-        if ((counter % min(w, h)) == 0) {
-            fprintf(fd, "\n\t");
+        if ((counter % 4) == 0) {
+            fprintf(fd, "\n\t\t");
         }
     }
 
