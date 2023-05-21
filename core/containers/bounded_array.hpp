@@ -20,6 +20,7 @@
 #include <initializer_list> // std::initializer_list
 #include <cassert> // assert
 #include <new> // placement new
+#include <cstring> // memset
 
 namespace wg {
     /**
@@ -60,7 +61,7 @@ namespace wg {
          * Completely corrupts and clear storage raw memory.
          */
         inline void clear() {
-            memset(mRaw, 0, (sizeof(T) * N) * sizeof(char));
+            memset((char*)mRaw, 0, sizeof(T) * N);
         }
         /**
         * Deconstruct non-POD object types by calling destructor,
@@ -112,7 +113,7 @@ namespace wg {
                 emplace_back(std::forward<Args>(args)...);
         }
 
-        inline bounded_array(const bounded_array&) = delete;
+        inline bounded_array(const bounded_array&) = default;
         inline bounded_array& operator=(const bounded_array&) = delete;
         inline bounded_array(bounded_array&&) noexcept = delete;
         inline bounded_array& operator=(bounded_array&&) noexcept = delete;
