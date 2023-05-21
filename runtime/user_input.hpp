@@ -12,9 +12,24 @@
 #include <core/typedefs.hpp>
 #include <core/containers/string_view.hpp>
 #include <core/containers/bounded_array.hpp>
+#include <math/vec3.hpp>
+
+#include <mutex>
 
 namespace wg {
-    enum key {
+    enum key : i16 {
+        KEY_MOUSE_1             = 00,
+        KEY_MOUSE_2             = 01,
+        KEY_MOUSE_3             = 02,
+        KEY_MOUSE_4             = 03,
+        KEY_MOUSE_5             = 04,
+        KEY_MOUSE_6             = 05,
+        KEY_MOUSE_7             = 06,
+        KEY_MOUSE_8             = 07,
+        KEY_MOUSE_LEFT          = KEY_MOUSE_1,
+        KEY_MOUSE_RIGHT         = KEY_MOUSE_2,
+        KEY_MOUSE_MIDDLE        = KEY_MOUSE_3,
+
         KEY_SPACE              = 32,
         KEY_APOSTROPHE         = 39,  /* ' */
         KEY_COMMA              = 44,  /* , */
@@ -141,68 +156,119 @@ namespace wg {
         KEY_LAST
     };
     /**
-     * Keyboard input handles all keyboard-related events and
-     * even more, e.g: it gives an access to keyboard state.
+     * ***
      */
-    class keyboard_input {
+    enum key_state {
+        /**
+         * Key is not neither pressed nor released.
+         * it's just calm state, idle.
+         */
+        KEY_STATE_IDLE,
+        /**
+         * Key is pressed right now.
+         */
+        KEY_STATE_PRESSED,
+        /**
+         * Key was released on last frame and will be changed
+         * it's state back to IDLE.
+         */
+        KEY_STATE_RELEASED,
+    };
+    /**
+     * What input device source belongs to this.
+     */
+    enum source_device {
+        IDEVICE_UNDEFINED,
+        /**
+         * This was called due to keyboard event.
+         */
+        IDEVICE_KEYBOARD,
+        /**
+         * This was called due to mouse event.
+         */
+        IDEVICE_MOUSE,
+        /**
+         * This was called due to gamepad event.
+         */
+        IDEVICE_GAMEPAD
+    };
+    /**
+     * Generic class, contains required information to
+     * get access to all possible input devices (such as keyboard, mouse, etc.)
+     */
+    class input_device {
     public:
-        enum key_state {
-            /**
-             * Key is not neither pressed nor released.
-             * it's just calm state, idle.
-             */
-            KEY_STATE_IDLE,
-            /**
-             * Key is pressed right now.
-             */
-            KEY_STATE_PRESSED,
-            /**
-             * Key was released on last frame and will be changed
-             * it's state back to IDLE.
-             */
-            KEY_STATE_RELEASED,
-        };
         struct state {
-            key_state keys[KEY_LAST];
             /**
-             * ASCII representation of last typed button from keyboard.
+             * Source type of input device.
              */
-            string_view symbolic;
+            source_device source = {};
             /**
-             * This is required for fast and simple statechange(released->idle)
+             * All keys from any input device.
              */
-            bounded_array<key, 16> released_keys;
+            key_state keys[KEY_LAST] = {};
+            /**
+             * This is required for fast and simple statechange(released->idle).
+             */
+            bounded_array<key, 16> release_keys = {};
+            /**
+             * on mouse:
+             * x, y -> position
+             * z -> wheel
+             * on keyboard:
+             * none
+             */
+            vec3 value = {};
         };
         /**
-         * Check if passed param K is pressed, or not. (true or false)
+         * Access type of source.
          */
-        inline bool is_pressed(key k) const {
-            return mState.keys[k] == KEY_STATE_PRESSED;
+        inline auto get_source() const {
+            return mState.source;
         }
         /**
-         * Check if passed param K is released, or pressed. (true or false)
+         * Returns if key is pressed or not.
          */
-        inline bool is_released(key k) const {
-            return mState.keys[k] == KEY_STATE_RELEASED;
+        inline bool is_pressed(key kc) const {
+            return (mState.keys[kc] == KEY_STATE_PRESSED);
         }
         /**
-         * IDT why, but just why not. This state represents if button
-         * is not behaves.
+         * Returns if key is released or not.
          */
-        inline bool is_idle(key k) const {
-            return mState.keys[k] == KEY_STATE_IDLE;
+        inline bool is_released(key kc) const {
+            return (mState.keys[kc] == KEY_STATE_RELEASED);
         }
         /**
-         * Gives string representation of a last typed character from keyboard.
-         * @return
+         * If key is calm, or behaves.
          */
-        inline auto get_symbol() const {
-            return mState.symbolic;
+        inline bool is_idle(key kc) const {
+            return (mState.keys[kc] == KEY_STATE_IDLE);
         }
-
-        inline state& get_state() { return mState; }
+        /**
+         * [MOUSE] Returns window space position.
+         */
+        inline auto get_position() const {
+            return mState.value.xy();
+        }
+        /**
+         * [MOUSE] Returns middle wheel value.
+         */
+        inline auto get_wheel() const {
+            return mState.value.z;
+        }
+        /**
+         * Get access to state.
+         */
+        inline auto& get_state() {
+            return mState;
+        }
+        /**
+         * Process transition (release->idle) for
+         * every released key.
+         */
+        void process_release_keys();
     private:
-        state mState;
+        state mState = {};
     };
     /**
      * Main input manager class through one
@@ -218,6 +284,12 @@ namespace wg {
          */
         inline auto& get_keyboard() {
             return mKeyboard;
+        }
+        /**
+         * Access to mouse instance.
+         */
+        inline auto& get_mouse() {
+            return mMouse;
         }
         /**
          * Less-type version of get_keyboard().is_pressed(...)
@@ -237,10 +309,42 @@ namespace wg {
         inline bool kbd_is_idle(key k) const {
             return mKeyboard.is_idle(k);
         }
+        /**
+         * Less-type version of get_mouse().is_pressed(...)
+         */
+        inline bool ms_is_pressed(key k) const {
+            return mMouse.is_pressed(k);
+        }
+        /**
+         * Less-type version of get_mouse().is_released(...)
+         */
+        inline bool ms_is_released(key k) const {
+            return mMouse.is_released(k);
+        }
+        /**
+         * Less-type version of get_mouse().is_idle(...)
+         */
+        inline bool ms_is_idle(key k) const {
+            return mMouse.is_idle(k);
+        }
+        /**
+         * Less-type version of get_mouse().get_position()
+         */
+        inline auto ms_get_position() const {
+            return mMouse.get_position();
+        }
+        /**
+         * Less-type version of get_mouse().get_position()
+         */
+        inline auto ms_get_wheel() const {
+            return mMouse.get_wheel();
+        }
 
         static input& get();
     private:
-        keyboard_input mKeyboard = {};
+        input_device mKeyboard = {};
+        input_device mMouse = {};
+        std::mutex mMtx = {};
     };
 }
 

@@ -21,7 +21,7 @@ int main() {
 
     struct application_exit_guard {
         ~application_exit_guard() {
-            app.exit();
+            app.request_exit();
         }
     } exit_guard = {};
 

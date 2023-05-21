@@ -21,7 +21,7 @@ namespace wg {
 
         int pre_init();
         int init();
-        void exit();
+        void request_exit();
 
         int run();
 

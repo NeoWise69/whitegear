@@ -40,7 +40,13 @@ namespace wg {
             window::platform_update();
 
             if (input::get().kbd_is_released(KEY_ESCAPE)) {
-                exit();
+                request_exit();
+            }
+
+            if (input::get().ms_is_released(KEY_MOUSE_LEFT)) {
+                const auto& pos = input::get().ms_get_position();
+                out
+                .trace("mouse click: %dx%d", i32(pos.x), i32(pos.y));
             }
 
             if (const auto code = mCore.tick(&tick_info)) {
@@ -51,7 +57,7 @@ namespace wg {
         return 0;
     }
 
-    void editor_application::exit() {
+    void editor_application::request_exit() {
         mWindow.request_close();
         mCore.exit();
     }

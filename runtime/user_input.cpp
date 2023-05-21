@@ -11,6 +11,16 @@
 namespace wg {
     input &input::get() {
         static input instance = {};
+        std::lock_guard lk(instance.mMtx);
         return instance;
+    }
+
+    void input_device::process_release_keys() {
+        auto& rc = mState.release_keys;
+        for (u8 i = 0; i < rc.size(); ++i) {
+            key k = rc[i];
+            mState.keys[k] = KEY_STATE_IDLE;
+        }
+        rc.clear();
     }
 }
