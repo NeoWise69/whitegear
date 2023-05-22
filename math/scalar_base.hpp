@@ -120,6 +120,18 @@ namespace wg {
      * Fast FP comparison.
      */
     bool nequal(scalar a, scalar b, scalar eps = constants<scalar>::epsilon);
+    /**
+     * Converts degrees to radians.
+     */
+    inline scalar radians(scalar deg) {
+        return deg * scalar(0.01745329251994329576923690768489);
+    }
+    /**
+     * Converts radians to degrees.
+     */
+    inline scalar degrees(scalar rad) {
+        return rad * scalar(57.295779513082320876798154814105);
+    }
 }
 
 #endif //WHITEGEAR_SCALAR_BASE_HPP
