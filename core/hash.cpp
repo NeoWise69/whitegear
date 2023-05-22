@@ -11,7 +11,7 @@
 namespace wg {
     i64 hash_string(const string& s) {
         constexpr int p = 31;
-        constexpr int m = 1e9 + 9;
+        constexpr int m = int(1e9 + 9);
         long long hash_value = 0;
         long long p_pow = 1;
         for (const char& c : s) {
@@ -22,7 +22,7 @@ namespace wg {
     }
     i64 hash_string_view(const string_view& s) {
         constexpr int p = 31;
-        constexpr int m = 1e9 + 9;
+        constexpr int m = int(1e9 + 9);
         long long hash_value = 0;
         long long p_pow = 1;
         for (const char& c : s) {

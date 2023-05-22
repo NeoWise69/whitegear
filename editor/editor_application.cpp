@@ -7,9 +7,25 @@
  ******************************************************************************/
 
 #include <editor/editor_application.hpp>
+#include <renda/renderer_api.hpp>
 
 namespace wg {
+    void notify_renderer_api() {
+        string_view sv;
+        switch (renderer_api::get_type()) {
+            case renderer_api::vulkan_api: {
+                sv = "\'Khronos Group VulkanAPI\'";
+            } break;
+            case renderer_api::directx: {
+                sv = "\'Microsoft DirectX\'";
+            } break;
+        }
+        out
+        .trace("Renderer backend: %s", sv.c_str());
+    }
+
     int editor_application::pre_init() {
+        notify_renderer_api();
 
         return 0;
     }
@@ -18,9 +34,10 @@ namespace wg {
 
         {
             window_create_info wnd_info = {};
-            wnd_info.w = 800;
-            wnd_info.h = 600;
+            wnd_info.w = 1920;
+            wnd_info.h = 1080;
             wnd_info.title = "ed";
+            wnd_info.fullscreen = true;
 
             mWindow.open(&wnd_info);
         }

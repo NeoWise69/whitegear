@@ -15,12 +15,12 @@
 #   define WG_UNIX 1
 #endif
 
-#if defined(_DEBUG) || !defined(NDEBUG)
+#if defined(_DEBUG)
 #   define WG_BUILD_DEBUG 1
-#elif defined(NDEBUG)
-#   define WG_BUILD_RELEASE 1
 #elif defined(WG_BUILD_TYPE_DIST)
 #   define WG_BUILD_DIST 1
+#else
+#   define WG_BUILD_RELEASE 1
 #endif
 
 #endif //WHITEGEAR_MACROS_HPP
