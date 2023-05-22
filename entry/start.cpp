@@ -7,7 +7,6 @@
  ******************************************************************************/
 
 #include <editor/editor_application.hpp>
-#include <core/arch_info.hpp>
 
 int main() {
     if (!wg::is_support(wg::HW_SSE)) {

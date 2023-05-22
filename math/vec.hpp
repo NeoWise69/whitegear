@@ -312,15 +312,15 @@ namespace wg {
     /**
      * Returns maximum value from between two further vectors.
      */
-    inline vec2 max(const vec2& x, const vec2& y) { return details::caller2<vec, 2>::call(wg::max, x, y); }
+    inline vec2 fmax(const vec2& x, const vec2& y) { return details::caller2<vec, 2>::call(wg::fmax, x, y); }
     /**
      * Returns maximum value from between two further vectors.
      */
-    inline vec3 max(const vec3& x, const vec3& y) { return details::caller2<vec, 3>::call(wg::max, x, y); }
+    inline vec3 fmax(const vec3& x, const vec3& y) { return details::caller2<vec, 3>::call(wg::fmax, x, y); }
     /**
      * Returns maximum value from between two further vectors.
      */
-    inline vec4 max(const vec4& x, const vec4& y) { return details::caller2<vec, 4>::call(wg::max, x, y); }
+    inline vec4 fmax(const vec4& x, const vec4& y) { return details::caller2<vec, 4>::call(wg::fmax, x, y); }
     /**
      * Constrain a value to lie between two further.
      */

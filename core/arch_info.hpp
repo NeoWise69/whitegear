@@ -6,10 +6,6 @@
  * report this source code leak and delete all copies of source code from all your machines.
  ******************************************************************************/
 
-//
-// Created by andrt on 04.05.2023.
-//
-
 #ifndef WHITEGEAR_ARCH_INFO_HPP
 #define WHITEGEAR_ARCH_INFO_HPP
 

@@ -11,7 +11,7 @@
 
 #include "array_view.hpp"
 #include <cctype>
-#include <string.h>
+#include <cstring>
 
 namespace wg {
     template<class Char = char>

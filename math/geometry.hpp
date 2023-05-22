@@ -15,32 +15,51 @@
 
 namespace wg {
     namespace geometry {
+        /**
+         * Simplest mathematical sphere representation.
+         * Used in math simulations.
+         */
         struct sphere {
             vec3 position;
             scalar radius;
         };
+        /**
+         * Simplest mathematical cube representation.
+         * Used in math simulations.
+         */
         struct cube {
             vec3 center_position;
             scalar size;
         };
-        struct box {
-            vec3 pos0, pos1;
-        };
     }
-
+    /**
+     * Frustum clip space structure to check for
+     * if elements (sphere, cube) is inside frustum
+     * shape. Used for frustum fulling (mostly).
+     */
     struct frustum {
-
         inline frustum() : planes() {}
         frustum(const mat4& proj, const mat4& model);
-
+        /**
+         * Check if point is inside frustum shape.
+         */
         bool in_frustum(const vec3& point) const;
+        /**
+         * Check if sphere is inside frustum shape.
+         */
         bool in_frustum(const geometry::sphere& sp) const;
+        /**
+         * Check if cube is inside frustum shape.
+         */
         bool in_frustum(const geometry::cube& c) const;
 
+        /**
+         * Simple function to normalize vec4 plane.
+         */
         void normalize(vec4* p_plane);
 
         union {
-            /* x, y, z -> xyz normal values; w -> coordinates start distance */
+            /* x, y, z -> xyz normal values; w -> coordinates of start distance */
             vec4 planes[6];
             struct {
                 vec4 plane_right;

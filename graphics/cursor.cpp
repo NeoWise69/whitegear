@@ -11,7 +11,10 @@
 #include "cursor_default.hpp"
 
 namespace wg {
-
+    /**
+     * Reserved (hardcoded) array of cursors, where every cursor should match
+     * size to (32x32x4).
+     */
     static const bounded_array<color32, 1024> cursors[CURSOR_LAST][CURSOR_STATE_LAST] = {
             { // CURSOR_DEFAULT
                     { // CURSOR_STATE_NORMAL

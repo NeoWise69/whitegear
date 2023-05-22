@@ -17,7 +17,6 @@ namespace wg {
     template<class T>
     class array_view {
     public:
-        using value_type = T;
         using pointer_type = T*;
         using const_pointer_type = const T*;
         using reference_type = T&;

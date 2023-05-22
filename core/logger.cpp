@@ -20,16 +20,16 @@ namespace wg {
 
         inline void localtime_(struct tm* t, time_t* time) {
 
-#ifdef _WIN32
+#ifdef WG_WINDOWS
             localtime_s(t, time);
-#elif __APPLE__
+#elif WG_UNIX
             localtime_r(time, t);
 #endif
         }
 
-#ifdef _WIN32
+#ifdef WG_WINDOWS
 #   define fprintf_ fprintf_s
-#elif __APPLE__
+#elif WG_UNIX
 #   define fprintf_ fprintf
 #endif
 
@@ -46,7 +46,7 @@ namespace wg {
     }
 
     logger& logger::log(log_level lvl, const char *fmt, ...) {
-#ifndef NDEBUG
+#ifdef WG_BUILD_DEBUG
         std::scoped_lock lock(sMtx);
 
         char buf[2048] = {};
@@ -71,7 +71,7 @@ namespace wg {
     }
 
     logger& logger::trace(const char *fmt, ...) {
-#ifndef NDEBUG
+#ifdef WG_BUILD_DEBUG
         std::scoped_lock lock(sMtx);
 
         char buf[2048] = {};
@@ -87,7 +87,7 @@ namespace wg {
     }
 
     logger& logger::info(const char *fmt, ...) {
-#ifndef NDEBUG
+#ifdef WG_BUILD_DEBUG
         std::scoped_lock lock(sMtx);
 
         char buf[2048] = {};
@@ -103,7 +103,7 @@ namespace wg {
     }
 
     logger& logger::warning(const char *fmt, ...) {
-#ifndef NDEBUG
+#ifdef WG_BUILD_DEBUG
         std::scoped_lock lock(sMtx);
 
         char buf[2048] = {};
@@ -119,7 +119,7 @@ namespace wg {
     }
 
     logger& logger::error(const char *fmt, ...) {
-#ifndef NDEBUG
+#ifdef WG_BUILD_DEBUG
         std::scoped_lock lock(sMtx);
 
         char buf[2048] = {};

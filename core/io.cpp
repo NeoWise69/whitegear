@@ -36,12 +36,12 @@ namespace wg {
     }
 
     file_error file::open(const wg::string_view &filename, const char *attr) {
-#if defined(_WIN32) || defined(_MSC_VER)
+#if WG_WINDOWS
         const auto err = fopen_s(F2(&mInternal), filename.c_str(), attr);
         if (err == ENOENT)
             return FILE_ERROR_NOT_FOUND;
         return FILE_ERROR_OK;
-#elif defined(__APPLE__)
+#elif WG_UNIX
         mInternal = P(fopen(filename.c_str(), attr));
         if (mInternal)
             return FILE_ERROR_OK;

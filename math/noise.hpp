@@ -14,6 +14,9 @@
 #include "vec4.hpp"
 
 namespace wg {
+    /**
+     * Utility to compute Y noise based on X position.
+     */
     class noise {
     public:
         inline explicit noise(scalar frequency = 1.0f, scalar amplitude = 1.0f, scalar lacunarity = 2.0f, scalar persistence = 0.5f) :

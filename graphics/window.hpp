@@ -11,37 +11,77 @@
 
 #include <core/core.hpp>
 #include <runtime/user_input.hpp>
-
+/**
+ * Forward declaration of GLFW's window opaque type.
+ */
 struct GLFWwindow;
 
 namespace wg {
-
+    /**
+     * Initialization structure.
+     */
     struct window_create_info {
+        /**
+         * Starting coords of the new window.
+         */
         int x, y;
+        /**
+         * Size of the new window.
+         */
         int w, h;
+        /**
+         * Name of the new window.
+         */
         string title;
+        /**
+         * Whether it is fullscreen window or not.
+         */
         bool fullscreen;
     };
+    /**
+     * Structure, contains whole data required for window.
+     */
     struct window_info : window_create_info {
         bool alive;
-
     };
+    /**
+     * Main visual output device.
+     */
     class window {
     public:
         window() = default;
+        /**
+         * Constructor that accepts create_info pointer
+         * to create a new window.
+         */
         window(window_create_info* p_info);
         virtual ~window();
-
+        /**
+         * Creates new window with parameters, accepted
+         * through p_info window_create_info pointer.
+         */
         void open(window_create_info* p_info);
-
+        /**
+         * Returns current width of window.
+         * [NOTE] Changes in realtime on window resize.
+         */
         inline uint get_width() const { return mInfo.w; }
+        /**
+         * Returns current height of window.
+         * [NOTE] Changes in realtime on window resize.
+         */
         inline uint get_height() const { return mInfo.h; }
+        /**
+         * Tells whether window is still alive or not.
+         */
         inline bool is_alive() const { return mInfo.alive; }
-
+        /**
+         * Requests window for close routine.
+         */
         void request_close();
-
-        // void get_vk_surface(instance* instance, VkSurfaceKHR* out_surface);
-
+        /**
+         * Polls all platform-dependent events.
+         */
         static void platform_update();
     private:
         window_info mInfo = {};

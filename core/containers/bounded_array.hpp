@@ -24,12 +24,12 @@
 
 namespace wg {
     /**
-* Storage is a simple contiguous array of bytes,
-* that splits between 'spawned' objects. This require
-* NO allocations, what means -> there're ZERO heap usage
-* at least for array needs. All required space reserved
-* here at first instantiation time.
-*/
+    * Storage is a simple contiguous array of bytes,
+    * that splits between 'spawned' objects. This require
+    * NO allocations, what means -> there are ZERO heap usage
+    * at least for array needs. All required space reserved
+    * here at first instantiation time.
+    */
     template<class T, uint N>
     class bounded_array_storage {
     protected:
@@ -60,7 +60,7 @@ namespace wg {
         /**
          * Completely corrupts and clear storage raw memory.
          */
-        inline void clear() {
+        inline void clear_storage() {
             memset((char*)mRaw, 0, sizeof(T) * N);
         }
         /**
@@ -98,7 +98,7 @@ namespace wg {
 
         inline bounded_array() = default;
         virtual ~bounded_array() {
-            storage::clear();
+            storage::clear_storage();
         }
 
         inline bounded_array(std::initializer_list<T> list) {
@@ -152,7 +152,7 @@ namespace wg {
         inline auto& at(uint i) { return *storage::get_type_data(i); }
         inline auto at(uint i) const { return *storage::get_type_data(i); }
         inline void clear() {
-            storage::clear();
+            storage::clear_storage();
             mSize = 0;
         }
 

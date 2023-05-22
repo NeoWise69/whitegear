@@ -19,65 +19,64 @@ namespace wg {
     template<uint C, uint R> struct mat;
 
     using mat4  = mat<4, 4>;
-    using mat3  = mat<3, 3>;
-    using mat43 = mat<4, 3>;
-    using mat34 = mat<3, 4>;
-
+    /**
+     * Computes inverse matrix based on input one.
+     */
     template<uint C, uint R>
     inline mat<C, R> inverse(const mat<C, R>& m) {
-        const auto Coef00 = m[2][2] * m[3][3] - m[3][2] * m[2][3];
-        const auto Coef02 = m[1][2] * m[3][3] - m[3][2] * m[1][3];
-        const auto Coef03 = m[1][2] * m[2][3] - m[2][2] * m[1][3];
+        const auto c_00 = m[2][2] * m[3][3] - m[3][2] * m[2][3];
+        const auto c_02 = m[1][2] * m[3][3] - m[3][2] * m[1][3];
+        const auto c_03 = m[1][2] * m[2][3] - m[2][2] * m[1][3];
 
-        const auto Coef04 = m[2][1] * m[3][3] - m[3][1] * m[2][3];
-        const auto Coef06 = m[1][1] * m[3][3] - m[3][1] * m[1][3];
-        const auto Coef07 = m[1][1] * m[2][3] - m[2][1] * m[1][3];
+        const auto c_04 = m[2][1] * m[3][3] - m[3][1] * m[2][3];
+        const auto c_06 = m[1][1] * m[3][3] - m[3][1] * m[1][3];
+        const auto c_07 = m[1][1] * m[2][3] - m[2][1] * m[1][3];
 
-        const auto Coef08 = m[2][1] * m[3][2] - m[3][1] * m[2][2];
-        const auto Coef10 = m[1][1] * m[3][2] - m[3][1] * m[1][2];
-        const auto Coef11 = m[1][1] * m[2][2] - m[2][1] * m[1][2];
+        const auto c_08 = m[2][1] * m[3][2] - m[3][1] * m[2][2];
+        const auto c_10 = m[1][1] * m[3][2] - m[3][1] * m[1][2];
+        const auto c_11 = m[1][1] * m[2][2] - m[2][1] * m[1][2];
 
-        const auto Coef12 = m[2][0] * m[3][3] - m[3][0] * m[2][3];
-        const auto Coef14 = m[1][0] * m[3][3] - m[3][0] * m[1][3];
-        const auto Coef15 = m[1][0] * m[2][3] - m[2][0] * m[1][3];
+        const auto c_12 = m[2][0] * m[3][3] - m[3][0] * m[2][3];
+        const auto c_14 = m[1][0] * m[3][3] - m[3][0] * m[1][3];
+        const auto c_15 = m[1][0] * m[2][3] - m[2][0] * m[1][3];
 
-        const auto Coef16 = m[2][0] * m[3][2] - m[3][0] * m[2][2];
-        const auto Coef18 = m[1][0] * m[3][2] - m[3][0] * m[1][2];
-        const auto Coef19 = m[1][0] * m[2][2] - m[2][0] * m[1][2];
+        const auto c_16 = m[2][0] * m[3][2] - m[3][0] * m[2][2];
+        const auto c_18 = m[1][0] * m[3][2] - m[3][0] * m[1][2];
+        const auto c_19 = m[1][0] * m[2][2] - m[2][0] * m[1][2];
 
-        const auto Coef20 = m[2][0] * m[3][1] - m[3][0] * m[2][1];
-        const auto Coef22 = m[1][0] * m[3][1] - m[3][0] * m[1][1];
-        const auto Coef23 = m[1][0] * m[2][1] - m[2][0] * m[1][1];
+        const auto c_20 = m[2][0] * m[3][1] - m[3][0] * m[2][1];
+        const auto c_22 = m[1][0] * m[3][1] - m[3][0] * m[1][1];
+        const auto c_23 = m[1][0] * m[2][1] - m[2][0] * m[1][1];
 
-        const vec<C> Fac0(Coef00, Coef00, Coef02, Coef03);
-        const vec<C> Fac1(Coef04, Coef04, Coef06, Coef07);
-        const vec<C> Fac2(Coef08, Coef08, Coef10, Coef11);
-        const vec<C> Fac3(Coef12, Coef12, Coef14, Coef15);
-        const vec<C> Fac4(Coef16, Coef16, Coef18, Coef19);
-        const vec<C> Fac5(Coef20, Coef20, Coef22, Coef23);
+        const vec<C> f_0(c_00, c_00, c_02, c_03);
+        const vec<C> f_1(c_04, c_04, c_06, c_07);
+        const vec<C> f_2(c_08, c_08, c_10, c_11);
+        const vec<C> f_3(c_12, c_12, c_14, c_15);
+        const vec<C> f_4(c_16, c_16, c_18, c_19);
+        const vec<C> f_5(c_20, c_20, c_22, c_23);
 
-        const vec<C> Vec0(m[1][0], m[0][0], m[0][0], m[0][0]);
-        const vec<C> Vec1(m[1][1], m[0][1], m[0][1], m[0][1]);
-        const vec<C> Vec2(m[1][2], m[0][2], m[0][2], m[0][2]);
-        const vec<C> Vec3(m[1][3], m[0][3], m[0][3], m[0][3]);
+        const vec<C> v_0(m[1][0], m[0][0], m[0][0], m[0][0]);
+        const vec<C> v_1(m[1][1], m[0][1], m[0][1], m[0][1]);
+        const vec<C> v_2(m[1][2], m[0][2], m[0][2], m[0][2]);
+        const vec<C> v_3(m[1][3], m[0][3], m[0][3], m[0][3]);
 
-        const vec<C> Inv0(Vec1 * Fac0 - Vec2 * Fac1 + Vec3 * Fac2);
-        const vec<C> Inv1(Vec0 * Fac0 - Vec2 * Fac3 + Vec3 * Fac4);
-        const vec<C> Inv2(Vec0 * Fac1 - Vec1 * Fac3 + Vec3 * Fac5);
-        const vec<C> Inv3(Vec0 * Fac2 - Vec1 * Fac4 + Vec2 * Fac5);
+        const auto i_0(v_1 * f_0 - v_2 * f_1 + v_3 * f_2);
+        const auto i_1(v_0 * f_0 - v_2 * f_3 + v_3 * f_4);
+        const auto i_2(v_0 * f_1 - v_1 * f_3 + v_3 * f_5);
+        const auto i_3(v_0 * f_2 - v_1 * f_4 + v_2 * f_5);
 
         const vec<C> SignA(+1, -1, +1, -1);
         const vec<C> SignB(-1, +1, -1, +1);
-        const mat<C, R> Inverse(Inv0 * SignA, Inv1 * SignB, Inv2 * SignA, Inv3 * SignB);
+        const mat<C, R> i_last(i_0 * SignA, i_1 * SignB, i_2 * SignA, i_3 * SignB);
 
-        const vec<C> Row0(Inverse[0][0], Inverse[1][0], Inverse[2][0], Inverse[3][0]);
+        const vec<C> r0(i_last[0][0], i_last[1][0], i_last[2][0], i_last[3][0]);
 
-        const vec<C> Dot0(m[0] * Row0);
-        const auto Dot1 = (Dot0.x + Dot0.y) + (Dot0.z + Dot0.w);
+        const auto d0(m[0] * r0);
+        const auto Dot1 = (d0.x + d0.y) + (d0.z + d0.w);
 
         const auto OneOverDeterminant = scalar(1) / Dot1;
 
-        return Inverse * OneOverDeterminant;
+        return i_last * OneOverDeterminant;
     }
 }
 

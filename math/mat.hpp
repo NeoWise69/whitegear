@@ -14,9 +14,15 @@
 #include <math/vec.hpp>
 
 namespace wg {
+    /**
+     * Computes linearly interpolated matrix between twos.
+     */
     inline mat4 mix(const mat4& x, const mat4& y, scalar a) {
         return x * (scalar(1) - a) + y * a;
     }
+    /**
+     * Constructs orthographic projection matrix from parameters.
+     */
     inline mat4 orthographic(scalar left, scalar right, scalar bottom, scalar top) {
         mat4 res(scalar(1));
         res[0][0] = scalar(2) / (right - left);
@@ -26,6 +32,9 @@ namespace wg {
         res[3][1] = - (top + bottom) / (top - bottom);
         return res;
     }
+    /**
+     * Constructs orthographic projection matrix from parameters.
+     */
     inline mat4 orghographic(scalar left, scalar right, scalar bottom, scalar top, scalar zNear, scalar zFar) {
         mat4 res(scalar(1));
         res[0][0] = scalar(2) / (right - left);
@@ -36,6 +45,9 @@ namespace wg {
         res[3][2] = - (zFar + zNear) / (zFar - zNear);
         return res;
     }
+    /**
+     * Constructs frustum matrix from parameters.
+     */
     inline mat4 mat4_frustum(scalar left, scalar right, scalar bottom, scalar top, scalar nearVal, scalar farVal) {
         mat4 res(0);
         res[0][0] = (scalar(2) * nearVal) / (right - left);
@@ -47,6 +59,9 @@ namespace wg {
         res[3][2] = - (scalar(2) * farVal * nearVal) / (farVal - nearVal);
         return res;
     }
+    /**
+     * Constructs perspective projection matrix from parameters.
+     */
     inline mat4 perspective(scalar fovy, scalar aspect, scalar zNear, scalar zFar) {
         const auto tanHalfFovy = tan(fovy / scalar(2));
 
@@ -58,6 +73,9 @@ namespace wg {
         res[3][2] = - (scalar(2) * zFar * zNear) / (zFar - zNear);
         return res;
     }
+    /**
+     * Constructs perspective projection matrix from parameters.
+     */
     inline mat4 perspective_fov(scalar fov, scalar width, scalar height, scalar zNear, scalar zFar) {
         const auto rad = fov;
         const auto h = cos(scalar(0.5) * rad) / sin(scalar(0.5) * rad);
@@ -71,6 +89,11 @@ namespace wg {
         res[3][2] = - (scalar(2) * zFar * zNear) / (zFar - zNear);
         return res;
     }
+    /**
+     * Constructs perspective projection matrix from parameters.
+     * [NOTE] This version is a bit tweaked and doesn't require
+     * far plane to work. It's almost infinite.
+     */
     inline mat4 perspective_inf(scalar fovy, scalar aspect, scalar zNear) {
         const auto range = tan(fovy / scalar(2)) * zNear;
         const auto left = -range * aspect;
@@ -86,6 +109,11 @@ namespace wg {
         res[3][2] = - scalar(2) * zNear;
         return res;
     }
+    /**
+     * Constructs perspective projection matrix from parameters.
+     * [NOTE] This version is a bit tweaked and doesn't require
+     * far plane to work. It's almost infinite.
+     */
     inline mat4 perspective_inf_v2(scalar fovy, scalar aspect, scalar zNear, scalar eps = constants<scalar>::epsilon) {
         const auto range = tan(fovy / scalar(2)) * zNear;
         const auto left = -range * aspect;
@@ -101,11 +129,18 @@ namespace wg {
         res[3][2] = (eps - scalar(2)) * zNear;
         return res;
     }
+    /**
+     * Calculates translation matrix from old one + position vector
+     */
     inline mat4 translate(const mat4& m, const vec3& v) {
         mat4 r(m);
         r[3] = m[0] * v[0] + m[1] * v[1] + m[2] * v[2] + m[3];
         return r;
     }
+    /**
+     * Computes rotation matrix based on old one, plus angle
+     * and axis to rotate around.
+     */
     inline mat4 rotate(const mat4& m, scalar angle, const vec3& v) {
         const auto a = angle;
         const auto c = cos(a);
@@ -134,7 +169,10 @@ namespace wg {
         r[3] = m[3];
         return r;
     }
-    inline mat4 scale(const mat4& m, scalar angle, const vec3& v) {
+    /**
+     * Scales matrix based on vector.
+     */
+    inline mat4 scale(const mat4& m, const vec3& v) {
         mat4 r;
         r[0] = m[0] * v[0];
         r[1] = m[1] * v[1];

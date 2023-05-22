@@ -57,7 +57,7 @@ namespace wg {
          */
         static constexpr T epsilon = T(1.192092896e-07);
         /**
-         * Minimal meaningful value
+         * Pretty self explained.
          */
         static constexpr T cos_half = T(0.87758256189037);
     };
@@ -76,15 +76,15 @@ namespace wg {
     /**
      * Returns maximal from given parameters.
      */
-    scalar max(scalar a, scalar b);
+    scalar fmax(scalar a, scalar b);
     /**
      * Returns maximal from given parameters.
      */
-    scalar max(scalar a, scalar b, scalar c);
+    scalar fmax(scalar a, scalar b, scalar c);
     /**
      * Returns maximal from given parameters.
      */
-    scalar max(scalar a, scalar b, scalar c, scalar d);
+    scalar fmax(scalar a, scalar b, scalar c, scalar d);
     /**
      * Truncates scalar value to _min _max bounds.
      */

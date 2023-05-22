@@ -23,7 +23,10 @@ namespace wg {
 
         CURSOR_STATE_LAST
     };
-
+    /**
+     * Populates pointer to buffer of RGBA pixels in 32bit format.
+     * Accepts parameters to specify type of cursor + state of cursor.
+     */
     void get_cursor(color32* pixels, cursor cur, cursor_state state);
 }
 

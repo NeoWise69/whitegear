@@ -6,9 +6,23 @@
  * report this source code leak and delete all copies of source code from all your machines.
  ******************************************************************************/
 
-#include <fstream>
 #include <math/color.hpp>
-#include <core/core.hpp>
+
+/*******************************************************************************
+
+     /$$$$$$ /$$      /$$  /$$$$$$   /$$$$$$   /$$$$$$  /$$   /$$ /$$$$$$$
+    |_  $$_/| $$$    /$$$ /$$__  $$ /$$__  $$ /$$__  $$| $$  | $$| $$__  $$
+      | $$  | $$$$  /$$$$| $$  \__/|__/  \ $$| $$  \__/| $$  | $$| $$  \ $$
+      | $$  | $$ $$/$$ $$| $$ /$$$$  /$$$$$$/| $$      | $$  | $$| $$$$$$$/
+      | $$  | $$  $$$| $$| $$|_  $$ /$$____/ | $$      | $$  | $$| $$__  $$
+      | $$  | $$\  $ | $$| $$  \ $$| $$      | $$    $$| $$  | $$| $$  \ $$
+     /$$$$$$| $$ \/  | $$|  $$$$$$/| $$$$$$$$|  $$$$$$/|  $$$$$$/| $$  | $$
+    |______/|__/     |__/ \______/ |________/ \______/  \______/ |__/  |__/
+
+    Simple utility tool for converting every input RGBA image into array of
+    statically allocated pixels in format of R8G8B8A8_UNORM.
+
+ ******************************************************************************/
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb_image.hpp>
@@ -54,7 +68,12 @@ auto main(int argc, char** argv) -> int {
         return -1;
     }
 
+#ifdef WG_UNIX
     FILE* fd = fopen(converted_filename, "w+");
+#elif WG_WINDOWS
+    FILE* fd = nullptr;
+    fopen_s(&fd, converted_filename, "w+");
+#endif
 
     image_filename[strlen(image_filename) - 4] = 0;
 

@@ -21,20 +21,20 @@ namespace wg {
         return fmin(fmin(a, b), fmin(c, d));
     }
 
-    scalar max(scalar a, scalar b) {
+    scalar fmax(scalar a, scalar b) {
         return a > b ? a : b;
     }
 
-    scalar max(scalar a, scalar b, scalar c) {
-        return max(max(a, b), c);
+    scalar fmax(scalar a, scalar b, scalar c) {
+        return fmax(fmax(a, b), c);
     }
 
-    scalar max(scalar a, scalar b, scalar c, scalar d) {
-        return max(max(a, b), max(c, d));
+    scalar fmax(scalar a, scalar b, scalar c, scalar d) {
+        return fmax(fmax(a, b), fmax(c, d));
     }
 
     scalar clamp(scalar x, scalar _min, scalar _max) {
-        return fmin(max(x, _min), _max);
+        return fmin(fmax(x, _min), _max);
     }
 
     scalar fract(scalar x) {

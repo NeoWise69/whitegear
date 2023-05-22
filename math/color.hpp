@@ -9,10 +9,14 @@
 #ifndef WHITEGEAR_COLOR_HPP
 #define WHITEGEAR_COLOR_HPP
 
-#include <core/containers/bounded_array.hpp>
 #include <math/scalar_base.hpp>
+#include <math/vec4.hpp>
 
 namespace wg {
+    /**
+     * Simple RGBA color representation with
+     * format of R8G8B8A8, or whole 32 bit integer.
+     */
     struct color32 {
         union {
             u32 rep32;
@@ -31,6 +35,27 @@ namespace wg {
         }
         inline constexpr explicit operator const u8*() const {
             return &r;
+        }
+        /**
+         * Converts color32 into vec4 of normalized RGBA color.
+         */
+        inline vec4 to_rgba() const noexcept {
+            return {
+                scalar(r) / scalar(255),
+                scalar(g) / scalar(255),
+                scalar(b) / scalar(255),
+                scalar(a) / scalar(255)
+            };
+        }
+        /**
+         * Converts color32 into vec3 of normalized RGB color.
+         */
+        inline vec3 to_rgb() const noexcept {
+            return {
+                scalar(r) / scalar(255),
+                scalar(g) / scalar(255),
+                scalar(b) / scalar(255)
+            };
         }
     };
 }

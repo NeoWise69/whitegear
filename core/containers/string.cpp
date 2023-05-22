@@ -10,7 +10,6 @@
 #include <cstring>
 #include <new>
 #include <cstdio>
-#include <cctype>
 
 namespace wg {
     namespace {

@@ -9,6 +9,8 @@
 #ifndef WHITEGEAR_TYPEDEFS_HPP
 #define WHITEGEAR_TYPEDEFS_HPP
 
+#include <core/macros.hpp>
+
 namespace wg {
     typedef char i8;
     typedef unsigned char u8;
