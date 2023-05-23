@@ -1,2 +1,2 @@
-SET(Core_SOURCES arch_info.cpp logger.cpp containers/string_view.hpp pts/pts_blob.hpp pts/pts_blob.cpp pts/pts_io.hpp pts/pts_io.cpp io.hpp io.cpp containers/string.hpp containers/string.cpp containers/bounded_array.hpp containers/hashmap.hpp macros.hpp hash.hpp hash.cpp)
+SET(Core_SOURCES arch_info.cpp logger.cpp containers/string_view.hpp pts/pts_blob.hpp pts/pts_blob.cpp pts/pts_io.hpp pts/pts_io.cpp io.hpp io.cpp containers/string.hpp containers/string.cpp containers/bounded_array.hpp containers/hashmap.hpp macros.hpp hash.hpp hash.cpp smart_ptr.hpp containers/set.hpp)
 ADD_LIBRARY(wg_core STATIC ${Core_SOURCES})

@@ -1,0 +1,2 @@
+SET(Scene_SOURCES entity.hpp component.hpp component.cpp entity_queue.hpp entity_queue.cpp entity_manager.hpp entity_manager.cpp component_array.hpp component_manager.hpp system.hpp scene_system_manager.cpp ecs.hpp ecs.cpp)
+ADD_LIBRARY(wg_scene STATIC ${Scene_SOURCES})
