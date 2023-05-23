@@ -9,8 +9,9 @@
 #ifndef WHITEGEAR_ENTITY_MANAGER_HPP
 #define WHITEGEAR_ENTITY_MANAGER_HPP
 
-#include <scene/entity_queue.hpp>
+#include <scene/entity.hpp>
 #include <scene/component.hpp>
+#include <queue>
 
 namespace wg {
     class entity_manager {
@@ -24,7 +25,7 @@ namespace wg {
         footprint get_footprint(entity_t entt) const;
 
     private:
-        entity_queue mAvailableEntities;
+        std::queue<entity_t> mAvailableEntities;
         footprint mFootprints[MAX_ENTITIES];
         uint mEntitiesInFlight;
     };

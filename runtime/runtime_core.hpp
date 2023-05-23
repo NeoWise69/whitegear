@@ -27,9 +27,9 @@ namespace wg {
 
         int tick(runtime_tick_info* info);
 
-        template<class...Args>
+        template<class T, class...Args>
         void add_module(Args&&...args) {
-            mModules.emplace_back(this, std::forward<Args>(args)...);
+            mModules.emplace_back(new T(this, std::forward<Args>(args)...));
         }
 
         inline bool is_running() const { return mIsRunning; }

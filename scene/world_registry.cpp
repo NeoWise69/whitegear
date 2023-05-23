@@ -6,18 +6,14 @@
  * report this source code leak and delete all copies of source code from all your machines.
  ******************************************************************************/
 
-#include <scene/ecs.hpp>
+#include <scene/world_registry.hpp>
 
 namespace wg {
-    unique_ptr<component_manager> ecs::mComponentManager = make_unique<component_manager>();
-    unique_ptr<entity_manager> ecs::mEntityManager = make_unique<entity_manager>();
-    unique_ptr<scene_system_manager> ecs::mSceneSystemManager = make_unique<scene_system_manager>();
-
-    entity_t ecs::entity_create() {
+    entity_t world_registry::entity_create() {
         return mEntityManager->create_entity();
     }
 
-    void ecs::entity_destroy(entity_t entt) {
+    void world_registry::entity_destroy(entity_t entt) {
         mEntityManager->destroy_entity(entt);
         mComponentManager->on_entity_destroyed(entt);
         mSceneSystemManager->on_entity_destroyed(entt);

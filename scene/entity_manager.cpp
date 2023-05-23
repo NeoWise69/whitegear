@@ -11,13 +11,16 @@
 
 namespace wg {
 
-    entity_manager::entity_manager() : mEntitiesInFlight(), mFootprints(), mAvailableEntities() {}
+    entity_manager::entity_manager() : mEntitiesInFlight(), mFootprints(), mAvailableEntities() {
+        for (auto i = MAX_ENTITIES - MAX_ENTITIES; i < MAX_ENTITIES; ++i)
+            mAvailableEntities.push(i);
+    }
 
     entity_t entity_manager::create_entity() {
         assert(mEntitiesInFlight < MAX_ENTITIES && "Entities overflow!");
 
         const auto e = mAvailableEntities.front();
-        mAvailableEntities.dequeue();
+        mAvailableEntities.pop();
         ++mEntitiesInFlight;
 
         return e;
@@ -27,7 +30,7 @@ namespace wg {
         assert(entt < MAX_ENTITIES && "Entity is out of range!");
 
         mFootprints[entt].reset();
-        mAvailableEntities.enqueue(entt);
+        mAvailableEntities.push(entt);
         --mEntitiesInFlight;
     }
 

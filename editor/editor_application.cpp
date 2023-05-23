@@ -7,6 +7,7 @@
  ******************************************************************************/
 
 #include <editor/editor_application.hpp>
+#include <scene/scene_module.hpp>
 #include <renda/renderer_api.hpp>
 
 namespace wg {
@@ -42,6 +43,7 @@ namespace wg {
             mWindow.open(&wnd_info);
         }
 
+        mCore.add_module<scene_module>(nullptr);
 
         const auto code = mCore.initialize();
         if (code) return code;

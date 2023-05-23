@@ -1,2 +1,2 @@
-SET(Scene_SOURCES entity.hpp component.hpp component.cpp entity_queue.hpp entity_queue.cpp entity_manager.hpp entity_manager.cpp component_array.hpp component_manager.hpp system.hpp scene_system_manager.cpp ecs.hpp ecs.cpp)
+SET(Scene_SOURCES entity.hpp component.hpp component.cpp entity_manager.hpp entity_manager.cpp component_array.hpp component_manager.hpp system.hpp scene_system_manager.cpp world_registry.hpp world_registry.cpp world.hpp world__rendering_system.cpp world.cpp components/transform.hpp scene_module.hpp scene_module.cpp)
 ADD_LIBRARY(wg_scene STATIC ${Scene_SOURCES})
