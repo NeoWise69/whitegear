@@ -35,15 +35,22 @@ namespace wg {
 
         {
             window_create_info wnd_info = {};
-            wnd_info.w = 1920;
-            wnd_info.h = 1080;
+            wnd_info.w = 800;
+            wnd_info.h = 600;
             wnd_info.title = "ed";
-            wnd_info.fullscreen = true;
+            wnd_info.fullscreen = false;
 
             mWindow.open(&wnd_info);
         }
 
-        mCore.add_module<scene_module>(nullptr);
+        {
+            rendering_engine_create_info info = {};
+            info.p_app_name = "wg_ed";
+            info.p_window = &mWindow;
+
+            mRenda = rendering_engine::create(info);
+        }
+        mCore.add_module<scene_module>(mRenda);
 
         const auto code = mCore.initialize();
         if (code) return code;
@@ -68,15 +75,18 @@ namespace wg {
                 .trace("mouse click: %dx%d", i32(pos.x), i32(pos.y));
             }
 
+            mRenda->on_begin_tick();
             if (const auto code = mCore.tick(&tick_info)) {
                 return code;
             }
+            mRenda->on_end_tick();
         }
 
         return 0;
     }
 
     void editor_application::request_exit() {
+        delete mRenda;
         mWindow.request_close();
         mCore.exit();
     }

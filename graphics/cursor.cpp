@@ -16,6 +16,9 @@ namespace wg {
      * size to (32x32x4).
      */
     static const bounded_array<color32, 1024> cursors[CURSOR_LAST][CURSOR_STATE_LAST] = {
+            { // CURSOR_SYSTEM
+                    {}, // CURSOR_STATE_NORMAL
+                }, // !CURSOR_SYSTEM
             { // CURSOR_DEFAULT
                     { // CURSOR_STATE_NORMAL
                         cursor_default,

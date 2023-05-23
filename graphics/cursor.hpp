@@ -14,6 +14,7 @@
 
 namespace wg {
     enum cursor {
+        CURSOR_SYSTEM,
         CURSOR_DEFAULT,
 
         CURSOR_LAST

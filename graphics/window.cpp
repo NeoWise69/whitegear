@@ -123,22 +123,6 @@ namespace wg {
             ms_state.value = {float(xpos), float(ypos), 0.0f};
         });
 
-        // TODO: configurable cursor
-        { // Setup default cursor.
-            constexpr auto cursor_size = 24;
-            color32 cursor_pixels[cursor_size * cursor_size] = {};
-            get_cursor(cursor_pixels, CURSOR_DEFAULT, CURSOR_STATE_NORMAL);
-            u8* raw_cursor_pixels = (u8*)cursor_pixels;
-
-            GLFWimage cursor_image = {};
-            cursor_image.width = cursor_size;
-            cursor_image.height = cursor_size;
-            cursor_image.pixels = raw_cursor_pixels;
-
-            GLFWcursor* cursor = glfwCreateCursor(&cursor_image, 0, 0);
-            glfwSetCursor(tmp, cursor);
-        }
-
         if (glfwRawMouseMotionSupported()) {
             glfwSetInputMode(tmp, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
         }
@@ -169,6 +153,29 @@ namespace wg {
         if (GIsGLFWInitialized) {
             glfwTerminate();
             GIsGLFWInitialized = false;
+        }
+    }
+
+    void window::set_cursor(cursor c, cursor_state state) {
+        if (c != CURSOR_SYSTEM)
+        { // Setup default cursor.
+            constexpr auto cursor_size = 24;
+            color32 cursor_pixels[cursor_size * cursor_size] = {};
+            get_cursor(cursor_pixels, c, state);
+            u8* raw_cursor_pixels = (u8*)cursor_pixels;
+
+            GLFWimage cursor_image = {};
+            cursor_image.width = cursor_size;
+            cursor_image.height = cursor_size;
+            cursor_image.pixels = raw_cursor_pixels;
+
+            GLFWcursor* cursor = glfwCreateCursor(&cursor_image, 0, 0);
+            glfwSetCursor(mWindow, cursor);
+            return;
+        }
+        else {
+            glfwSetCursor(mWindow, nullptr);
+            return;
         }
     }
 

@@ -12,6 +12,7 @@
 #include <core/core.hpp>
 #include <runtime/runtime_core.hpp>
 #include <graphics/window.hpp>
+#include <renda/rendering_engine.hpp>
 
 namespace wg {
     class editor_application {
@@ -28,6 +29,7 @@ namespace wg {
     private:
         runtime_core mCore;
         window mWindow;
+        rendering_engine* mRenda;
     };
 }
 

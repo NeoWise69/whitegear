@@ -11,6 +11,7 @@
 
 #include <core/core.hpp>
 #include <runtime/user_input.hpp>
+#include <graphics/cursor.hpp>
 /**
  * Forward declaration of GLFW's window opaque type.
  */
@@ -79,6 +80,10 @@ namespace wg {
          * Requests window for close routine.
          */
         void request_close();
+        /**
+         * Setup cursor for current window.
+         */
+        void set_cursor(cursor c, cursor_state state = CURSOR_STATE_NORMAL);
         /**
          * Polls all platform-dependent events.
          */

@@ -10,7 +10,7 @@
 #define WHITEGEAR_COMPONENT_HPP
 
 #include <core/typedefs.hpp>
-#include <limits>
+#include <limits.h>
 
 /**
  * Macro used for component declaration,
