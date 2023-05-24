@@ -31,6 +31,11 @@ namespace wg {
     };
 
     static logger out;
+
+#define WG_NOT_IMPLEMENTED   \
+    {                        \
+        out.warning("Called \'%s()\', but was not implemented yet! (%s:%d)", __func__, __FILE__, __LINE__); \
+    }
 }
 
 #endif //WHITEGEAR_LOGGER_HPP

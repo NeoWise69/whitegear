@@ -22,7 +22,9 @@ namespace wg {
         virtual ~runtime_module() = default;
         explicit runtime_module(runtime_core* cp);
 
+        virtual int on_begin_tick() { return 0; }
         virtual int on_tick() { return 0; }
+        virtual int on_end_tick() { return 0; }
         virtual int on_init() { return 0; }
         virtual int on_exit() { return 0; }
 

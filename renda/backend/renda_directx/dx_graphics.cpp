@@ -8,8 +8,6 @@
 
 #include "dx_graphics.hpp"
 #include <GLFW/glfw3.h>
-#define GLFW_EXPOSE_NATIVE_WIN32
-#include <GLFW/glfw3native.h>
 
 #if WG_WINDOWS
 
@@ -30,11 +28,17 @@ namespace wg {
         swap_chain_desc.Windowed = !p_wnd->is_fullscreen();
         swap_chain_desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 
+        UINT flags = {};
+
+#if WG_BUILD_DEBUG
+        flags |= D3D11_CREATE_DEVICE_DEBUG;
+#endif
+
         D3DCALL(D3D11CreateDeviceAndSwapChain(
                 nullptr,
                 D3D_DRIVER_TYPE_HARDWARE,
                 nullptr,
-                0,
+                flags,
                 nullptr,
                 0,
                 D3D11_SDK_VERSION,
@@ -62,11 +66,19 @@ namespace wg {
     }
 
     void dx_graphics::end_frame() const {
-        swapchain->Present(0u, 0);
+        static HRESULT hr = S_OK;
+        if (FAILED(hr = swapchain->Present(0u, 0))) {
+            if (hr == DXGI_ERROR_DEVICE_REMOVED) {
+                out
+                .error("Failed to end DirectX frame![DXGI_ERROR_DEVICE_REMOVED]")
+                .trace("%d", device->GetDeviceRemovedReason());
+            }
+        }
     }
 
     void dx_graphics::clear_color(const vec3 &color) const noexcept {
         const float col[4] = { float(color.r), float(color.g), float(color.b), 1.0f };
+        context->OMSetRenderTargets(1, rtv.GetAddressOf(), nullptr);
         context->ClearRenderTargetView(rtv.Get(), col);
     }
 }

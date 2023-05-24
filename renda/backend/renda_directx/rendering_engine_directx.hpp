@@ -12,6 +12,7 @@
 #include "minimal.hpp"
 
 #include "dx_graphics.hpp"
+#include "dx_info_manager.hpp"
 
 #if WG_WINDOWS
 
@@ -29,7 +30,15 @@ namespace wg {
         void on_begin_tick() override;
         void on_end_tick() override;
     private:
+        void init_imgui();
+        void pre_begin_imgui();
+        void begin_imgui();
+        void end_imgui();
+        void shutdown_imgui();
+
+        dx_info_manager mInfoManager;
         dx_graphics mGraphics;
+        window* mWindow;
     };
 }
 

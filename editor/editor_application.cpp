@@ -8,7 +8,9 @@
 
 #include <editor/editor_application.hpp>
 #include <scene/scene_module.hpp>
-#include <renda/renderer_api.hpp>
+
+// modules
+#include <editor/world_editor_module.hpp>
 
 namespace wg {
     void notify_renderer_api() {
@@ -38,7 +40,7 @@ namespace wg {
             wnd_info.w = 1280;
             wnd_info.h = 720;
             wnd_info.title = "ed";
-            wnd_info.fullscreen = true;
+            wnd_info.fullscreen = false;
 
             mWindow.open(&wnd_info);
         }
@@ -51,6 +53,7 @@ namespace wg {
             mRenda = rendering_engine::create(info);
         }
         mCore.add_module<scene_module>(mRenda);
+        mCore.add_module<world_editor_module>();
 
         const auto code = mCore.initialize();
         if (code) return code;
