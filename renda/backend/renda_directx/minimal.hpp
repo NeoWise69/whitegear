@@ -22,7 +22,8 @@
 #include <dxgi1_6.h>
 #include <wrl.h>
 
-inline void D3DSafeRelease(IUnknown*& o) {
+template<class ComObject>
+inline void D3DSafeRelease(ComObject& o) {
     if (o) {
         o->Release();
         o = nullptr;
