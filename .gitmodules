@@ -8,3 +8,6 @@
 	path = deps/imgui/imgui-repo
 	url = https://github.com/ocornut/imgui.git
 	branch = docking
+[submodule "deps/DXErr"]
+	path = deps/DXErr
+	url = https://github.com/NeoWise69/dxerr-multibyte.git
