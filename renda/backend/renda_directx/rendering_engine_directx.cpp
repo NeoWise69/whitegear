@@ -7,6 +7,7 @@
  ******************************************************************************/
 
 #include "rendering_engine_directx.hpp"
+#include "math/vertex.hpp"
 
 #if WG_WINDOWS
 
@@ -55,6 +56,7 @@ namespace wg {
             pre_begin_imgui();
         }
 
+        test_draw_first_triangle();
     }
 
     void rendering_engine_directx::on_end_tick() {
@@ -131,6 +133,49 @@ namespace wg {
             ImGui::UpdatePlatformWindows();
             ImGui::RenderPlatformWindowsDefault();
         }
+    }
+
+    void rendering_engine_directx::test_draw_first_triangle() {
+
+        const base_vertex_t vertices[] = {
+                { { 0.0f, 0.5f, 0.0f } },
+                { { 0.5f,-0.5f, 0.0f } },
+                { {-0.5f,-0.5f, 0.0f } },
+        };
+
+        wrl::ComPtr<ID3D11Buffer> vb = nullptr;
+        D3D11_BUFFER_DESC bd = {};
+        bd.Usage = D3D11_USAGE_DEFAULT;
+        bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+        bd.ByteWidth = sizeof(vertices);
+        bd.StructureByteStride = sizeof(vertices[0]);
+
+        D3D11_SUBRESOURCE_DATA sd = {};
+        sd.pSysMem = vertices;
+
+        mGraphics.create_buffer(bd, vb.GetAddressOf(), &sd);
+
+        const uint strides[1] = {
+            sizeof(vertices[0])
+        };
+
+        const uint offsets[1] = {
+            0
+        };
+
+        mGraphics.ia()->set_primitive_topology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+        mGraphics.ia()->set_vertex_buffers(1, vb.GetAddressOf(), strides, offsets);
+
+        wrl::ComPtr<ID3D11VertexShader> vs = nullptr;
+        wrl::ComPtr<ID3DBlob> vs_blob = nullptr;
+
+        const auto filename = L"" WG_SHADER_PREFIX_PATH "compiled/vs_basic.cso";
+        D3DCALL(D3DReadFileToBlob(filename, &vs_blob));
+        mGraphics.create_vertex_shader(vs_blob, vs.GetAddressOf());
+
+        mGraphics.vs()->bind(vs);
+
+        mGraphics.draw_vertices(sizeof(vertices) / sizeof(vertices[0]));
     }
 }
 

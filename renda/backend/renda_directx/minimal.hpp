@@ -22,6 +22,8 @@
 #include <dxgi1_6.h>
 #include <wrl.h>
 
+#include <DXErr.h>
+
 template<class ComObject>
 inline void D3DSafeRelease(ComObject& o) {
     if (o) {
@@ -33,15 +35,12 @@ inline void D3DSafeRelease(ComObject& o) {
 #define D3DCALL(fn) \
 { HRESULT hr = fn; \
     if (FAILED(hr)) { \
-        TCHAR msg[1024]; \
-        FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM | \
-        FORMAT_MESSAGE_ALLOCATE_BUFFER | \
-        FORMAT_MESSAGE_IGNORE_INSERTS, \
-        nullptr, hr, \
-        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), \
-        (LPTSTR)msg, 0, nullptr); \
+        TCHAR buf[1024] = {}; \
+        DXGetErrorDescription(hr, buf, 1024); \
         out         \
-        .error("D3DCALL has failed!: %s", msg); \
+        .error("D3DCALL has failed!(%s(...)): %s", __func__, DXGetErrorString(hr)) \
+        .trace("description: %s", buf) \
+        ; \
     }           \
 }
 

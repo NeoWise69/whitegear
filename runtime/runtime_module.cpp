@@ -10,7 +10,7 @@
 
 namespace wg {
 
-#if WG_BUILD_EDITOR
+#if !WG_BUILD_EDITOR
     bool GEnableImGui = true;
 #else
     bool GEnableImGui = false;

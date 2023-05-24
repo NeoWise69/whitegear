@@ -36,6 +36,8 @@ namespace wg {
         void end_imgui();
         void shutdown_imgui();
 
+        void test_draw_first_triangle();
+
         dx_info_manager mInfoManager;
         dx_graphics mGraphics;
         window* mWindow;

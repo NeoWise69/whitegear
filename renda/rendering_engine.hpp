@@ -14,6 +14,8 @@
 #include <math/mat.hpp>
 #include <scene/world.hpp>
 
+#define WG_SHADER_PREFIX_PATH "./editor_shaders/"
+
 namespace wg {
     struct rendering_engine_create_info {
         window* p_window;

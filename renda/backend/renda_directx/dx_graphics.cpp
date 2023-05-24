@@ -33,7 +33,6 @@ namespace wg {
 #if WG_BUILD_DEBUG
         flags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
-
         D3DCALL(D3D11CreateDeviceAndSwapChain(
                 nullptr,
                 D3D_DRIVER_TYPE_HARDWARE,
@@ -49,20 +48,22 @@ namespace wg {
                 context.GetAddressOf()
         ));
 
-        ID3D11Resource *p_back_buffer = {};
-        D3DCALL(swapchain->GetBuffer(0, IID_PPV_ARGS(&p_back_buffer)));
+        wrl::ComPtr<ID3D11Resource> back_buffer = {};
+        D3DCALL(swapchain->GetBuffer(0, IID_PPV_ARGS(back_buffer.GetAddressOf())));
         D3DCALL(device->CreateRenderTargetView(
-                p_back_buffer,
+                back_buffer.Get(),
                 nullptr,
                 rtv.GetAddressOf()
                 ));
-        p_back_buffer->Release();
+
+        mIAStage = new input_assembly_stage(context);
+        mVSStage = new vertex_shader_stage(context);
     }
 
     dx_graphics::~dx_graphics() {
-        // D3DSafeRelease(context);     // the thing is that I don't need to release these resources because of <wrl.h>
-        // D3DSafeRelease(swapchain);   // the thing is that I don't need to release these resources because of <wrl.h>
-        // D3DSafeRelease(device);      // the thing is that I don't need to release these resources because of <wrl.h>
+        // D3DSafeRelease(context);     // I don't need to release these resources because of <wrl.h>
+        // D3DSafeRelease(swapchain);   // I don't need to release these resources because of <wrl.h>
+        // D3DSafeRelease(device);      // I don't need to release these resources because of <wrl.h>
     }
 
     void dx_graphics::end_frame() const {
@@ -70,8 +71,9 @@ namespace wg {
         if (FAILED(hr = swapchain->Present(0u, 0))) {
             if (hr == DXGI_ERROR_DEVICE_REMOVED) {
                 out
-                .error("Failed to end DirectX frame![DXGI_ERROR_DEVICE_REMOVED]")
-                .trace("%d", device->GetDeviceRemovedReason());
+                .trace("%d", device->GetDeviceRemovedReason())
+                .panic("Failed to end DirectX frame![DXGI_ERROR_DEVICE_REMOVED]")
+                ;
             }
         }
     }
@@ -80,6 +82,42 @@ namespace wg {
         const float col[4] = { float(color.r), float(color.g), float(color.b), 1.0f };
         context->OMSetRenderTargets(1, rtv.GetAddressOf(), nullptr);
         context->ClearRenderTargetView(rtv.Get(), col);
+    }
+
+    void dx_graphics::draw_vertices(uint num_vertices) const {
+        context->Draw(num_vertices, 0);
+    }
+
+    void dx_graphics::draw_indices(uint num_indices, uint start_indices_location) const {
+        context->DrawIndexed(num_indices, start_indices_location, 0);
+    }
+
+    void dx_graphics::create_buffer(const D3D11_BUFFER_DESC &desc, ID3D11Buffer **pp_buffer, const D3D11_SUBRESOURCE_DATA* initial_data) const {
+        D3DCALL(device->CreateBuffer(&desc, initial_data, pp_buffer));
+    }
+
+    void dx_graphics::create_vertex_shader(const wrl::ComPtr<ID3DBlob> &blob, ID3D11VertexShader **ppVS) const {
+        D3DCALL(device->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, ppVS));
+    }
+
+    /**
+     * INPUT ASSEMBLY STAGE
+     */
+
+    void dx_graphics::input_assembly_stage::set_vertex_buffers(uint num_buffers, ID3D11Buffer*const* buffers, const uint* strides, const uint* offsets) const {
+        context->IASetVertexBuffers(0, num_buffers, buffers, strides, offsets);
+    }
+
+    void dx_graphics::input_assembly_stage::set_primitive_topology(D3D11_PRIMITIVE_TOPOLOGY topo) const {
+        context->IASetPrimitiveTopology(topo);
+    }
+
+    /**
+     * VERTEX SHADER STAGE
+     */
+
+    void dx_graphics::vertex_shader_stage::bind(const wrl::ComPtr<ID3D11VertexShader> &vs) const {
+        context->VSSetShader(vs.Get(), 0, 0);
     }
 }
 
