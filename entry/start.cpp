@@ -8,7 +8,16 @@
 
 #include <editor/editor_application.hpp>
 
+#if WG_WINDOWS
+#include <windows.h>
+#endif
+
 int main() {
+#if WG_WINDOWS
+    SetConsoleCP(1251);
+    SetConsoleOutputCP(1251);
+#endif
+
     if (!wg::is_support(wg::HW_SSE)) {
         wg::out
         .panic("failed to execute wg_app, current machine CPU is not support SSE instructions.");
