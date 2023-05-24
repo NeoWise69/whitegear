@@ -9,9 +9,7 @@
 #ifndef WHITEGEAR_GEOMETRY_HPP
 #define WHITEGEAR_GEOMETRY_HPP
 
-#include <math/scalar_base.hpp>
-#include <math/vec.hpp>
-#include <math/mat.hpp>
+#include <math/vertex.hpp>
 
 namespace wg {
     namespace geometry {
