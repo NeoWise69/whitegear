@@ -77,6 +77,10 @@ namespace wg {
          */
         inline bool is_alive() const { return mInfo.alive; }
         /**
+         * Returns if window is fullscreen.
+         */
+        inline bool is_fullscreen() const { return mInfo.fullscreen; }
+        /**
          * Requests window for close routine.
          */
         void request_close();
@@ -88,6 +92,10 @@ namespace wg {
          * Polls all platform-dependent events.
          */
         static void platform_update();
+        /**
+         * Access to GLFW window pointer.
+         */
+        GLFWwindow* get() const;
     private:
         window_info mInfo = {};
         GLFWwindow* mWindow = {};

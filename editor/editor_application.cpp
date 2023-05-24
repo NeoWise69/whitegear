@@ -75,20 +75,24 @@ namespace wg {
                 .trace("mouse click: %dx%d", i32(pos.x), i32(pos.y));
             }
 
-            mRenda->on_begin_tick();
-            if (const auto code = mCore.tick(&tick_info)) {
-                return code;
+            if (mCore.is_running()) {
+                mRenda->on_begin_tick();
+                if (const auto code = mCore.tick(&tick_info)) {
+                    return code;
+                }
+                mRenda->on_end_tick();
             }
-            mRenda->on_end_tick();
         }
 
         return 0;
     }
 
     void editor_application::request_exit() {
-        delete mRenda;
-        mWindow.request_close();
-        mCore.exit();
+        if (mCore.is_running() && mWindow.is_alive()) {
+            delete mRenda;
+            mWindow.request_close();
+            mCore.exit();
+        }
     }
 
     editor_application::editor_application() {

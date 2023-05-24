@@ -40,7 +40,7 @@ namespace wg {
         if (!mActiveWorld.unload())
             return SCENE_MODULE_ERROR_WORLD_UNLOAD_FAILED;
 
-        return mActiveWorld.uninitialize();
+        return mActiveWorld.uninitialize() ? SCENE_MODULE_ERROR_OK : SCENE_MODULE_ERROR_WORLD_UNINITIALIZE_FAILED;
     }
 
 }

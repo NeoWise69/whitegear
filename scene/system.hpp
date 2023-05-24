@@ -37,11 +37,11 @@ namespace wg {
         {}
         inline ~scene_system_manager() = default;
 
-        template<class T>
-        inline shared_ptr<T> register_system() {
+        template<class T, class...Args>
+        inline shared_ptr<T> register_system(Args&&...args) {
             assert(mSystems.find(T::SCENE_SYSTEM_ID) == mSystems.end() && "Registering system more than once!");
 
-            auto s = make_shared<T>();
+            auto s = make_shared<T>(std::forward<Args>(args)...);
             mSystems.insert({T::SCENE_SYSTEM_ID, s});
             return s;
         }

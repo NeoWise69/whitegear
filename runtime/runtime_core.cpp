@@ -29,6 +29,8 @@ namespace wg {
             }
         }
 
+        mIsRunning = false;
+
         return 0;
     }
 

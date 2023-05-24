@@ -53,9 +53,9 @@ namespace wg {
             return mComponentManager->get_component_type<T>();
         }
 
-        template<class T>
-        inline shared_ptr<T> register_scene_system() {
-            return mSceneSystemManager->register_system<T>();
+        template<class T, class...Args>
+        inline shared_ptr<T> register_scene_system(Args&&...args) {
+            return mSceneSystemManager->register_system<T>(std::forward<Args>(args)...);
         }
 
         template<class T>

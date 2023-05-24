@@ -179,6 +179,10 @@ namespace wg {
         }
     }
 
+    GLFWwindow *window::get() const {
+        return mWindow;
+    }
+
 /* void window::get_vk_surface(instance *instance, VkSurfaceKHR *out_surface) {
         const auto code = glfwCreateWindowSurface(instance->get(), mWindow, nullptr, out_surface);
         if (code != VK_SUCCESS) {

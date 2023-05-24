@@ -24,7 +24,12 @@ namespace wg {
         public:
             WG_DECL_SCENE_SYSTEM()
 
+            inline rendering_system(world_registry* reg) : registry(reg) {}
+
             bool render_scene(rendering_engine* renda);
+
+        private:
+            world_registry* registry = nullptr;
         };
 
         bool initialize(rendering_engine* p_renda);

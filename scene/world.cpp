@@ -18,7 +18,7 @@ namespace wg {
 
         registry.register_component<component_transform>();
 
-        renderingSystem = registry.register_scene_system<rendering_system>();
+        renderingSystem = registry.register_scene_system<rendering_system>(&registry);
         if (!renderingSystem) {
             out
             .error("Failed to register_scene_system<rendering_system>()!");
@@ -29,7 +29,6 @@ namespace wg {
             rendering_system_footprint.set(registry.get_component_type<component_transform>());
             registry.assign_scene_system_footprint<rendering_system>(rendering_system_footprint);
         }
-
 
         return true;
     }

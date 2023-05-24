@@ -19,6 +19,7 @@ namespace wg {
         SCENE_MODULE_ERROR_WORLD_INITIALIZE_FAILED,
         SCENE_MODULE_ERROR_WORLD_LOAD_FAILED,
         SCENE_MODULE_ERROR_WORLD_UNLOAD_FAILED,
+        SCENE_MODULE_ERROR_WORLD_UNINITIALIZE_FAILED,
     };
     class scene_module : public runtime_module {
     public:

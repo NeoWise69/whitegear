@@ -7,14 +7,22 @@
  ******************************************************************************/
 
 #include <scene/world.hpp>
+#include <renda/rendering_engine.hpp>
+
+// components
+#include <scene/components/transform.hpp>
 
 namespace wg {
     bool world::rendering_system::render_scene(rendering_engine *renda) {
-
         for (const auto& e : entities) {
             // get transform
+            const auto transform_component = registry->get_component<component_transform>(e);
+            mat4 model_transform = transform_component.get_matrix();
             // get some rendering stuff
-            // if rendering break somewhere, return false;
+
+            rendering_engine::mesh_render_data render_data = {};
+            render_data.p_transform = &model_transform;
+            renda->draw_mesh(&render_data);
         }
 
         return true;

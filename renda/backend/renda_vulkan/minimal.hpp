@@ -6,8 +6,8 @@
  * report this source code leak and delete all copies of source code from all your machines.
  ******************************************************************************/
 
-#ifndef WHITEGEAR_MINIMAL_HPP
-#define WHITEGEAR_MINIMAL_HPP
+#ifndef WHITEGEAR_VULKAN_MINIMAL_HPP
+#define WHITEGEAR_VULKAN_MINIMAL_HPP
 
 #include <renda/rendering_engine.hpp>
 #include <vulkan/vulkan.h>

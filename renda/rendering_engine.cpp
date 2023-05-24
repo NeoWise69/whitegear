@@ -8,7 +8,9 @@
 
 #include <renda/rendering_engine.hpp>
 
+#include "backend/renda_null/rendering_engine_null.hpp"
 #include "backend/renda_vulkan/rendering_engine_vulkan.hpp"
+#include "backend/renda_directx/rendering_engine_directx.hpp"
 
 namespace wg {
     rendering_engine* rendering_engine::create(const rendering_engine_create_info &create_info) {
@@ -16,13 +18,8 @@ namespace wg {
             case renderer_api::vulkan_api:
                 return new rendering_engine_vulkan(create_info);
             case renderer_api::directx:
-                return (rendering_engine*)1;
-            default: {
-                out
-                .error("Failed to create rendering_engine!")
-                .trace("unknown renderer api was defined.");
-                return nullptr;
-            }
+                return new rendering_engine_directx(create_info);
         }
+        return new rendering_engine_null(create_info);
     }
 }
