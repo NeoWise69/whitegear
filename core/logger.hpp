@@ -28,6 +28,7 @@ namespace wg {
         logger& warning(const char* fmt, ...);
         logger& error(const char* fmt, ...);
         logger& panic(const char* fmt, ...);
+        logger& dead_end();
     };
 
     static logger out;

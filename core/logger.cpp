@@ -7,6 +7,8 @@
  ******************************************************************************/
 
 #include "core.hpp"
+#include "logger.hpp"
+
 
 #include <mutex>
 #include <cstdarg>
@@ -148,5 +150,9 @@ namespace wg {
 
         abort();
         return *this;
+    }
+
+    logger &logger::dead_end() {
+        return panic("end of program");
     }
 }
