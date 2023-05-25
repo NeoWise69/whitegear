@@ -27,6 +27,7 @@ namespace wg {
 
             void set_vertex_buffers(uint num_buffers, ID3D11Buffer*const* buffers, const uint* strides, const uint* offsets) const;
             void set_primitive_topology(D3D11_PRIMITIVE_TOPOLOGY topo) const;
+            void set_input_layout(const wrl::ComPtr<ID3D11InputLayout>& il) const;
 
         private:
             wrl::ComPtr<ID3D11DeviceContext> context = nullptr;
@@ -37,6 +38,24 @@ namespace wg {
             inline explicit vertex_shader_stage(const wrl::ComPtr<ID3D11DeviceContext>& ctx) : context(ctx) {}
 
             void bind(const wrl::ComPtr<ID3D11VertexShader>& vs) const;
+        private:
+            wrl::ComPtr<ID3D11DeviceContext> context = nullptr;
+        };
+
+        class pixel_shader_stage {
+        public:
+            inline explicit pixel_shader_stage(const wrl::ComPtr<ID3D11DeviceContext>& ctx) : context(ctx) {}
+
+            void bind(const wrl::ComPtr<ID3D11PixelShader>& ps) const;
+        private:
+            wrl::ComPtr<ID3D11DeviceContext> context = nullptr;
+        };
+
+        class rasterizer_stage {
+        public:
+            inline explicit rasterizer_stage(const wrl::ComPtr<ID3D11DeviceContext>& ctx) : context(ctx) {}
+
+            void set_viewports(const D3D11_VIEWPORT* p_vps, uint num_vps) const;
         private:
             wrl::ComPtr<ID3D11DeviceContext> context = nullptr;
         };
@@ -56,7 +75,9 @@ namespace wg {
         void draw_indices(uint num_indices, uint start_indices_location = 0) const;
 
         void create_buffer(const D3D11_BUFFER_DESC& desc, ID3D11Buffer** pp_buffer, const D3D11_SUBRESOURCE_DATA* initial_data = nullptr) const;
-        void create_vertex_shader(const wrl::ComPtr<ID3DBlob>& blob, ID3D11VertexShader** ppVS) const;
+        void create_vertex_shader(const wrl::ComPtr<ID3DBlob>& blob, wrl::ComPtr<ID3D11VertexShader>& VS) const;
+        void create_pixel_shader(const wrl::ComPtr<ID3DBlob>& blob, wrl::ComPtr<ID3D11PixelShader>& PS) const;
+        void create_input_layout(const D3D11_INPUT_ELEMENT_DESC* p_elements, uint num_elements, const wrl::ComPtr<ID3DBlob>& code, wrl::ComPtr<ID3D11InputLayout>& il) const;
 
         inline auto get_device() const {
             return device;
@@ -73,6 +94,12 @@ namespace wg {
         inline auto* vs() const {
             return mVSStage;
         }
+        inline auto* ps() const {
+            return mPSStage;
+        }
+        inline auto* rs() const {
+            return mRSStage;
+        }
     private:
         wrl::ComPtr<ID3D11Device> device = nullptr;
         wrl::ComPtr<IDXGISwapChain> swapchain = nullptr;
@@ -81,6 +108,8 @@ namespace wg {
 
         input_assembly_stage* mIAStage;
         vertex_shader_stage* mVSStage;
+        pixel_shader_stage* mPSStage;
+        rasterizer_stage* mRSStage;
     };
 }
 

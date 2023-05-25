@@ -58,6 +58,8 @@ namespace wg {
 
         mIAStage = new input_assembly_stage(context);
         mVSStage = new vertex_shader_stage(context);
+        mPSStage = new pixel_shader_stage(context);
+        mRSStage = new rasterizer_stage(context);
     }
 
     dx_graphics::~dx_graphics() {
@@ -70,10 +72,12 @@ namespace wg {
         static HRESULT hr = S_OK;
         if (FAILED(hr = swapchain->Present(0u, 0))) {
             if (hr == DXGI_ERROR_DEVICE_REMOVED) {
+                TCHAR buf[512] = {};
+                DXGetErrorDescription(device->GetDeviceRemovedReason(), buf, 512);
                 out
-                .trace("%d", device->GetDeviceRemovedReason())
-                .panic("Failed to end DirectX frame![DXGI_ERROR_DEVICE_REMOVED]")
-                ;
+                .error("Failed to end DirectX frame![DXGI_ERROR_DEVICE_REMOVED]")
+                .trace("%s", buf)
+                .dead_end();
             }
         }
     }
@@ -96,8 +100,18 @@ namespace wg {
         D3DCALL(device->CreateBuffer(&desc, initial_data, pp_buffer));
     }
 
-    void dx_graphics::create_vertex_shader(const wrl::ComPtr<ID3DBlob> &blob, ID3D11VertexShader **ppVS) const {
-        D3DCALL(device->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, ppVS));
+    void dx_graphics::create_vertex_shader(const wrl::ComPtr<ID3DBlob> &blob, wrl::ComPtr<ID3D11VertexShader> &VS) const {
+        D3DCALL(device->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &VS));
+    }
+
+    void dx_graphics::create_pixel_shader(const wrl::ComPtr<ID3DBlob> &blob, wrl::ComPtr<ID3D11PixelShader> &PS) const {
+        D3DCALL(device->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &PS));
+    }
+
+    void dx_graphics::create_input_layout(const D3D11_INPUT_ELEMENT_DESC *p_elements, uint num_elements,
+                                          const wrl::ComPtr<ID3DBlob> &code,
+                                          wrl::ComPtr<ID3D11InputLayout> &il) const {
+        D3DCALL(device->CreateInputLayout(p_elements, num_elements, code->GetBufferPointer(), code->GetBufferSize(), &il));
     }
 
     /**
@@ -112,12 +126,32 @@ namespace wg {
         context->IASetPrimitiveTopology(topo);
     }
 
+    void dx_graphics::input_assembly_stage::set_input_layout(const wrl::ComPtr<ID3D11InputLayout> &il) const {
+        context->IASetInputLayout(il.Get());
+    }
+
     /**
      * VERTEX SHADER STAGE
      */
 
-    void dx_graphics::vertex_shader_stage::bind(const wrl::ComPtr<ID3D11VertexShader> &vs) const {
-        context->VSSetShader(vs.Get(), 0, 0);
+    void dx_graphics::vertex_shader_stage::bind(const wrl::ComPtr<ID3D11VertexShader> &ps) const {
+        context->VSSetShader(ps.Get(), nullptr, 0);
+    }
+
+    /**
+     * PIXEL SHADER STAGE
+     */
+
+    void dx_graphics::pixel_shader_stage::bind(const wrl::ComPtr<ID3D11PixelShader> &vs) const {
+        context->PSSetShader(vs.Get(), 0, 0);
+    }
+
+    /**
+     * RASTERIZER STAGE
+     */
+
+    void dx_graphics::rasterizer_stage::set_viewports(const D3D11_VIEWPORT* p_vps, uint num_vps) const {
+        context->RSSetViewports(num_vps, p_vps);
     }
 }
 

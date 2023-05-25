@@ -55,17 +55,17 @@ namespace wg {
         if (GEnableImGui) {
             pre_begin_imgui();
         }
-
-        test_draw_first_triangle();
     }
 
     void rendering_engine_directx::on_end_tick() {
+        // clearance
+        mGraphics.clear_color({0.6f, 0.4f, 0.5f});
+
         if (GEnableImGui) {
             begin_imgui();
         }
 
-        // clearance
-        mGraphics.clear_color({0.1f, 0.1f, 0.1f});
+        test_draw_first_triangle();
 
         if (GEnableImGui) {
             end_imgui();
@@ -136,46 +136,72 @@ namespace wg {
     }
 
     void rendering_engine_directx::test_draw_first_triangle() {
-
+        // Let's say we have a geometry to draw
         const base_vertex_t vertices[] = {
                 { { 0.0f, 0.5f, 0.0f } },
                 { { 0.5f,-0.5f, 0.0f } },
                 { {-0.5f,-0.5f, 0.0f } },
         };
 
+        const uint strides[1] = {
+                sizeof(vertices[0])
+        };
+
+        const uint offsets[1] = {
+                0
+        };
+
+        // Creating vertex buffer
         wrl::ComPtr<ID3D11Buffer> vb = nullptr;
         D3D11_BUFFER_DESC bd = {};
         bd.Usage = D3D11_USAGE_DEFAULT;
         bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
         bd.ByteWidth = sizeof(vertices);
         bd.StructureByteStride = sizeof(vertices[0]);
-
         D3D11_SUBRESOURCE_DATA sd = {};
         sd.pSysMem = vertices;
-
         mGraphics.create_buffer(bd, vb.GetAddressOf(), &sd);
 
-        const uint strides[1] = {
-            sizeof(vertices[0])
-        };
-
-        const uint offsets[1] = {
-            0
-        };
-
-        mGraphics.ia()->set_primitive_topology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-        mGraphics.ia()->set_vertex_buffers(1, vb.GetAddressOf(), strides, offsets);
-
+        // Creating vertex and pixel shaders
         wrl::ComPtr<ID3D11VertexShader> vs = nullptr;
-        wrl::ComPtr<ID3DBlob> vs_blob = nullptr;
+        wrl::ComPtr<ID3D11PixelShader> ps = nullptr;
+        wrl::ComPtr<ID3DBlob> blob = nullptr;
+        const auto ps_filename = L"" WG_SHADER_PREFIX_PATH "compiled/ps_basic.cso";
+        D3DCALL(D3DReadFileToBlob(ps_filename, &blob));
+        mGraphics.create_pixel_shader(blob, ps);
+        const auto vs_filename = L"" WG_SHADER_PREFIX_PATH "compiled/vs_basic.cso";
+        D3DCALL(D3DReadFileToBlob(vs_filename, &blob));
+        mGraphics.create_vertex_shader(blob, vs);
 
-        const auto filename = L"" WG_SHADER_PREFIX_PATH "compiled/vs_basic.cso";
-        D3DCALL(D3DReadFileToBlob(filename, &vs_blob));
-        mGraphics.create_vertex_shader(vs_blob, vs.GetAddressOf());
+        // Creating input layout
+        wrl::ComPtr<ID3D11InputLayout> il = nullptr;
+        // ...describing how our vertex looks like.
+        const D3D11_INPUT_ELEMENT_DESC ied[] = {
+                /* SEMANTIC_NAME | SEMANTIC_INDEX | FORMAT | INPUT_SLOT | OFFSET | INPUT_SLOT_CLASS | STEP_RATE */
+                { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        };
+        mGraphics.create_input_layout(ied, std::size(ied), blob, il);
 
+        // Setting vertex buffers for rendering
+        mGraphics.ia()->set_vertex_buffers(1, vb.GetAddressOf(), strides, offsets);
+        // Setting shaders for rendering
+        mGraphics.ps()->bind(ps);
         mGraphics.vs()->bind(vs);
+        // Setting input layout for rendering
+        mGraphics.ia()->set_input_layout(il);
+        // Telling out primitive topology to draw (for rendering)
+        mGraphics.ia()->set_primitive_topology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-        mGraphics.draw_vertices(sizeof(vertices) / sizeof(vertices[0]));
+        // Setting up viewport (once per frame)
+        D3D11_VIEWPORT vp = {};
+        vp.Width = FLOAT(mWindow->get_width());
+        vp.Height = FLOAT(mWindow->get_height());
+        vp.MinDepth = 0;
+        vp.MaxDepth = 1;
+        mGraphics.rs()->set_viewports(&vp, 1);
+
+        // Finally drawing geometry (vertices)
+        mGraphics.draw_vertices(std::size(vertices));
     }
 }
 

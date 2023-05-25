@@ -32,17 +32,7 @@ inline void D3DSafeRelease(ComObject& o) {
     }
 }
 
-#define D3DCALL(fn) \
-{ HRESULT hr = fn; \
-    if (FAILED(hr)) { \
-        TCHAR buf[1024] = {}; \
-        DXGetErrorDescription(hr, buf, 1024); \
-        out         \
-        .error("D3DCALL has failed!(%s(...)): %s", __func__, DXGetErrorString(hr)) \
-        .trace("description: %s", buf) \
-        ; \
-    }           \
-}
+#define D3DCALL(fn) { const auto hr = fn; if (FAILED(hr)) { DXTRACE_ERR_MSGBOX(("Failed to call " #fn), hr); } }
 
 namespace wrl = Microsoft::WRL;
 
