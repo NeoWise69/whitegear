@@ -1,3 +1,3 @@
-float4 S_Main() : SV_TARGET {
-    return float4(1.0f, 1.0f, 1.0f, 1.0f);
+float4 S_Main(float4 color : COLOR) : SV_TARGET {
+    return color;
 }

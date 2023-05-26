@@ -28,6 +28,7 @@ namespace wg {
             void set_vertex_buffers(uint num_buffers, ID3D11Buffer*const* buffers, const uint* strides, const uint* offsets) const;
             void set_primitive_topology(D3D11_PRIMITIVE_TOPOLOGY topo) const;
             void set_input_layout(const wrl::ComPtr<ID3D11InputLayout>& il) const;
+            void set_index_buffer(ID3D11Buffer* p_index_buffer, DXGI_FORMAT format) const;
 
         private:
             wrl::ComPtr<ID3D11DeviceContext> context = nullptr;
@@ -38,6 +39,7 @@ namespace wg {
             inline explicit vertex_shader_stage(const wrl::ComPtr<ID3D11DeviceContext>& ctx) : context(ctx) {}
 
             void bind(const wrl::ComPtr<ID3D11VertexShader>& vs) const;
+            void set_constant_buffers(ID3D11Buffer** p_cbs, uint num, uint start_slot = 0) const;
         private:
             wrl::ComPtr<ID3D11DeviceContext> context = nullptr;
         };

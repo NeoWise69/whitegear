@@ -8,6 +8,7 @@
 
 #include "rendering_engine_directx.hpp"
 #include "math/vertex.hpp"
+#include "math/free_camera.hpp"
 
 #if WG_WINDOWS
 
@@ -135,12 +136,24 @@ namespace wg {
         }
     }
 
+    static free_camera camera({0, 0, 3});
+
     void rendering_engine_directx::test_draw_first_triangle() {
         // Let's say we have a geometry to draw
-        const base_vertex_t vertices[] = {
-                { { 0.0f, 0.5f, 0.0f } },
-                { { 0.5f,-0.5f, 0.0f } },
-                { {-0.5f,-0.5f, 0.0f } },
+        const mesh_vertex_t vertices[] = {
+                { { 0.0f, 0.5f, 0.0f, 1.0f }, { 255, 000, 000, 255 } },
+                { { 0.5f,-0.5f, 0.0f, 1.0f }, { 000, 255, 000, 255 } },
+                { {-0.5f,-0.5f, 0.0f, 1.0f }, { 000, 000, 255, 255 } },
+                { {-0.3f, 0.3f, 0.0f, 1.0f }, { 000, 255, 000, 255 } },
+                { { 0.3f, 0.3f, 0.0f, 1.0f }, { 000, 000, 255, 255 } },
+                { { 0.0f,-1.0f, 0.0f, 1.0f }, { 255, 000, 000, 255 } },
+        };
+        // Indices too
+        const uint indices[] = {
+             0, 1, 2,
+             0, 2, 3,
+             0, 4, 1,
+             2, 1, 5,
         };
 
         const uint strides[1] = {
@@ -162,6 +175,42 @@ namespace wg {
         sd.pSysMem = vertices;
         mGraphics.create_buffer(bd, vb.GetAddressOf(), &sd);
 
+        // Creating index buffer
+        wrl::ComPtr<ID3D11Buffer> ib = nullptr;
+        bd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+        bd.ByteWidth = sizeof(indices);
+        bd.StructureByteStride = sizeof(indices[0]);
+        sd.pSysMem = indices;
+        mGraphics.create_buffer(bd, ib.GetAddressOf(), &sd);
+
+        // Creating constant buffer
+        wrl::ComPtr<ID3D11Buffer> cb = nullptr;
+        bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+        bd.Usage = D3D11_USAGE_DYNAMIC;
+        bd.ByteWidth = sizeof(material_data_t);
+        bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+        static scalar t = 0.1f;
+
+        t += 1 * 0.016f;
+
+        auto mm = mat4(1);
+        mm = translate(mm, {0, 0, 0});
+        //mm = rotate(mm, radians(t), vec3(1, 0, 0));
+        mm = rotate(mm, radians(t), vec3(0, 1, 0));
+
+        // camera
+        camera.update();
+        const auto view = camera.get_view_matrix();
+
+        const auto proj = perspective(radians(65.0f), mWindow->get_aspect(), 0.05f, 1000.0f);
+
+        const material_data_t mat_data = {
+                proj * view * mm
+        };
+        sd.pSysMem = &mat_data;
+        mGraphics.create_buffer(bd, cb.GetAddressOf(), &sd);
+
         // Creating vertex and pixel shaders
         wrl::ComPtr<ID3D11VertexShader> vs = nullptr;
         wrl::ComPtr<ID3D11PixelShader> ps = nullptr;
@@ -178,12 +227,16 @@ namespace wg {
         // ...describing how our vertex looks like.
         const D3D11_INPUT_ELEMENT_DESC ied[] = {
                 /* SEMANTIC_NAME | SEMANTIC_INDEX | FORMAT | INPUT_SLOT | OFFSET | INPUT_SLOT_CLASS | STEP_RATE */
-                { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+                { "POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+                { "COLOR", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0 },
         };
         mGraphics.create_input_layout(ied, std::size(ied), blob, il);
 
+        // Setting constant buffers
+        mGraphics.vs()->set_constant_buffers(cb.GetAddressOf(), 1);
         // Setting vertex buffers for rendering
         mGraphics.ia()->set_vertex_buffers(1, vb.GetAddressOf(), strides, offsets);
+        mGraphics.ia()->set_index_buffer(ib.Get(), DXGI_FORMAT_R32_UINT);
         // Setting shaders for rendering
         mGraphics.ps()->bind(ps);
         mGraphics.vs()->bind(vs);
@@ -200,8 +253,8 @@ namespace wg {
         vp.MaxDepth = 1;
         mGraphics.rs()->set_viewports(&vp, 1);
 
-        // Finally drawing geometry (vertices)
-        mGraphics.draw_vertices(std::size(vertices));
+        // Finally drawing geometry (indices)
+        mGraphics.draw_indices(std::size(indices));
     }
 }
 

@@ -33,7 +33,7 @@ namespace wg {
 #if WG_BUILD_DEBUG
         flags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
-        D3DCALL(D3D11CreateDeviceAndSwapChain(
+        ret_t(D3D11CreateDeviceAndSwapChain(
                 nullptr,
                 D3D_DRIVER_TYPE_HARDWARE,
                 nullptr,
@@ -49,8 +49,8 @@ namespace wg {
         ));
 
         wrl::ComPtr<ID3D11Resource> back_buffer = {};
-        D3DCALL(swapchain->GetBuffer(0, IID_PPV_ARGS(back_buffer.GetAddressOf())));
-        D3DCALL(device->CreateRenderTargetView(
+        ret_t(swapchain->GetBuffer(0, IID_PPV_ARGS(back_buffer.GetAddressOf())));
+        ret_t(device->CreateRenderTargetView(
                 back_buffer.Get(),
                 nullptr,
                 rtv.GetAddressOf()
@@ -69,14 +69,12 @@ namespace wg {
     }
 
     void dx_graphics::end_frame() const {
-        static HRESULT hr = S_OK;
-        if (FAILED(hr = swapchain->Present(0u, 0))) {
-            if (hr == DXGI_ERROR_DEVICE_REMOVED) {
-                TCHAR buf[512] = {};
-                DXGetErrorDescription(device->GetDeviceRemovedReason(), buf, 512);
+        static ret_t hr = S_OK;
+        if (hr = swapchain->Present(0u, 0); !hr) {
+            if (*hr == DXGI_ERROR_DEVICE_REMOVED) {
                 out
                 .error("Failed to end DirectX frame![DXGI_ERROR_DEVICE_REMOVED]")
-                .trace("%s", buf)
+                .trace("%s", hr.get_error_desc().c_str())
                 .dead_end();
             }
         }
@@ -97,21 +95,21 @@ namespace wg {
     }
 
     void dx_graphics::create_buffer(const D3D11_BUFFER_DESC &desc, ID3D11Buffer **pp_buffer, const D3D11_SUBRESOURCE_DATA* initial_data) const {
-        D3DCALL(device->CreateBuffer(&desc, initial_data, pp_buffer));
+        ret_t(device->CreateBuffer(&desc, initial_data, pp_buffer));
     }
 
     void dx_graphics::create_vertex_shader(const wrl::ComPtr<ID3DBlob> &blob, wrl::ComPtr<ID3D11VertexShader> &VS) const {
-        D3DCALL(device->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &VS));
+        ret_t(device->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &VS));
     }
 
     void dx_graphics::create_pixel_shader(const wrl::ComPtr<ID3DBlob> &blob, wrl::ComPtr<ID3D11PixelShader> &PS) const {
-        D3DCALL(device->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &PS));
+        ret_t(device->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &PS));
     }
 
     void dx_graphics::create_input_layout(const D3D11_INPUT_ELEMENT_DESC *p_elements, uint num_elements,
                                           const wrl::ComPtr<ID3DBlob> &code,
                                           wrl::ComPtr<ID3D11InputLayout> &il) const {
-        D3DCALL(device->CreateInputLayout(p_elements, num_elements, code->GetBufferPointer(), code->GetBufferSize(), &il));
+        ret_t(device->CreateInputLayout(p_elements, num_elements, code->GetBufferPointer(), code->GetBufferSize(), &il));
     }
 
     /**
@@ -130,12 +128,21 @@ namespace wg {
         context->IASetInputLayout(il.Get());
     }
 
+    void dx_graphics::input_assembly_stage::set_index_buffer(ID3D11Buffer *p_index_buffer, DXGI_FORMAT format) const {
+        context->IASetIndexBuffer(p_index_buffer, format, 0);
+    }
+
     /**
      * VERTEX SHADER STAGE
      */
 
     void dx_graphics::vertex_shader_stage::bind(const wrl::ComPtr<ID3D11VertexShader> &ps) const {
         context->VSSetShader(ps.Get(), nullptr, 0);
+    }
+
+    void dx_graphics::vertex_shader_stage::set_constant_buffers(ID3D11Buffer **p_cbs, uint num,
+                                                                uint start_slot) const {
+        context->VSSetConstantBuffers(start_slot, num, p_cbs);
     }
 
     /**
