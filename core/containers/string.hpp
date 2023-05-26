@@ -74,6 +74,13 @@ namespace wg {
         static string lower(const char* c, u64 len);
         static string upper(const char* c);
         static string upper(const char* c, u64 len);
+
+        static void u8_to_u16(const string& str8, wchar_t** pp_buffer, uint count);
+
+        template<uint N>
+        static void u8_to_u16(const string& str8, wchar_t (&buffer)[N]) {
+            u8_to_u16(str8, (wchar_t**)&buffer, N);
+        }
         // !misc
 
     private:

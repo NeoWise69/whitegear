@@ -49,6 +49,147 @@ namespace wg {
                 0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57,
                 0x58, 0x59, 0x5a, 0x7b, 0x7c, 0x7d, 0x7e, 0x7f,
         };
+        const wchar_t wchar_characters_letters_table[] = {
+                L'a',
+                L'b',
+                L'c',
+                L'd',
+                L'e',
+                L'f',
+                L'g',
+                L'h',
+                L'i',
+                L'j',
+                L'k',
+                L'l',
+                L'm',
+                L'n',
+                L'o',
+                L'p',
+                L'q',
+                L'r',
+                L's',
+                L't',
+                L'u',
+                L'v',
+                L'w',
+                L'x',
+                L'y',
+                L'z',
+        };
+        const wchar_t wchar_characters_upper_letters_table[] = {
+                L'A',
+                L'B',
+                L'C',
+                L'D',
+                L'E',
+                L'F',
+                L'G',
+                L'H',
+                L'I',
+                L'J',
+                L'K',
+                L'L',
+                L'M',
+                L'N',
+                L'O',
+                L'P',
+                L'Q',
+                L'R',
+                L'S',
+                L'T',
+                L'U',
+                L'V',
+                L'W',
+                L'X',
+                L'Y',
+                L'Z',
+        };
+        const wchar_t wchar_characters_numbers_table[] = {
+                L'0',
+                L'1',
+                L'2',
+                L'3',
+                L'4',
+                L'5',
+                L'6',
+                L'7',
+                L'8',
+                L'9',
+        };
+        const wchar_t wchar_characters_garbage_table_1[] = {
+                L'!',
+                L'\"',
+                L'#',
+                L'$',
+                L'%',
+                L'&',
+                L'\'',
+                L'(',
+                L')',
+                L'*',
+                L'+',
+                L',',
+                L'-',
+                L'.',
+                L'/',
+        };
+        const wchar_t wchar_characters_garbage_table_2[] = {
+                L':',
+                L';',
+                L'<',
+                L'=',
+                L'>',
+                L'?',
+                L'@',
+        };
+        const wchar_t wchar_characters_garbage_table_3[] = {
+                L'[',
+                L'\\',
+                L']',
+                L'^',
+                L'_',
+                L'`',
+        };
+        const wchar_t wchar_characters_garbage_table_4[] = {
+                L'{',
+                L'|',
+                L'}',
+                L'~',
+        };
+
+        wchar_t char_to_wchar_t(const char ch) {
+            if (ch >=  'a' && ch <= 'z') {
+                const auto i = ch - 'a';
+                return wchar_characters_letters_table[i];
+            }
+            else if (ch >= '0' && ch <= '9') {
+                const auto i = ch - '0';
+                return wchar_characters_numbers_table[i];
+            }
+            else if (ch >= 'A' && ch <= 'Z') {
+                const auto i = ch - 'A';
+                return wchar_characters_upper_letters_table[i];
+            }
+            else if (ch >= '!' && ch <= '/') {
+                const auto i = ch - '!';
+                return wchar_characters_garbage_table_1[i];
+            }
+            else if (ch >= ':' && ch <= '@') {
+                const auto i = ch - ':';
+                return wchar_characters_garbage_table_2[i];
+            }
+            else if (ch >= '[' && ch <= '`') {
+                const auto i = ch - '[';
+                return wchar_characters_garbage_table_3[i];
+            }
+            else if (ch >= '{' && ch <= '~') {
+                const auto i = ch - '{';
+                return wchar_characters_garbage_table_4[i];
+            }
+            else
+                return (wchar_t)ch;
+        }
     }
 
     struct string_impl {
@@ -433,6 +574,14 @@ namespace wg {
         string s(c, len);
         for (auto& ch : s) ch = upper_table[ch];
         return s;
+    }
+
+    void string::u8_to_u16(const string &str8, wchar_t **pp_buffer, uint count) {
+        if (!pp_buffer || !count) return;
+        *pp_buffer = {};
+
+        for (uint i = 0; i < str8.size() && i < count; ++i)
+            (*pp_buffer)[i] = char_to_wchar_t(str8[i]);
     }
 
     string operator+(const string& a, const string& b) {
