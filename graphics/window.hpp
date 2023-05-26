@@ -73,6 +73,11 @@ namespace wg {
          */
         inline uint get_height() const { return mInfo.h; }
         /**
+         * Returns an aspect of the window.
+         * @return
+         */
+        inline scalar get_aspect() const { return scalar(mInfo.w) / scalar(mInfo.h); }
+        /**
          * Tells whether window is still alive or not.
          */
         inline bool is_alive() const { return mInfo.alive; }
