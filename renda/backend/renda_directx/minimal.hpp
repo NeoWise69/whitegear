@@ -21,6 +21,7 @@
 #include <d3d11shader.h>
 #include <dxgi1_6.h>
 #include <wrl.h>
+#include <functional>
 
 #include <DXErr.h>
 
@@ -35,6 +36,32 @@ inline void D3DSafeRelease(ComObject& o) {
 #define D3DCALL(fn) { const auto hr = fn; if (FAILED(hr)) { DXTRACE_ERR_MSGBOX(("Failed to call " #fn), hr); } }
 
 namespace wrl = Microsoft::WRL;
+
+namespace wg {
+    template<>
+    inline ret_t<HRESULT>::~ret_t() {
+        if (!mReceived && FAILED(mValue)) {
+            DXTRACE_ERR_MSGBOX("D3DCall Failed!", mValue);
+        }
+    }
+
+    template<>
+    inline bool ret_t<HRESULT>::is_ok() const {
+        return !FAILED(mValue);
+    }
+
+    template<>
+    inline string ret_t<HRESULT>::get_error_name() const {
+        return DXGetErrorString(mValue);
+    }
+
+    template<>
+    inline string ret_t<HRESULT>::get_error_desc() const {
+        TCHAR buf[256];
+        DXGetErrorDescription(mValue, buf, 256);
+        return buf;
+    }
+}
 
 #endif
 
