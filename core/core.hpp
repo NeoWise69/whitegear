@@ -13,6 +13,7 @@
 #include "typedefs.hpp"
 #include "arch_info.hpp"
 #include "logger.hpp"
+#include "ret.hpp"
 
 // containers
 #include "containers/array_view.hpp"
