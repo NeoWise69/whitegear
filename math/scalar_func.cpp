@@ -57,6 +57,7 @@ namespace wg {
     }
 
     scalar rsqrt(scalar x) {
+        /*
         scalar t(x);
         const scalar xhalf(t * scalar(0.5));
         const uint* p = reinterpret_cast<uint*>(const_cast<scalar*>(&x));
@@ -64,7 +65,9 @@ namespace wg {
         const auto* t2 = reinterpret_cast<const scalar*>(&i);
         t = *t2;
         return t * (scalar(1.5) - xhalf * t * t);
-    }
+        */
+        return 1.0f / sqrt(x);
+     }
 
     bool equal(scalar a, scalar b, scalar eps) {
         return abs(a - b) <= eps;

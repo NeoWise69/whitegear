@@ -38,12 +38,12 @@ namespace wg {
         inline vec& operator=(vec&&) noexcept = default;
 
         inline explicit vec(scalar _x) : data(_mm_set1_ps(_x)) {}
-        inline vec(scalar _x, scalar _y, scalar _z, scalar _w) : data(_mm_set_ps(_x, _y, _z, _w)) {}
-        inline vec(const vec<2>& _xy, scalar _z, scalar _w) : data(_mm_set_ps(_xy.x, _xy.y, _z, _w)) {}
-        inline vec(const vec<3>& _xyz, scalar _w) : data(_mm_set_ps(_xyz.x, _xyz.y, _xyz.z, _w)) {}
-        inline vec(scalar _x, const vec<2>& _yz, scalar _w) : data(_mm_set_ps(_x, _yz.x, _yz.y, _w)) {}
-        inline vec(scalar _x, scalar _y, const vec<2>& _zw) : data(_mm_set_ps(_x, _y, _zw.x, _zw.y)) {}
-        inline vec(scalar _x, const vec<3>& _yzw) : data(_mm_set_ps(_x, _yzw.x, _yzw.y, _yzw.z)) {}
+        inline vec(scalar _x, scalar _y, scalar _z, scalar _w) : data(_mm_set_ps(_w, _z, _y, _x)) {}
+        inline vec(const vec<2>& _xy, scalar _z, scalar _w) : data(_mm_set_ps(_w, _z, _xy.y, _xy.x)) {}
+        inline vec(const vec<3>& _xyz, scalar _w) : data(_mm_set_ps(_w, _xyz.z, _xyz.y, _xyz.x)) {}
+        inline vec(scalar _x, const vec<2>& _yz, scalar _w) : data(_mm_set_ps(_w, _yz.y, _yz.x, _x)) {}
+        inline vec(scalar _x, scalar _y, const vec<2>& _zw) : data(_mm_set_ps(_zw.y, _zw.x, _y, _x)) {}
+        inline vec(scalar _x, const vec<3>& _yzw) : data(_mm_set_ps(_yzw.z, _yzw.y, _yzw.x, _x)) {}
 
         inline scalar& operator[](int i) { return (&x)[i]; }
         inline const scalar& operator[](int i) const { return (&x)[i]; }
@@ -57,11 +57,17 @@ namespace wg {
             return *this;
         }
         inline vec& operator+=(const vec<2>& v) {
-            data = _mm_add_ps(data, _mm_set_ps(v.x, v.y, 0, 0));
+            // this is even more efficient (for vec2)
+            // because of load time to __m128 with only 2
+            // usable values and the rest with Zeros.
+            x += v.x;
+            y += v.y;
             return *this;
         }
         inline vec& operator+=(const vec<3>& v) {
-            data = _mm_add_ps(data, _mm_set_ps(v.x, v.y, v.z, 0));
+            x += v.x;
+            y += v.y;
+            z += v.z;
             return *this;
         }
         inline vec& operator-=(scalar v) {
@@ -73,11 +79,14 @@ namespace wg {
             return *this;
         }
         inline vec& operator-=(const vec<2>& v) {
-            data = _mm_sub_ps(data, _mm_set_ps(v.x, v.y, 0, 0));
+            x -= v.x;
+            y -= v.y;
             return *this;
         }
         inline vec& operator-=(const vec<3>& v) {
-            data = _mm_sub_ps(data, _mm_set_ps(v.x, v.y, v.z, 0));
+            x -= v.x;
+            y -= v.y;
+            z -= v.z;
             return *this;
         }
         inline vec& operator*=(scalar v) {
@@ -89,11 +98,14 @@ namespace wg {
             return *this;
         }
         inline vec& operator*=(const vec<2>& v) {
-            data = _mm_mul_ps(data, _mm_set_ps(v.x, v.y, 0, 0));
+            x *= v.x;
+            y *= v.y;
             return *this;
         }
         inline vec& operator*=(const vec<3>& v) {
-            data = _mm_mul_ps(data, _mm_set_ps(v.x, v.y, v.z, 0));
+            x *= v.x;
+            y *= v.y;
+            z *= v.z;
             return *this;
         }
         inline vec& operator/=(scalar v) {
@@ -105,11 +117,14 @@ namespace wg {
             return *this;
         }
         inline vec& operator/=(const vec<2>& v) {
-            data = _mm_div_ps(data, _mm_set_ps(v.x, v.y, 0, 0));
+            x /= v.x;
+            y /= v.y;
             return *this;
         }
         inline vec& operator/=(const vec<3>& v) {
-            data = _mm_div_ps(data, _mm_set_ps(v.x, v.y, v.z, 0));
+            x /= v.x;
+            y /= v.y;
+            z /= v.z;
             return *this;
         }
 
@@ -159,13 +174,13 @@ namespace wg {
         union {
             contiguous_data<4> data = {};
             struct {
-                scalar w, z, y, x;
+                scalar x, y, z, w;
             };
             struct {
-                scalar a, b, g, r;
+                scalar r, g, b, a;
             };
             struct {
-                scalar t, s, v, u;
+                scalar u, v, s, t;
             };
         };
     };
