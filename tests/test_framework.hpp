@@ -10,7 +10,6 @@
 #define WHITEGEAR_TEST_FRAMEWORK_HPP
 
 #include <cstdlib>
-#include <iostream>
 #include <functional>
 #include <chrono>
 #include <sstream>
@@ -65,16 +64,16 @@ namespace test {
 
     inline void start(const char* moduleName) {
         fprintf(stdout, "\x1b[39m");
-        std::cout << "Started tests of \'" << moduleName << "\' module..." << std::endl;
+        fprintf(stdout, "Started tests of '%s' module...", moduleName);
     }
 
     inline void end(std::chrono::duration<float, std::milli> testTime) {
         const auto timeStr = details::get_time_string(testTime);
         if (!timeStr.empty()) {
-            std::cout << "All tests clear! (" << timeStr << " total)" << std::endl;
+            fprintf(stdout, "All tests clear! (%s total)\n", timeStr.c_str());
         }
         else {
-            std::cout << "All tests clear!" << std::endl;
+            fprintf(stdout, "All tests clear!\n");
         }
     }
 
@@ -110,7 +109,7 @@ namespace test {
             fprintf(stdout, " (instant)");
         }
 
-        std::cout << std::endl;
+        fprintf(stdout, "\n");
     }
 }
 
