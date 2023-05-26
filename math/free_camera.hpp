@@ -34,7 +34,7 @@ namespace wg {
         scalar mSense = 0.3f;
         bool mFirst = true;
         vec2 mLastMousePos = {};
-        vec2 mYawPitch = {};
+        vec2 mYawPitch = {-90, 0};
     };
 }
 
