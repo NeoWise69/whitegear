@@ -7,6 +7,7 @@
  ******************************************************************************/
 
 #include "dx_graphics.hpp"
+#include "math/geometry_buffer.hpp"
 #include <GLFW/glfw3.h>
 
 #if WG_WINDOWS
@@ -112,6 +113,15 @@ namespace wg {
         ret_t(device->CreateInputLayout(p_elements, num_elements, code->GetBufferPointer(), code->GetBufferSize(), &il));
     }
 
+    void dx_graphics::map_resource(const wrl::ComPtr<ID3D11Resource> &resource, D3D11_MAP type,
+                                   D3D11_MAPPED_SUBRESOURCE *p_mr) {
+        ret_t(context->Map(resource.Get(), 0u, type, 0u, p_mr));
+    }
+
+    void dx_graphics::unmap_resource(const wrl::ComPtr<ID3D11Resource> &resource) {
+        context->Unmap(resource.Get(), 0u);
+    }
+
     /**
      * INPUT ASSEMBLY STAGE
      */
@@ -150,7 +160,11 @@ namespace wg {
      */
 
     void dx_graphics::pixel_shader_stage::bind(const wrl::ComPtr<ID3D11PixelShader> &vs) const {
-        context->PSSetShader(vs.Get(), 0, 0);
+        context->PSSetShader(vs.Get(), nullptr, 0);
+    }
+
+    void dx_graphics::pixel_shader_stage::set_constant_buffers(ID3D11Buffer **p_cbs, uint num, uint start_slot) const {
+        context->PSSetConstantBuffers(start_slot, num, p_cbs);
     }
 
     /**

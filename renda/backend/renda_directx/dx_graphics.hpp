@@ -49,6 +49,7 @@ namespace wg {
             inline explicit pixel_shader_stage(const wrl::ComPtr<ID3D11DeviceContext>& ctx) : context(ctx) {}
 
             void bind(const wrl::ComPtr<ID3D11PixelShader>& ps) const;
+            void set_constant_buffers(ID3D11Buffer** p_cbs, uint num, uint start_slot = 0) const;
         private:
             wrl::ComPtr<ID3D11DeviceContext> context = nullptr;
         };
@@ -80,6 +81,9 @@ namespace wg {
         void create_vertex_shader(const wrl::ComPtr<ID3DBlob>& blob, wrl::ComPtr<ID3D11VertexShader>& VS) const;
         void create_pixel_shader(const wrl::ComPtr<ID3DBlob>& blob, wrl::ComPtr<ID3D11PixelShader>& PS) const;
         void create_input_layout(const D3D11_INPUT_ELEMENT_DESC* p_elements, uint num_elements, const wrl::ComPtr<ID3DBlob>& code, wrl::ComPtr<ID3D11InputLayout>& il) const;
+
+        void map_resource(const wrl::ComPtr<ID3D11Resource>& resource, D3D11_MAP type, D3D11_MAPPED_SUBRESOURCE* p_mr);
+        void unmap_resource(const wrl::ComPtr<ID3D11Resource>& resource);
 
         inline auto get_device() const {
             return device;

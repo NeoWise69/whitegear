@@ -32,11 +32,8 @@ namespace wg {
     private:
         void init_imgui();
         void pre_begin_imgui();
-        void begin_imgui();
         void end_imgui();
         void shutdown_imgui();
-
-        void test_draw_first_triangle();
 
         dx_info_manager mInfoManager;
         dx_graphics mGraphics;
