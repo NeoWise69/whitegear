@@ -12,6 +12,7 @@
 #include <math/scalar_base.hpp>
 #include <math/vec.hpp>
 #include <math/mat.hpp>
+#include <math/color.hpp>
 
 namespace wg {
     enum vertex_type : u32 {
@@ -25,14 +26,17 @@ namespace wg {
 
     template<>
     struct vertex_t<VERTEX_TYPE_NONE> {
-        vec3 v_position = {};
+        vec4 v_position = {};
     };
 
     template<>
     struct vertex_t<VERTEX_TYPE_MESH> {
-        vec3 v_position = {};
-        vec4 v_color = {};
-        vec2 v_uv = {};
+        vec4 v_position = {};
+        color32 v_color = {};
+    };
+
+    struct material_data_t {
+        mat4 model_matrix;
     };
 }
 

@@ -22,7 +22,7 @@ inline vec& operator sign(scalar v) {       \
 inline vec& operator sign(const vec& b) {   \
     this->x sign b.x;                       \
     this->y sign b.y;                       \
-    this->z sign b.y;                       \
+    this->z sign b.z;                       \
     return *this;                           \
 }                                           \
 inline vec& operator sign(const vec<2>& b) {\

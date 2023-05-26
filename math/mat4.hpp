@@ -50,7 +50,8 @@ namespace wg {
         inline mat(const mat<3, 3>& m)
         {}
 
-        inline mat& operator+=(scalar s) {
+        template<class T>
+        inline mat& operator+=(T s) {
             value[0] += s;
             value[1] += s;
             value[2] += s;
@@ -64,7 +65,8 @@ namespace wg {
             value[3] += m[3];
             return *this;
         }
-        inline mat& operator-=(scalar s) {
+        template<class T>
+        inline mat& operator-=(T s) {
             value[0] -= s;
             value[1] -= s;
             value[2] -= s;
@@ -78,7 +80,8 @@ namespace wg {
             value[3] -= m[3];
             return *this;
         }
-        inline mat& operator*=(scalar s) {
+        template<class T>
+        inline mat& operator*=(T s) {
             value[0] *= s;
             value[1] *= s;
             value[2] *= s;
@@ -92,7 +95,8 @@ namespace wg {
             value[3] *= m[3];
             return *this;
         }
-        inline mat& operator/=(scalar s) {
+        template<class T>
+        inline mat& operator/=(T s) {
             value[0] /= s;
             value[1] /= s;
             value[2] /= s;
@@ -150,7 +154,8 @@ namespace wg {
         };
     }
 
-    inline mat4 operator+(const mat4& m, scalar s) {
+    template<class T>
+    inline mat4 operator+(const mat4& m, T s) {
         return {
             m[0] + s,
             m[1] + s,
@@ -166,7 +171,8 @@ namespace wg {
             m0[3] + m1[3]
         };
     }
-    inline mat4 operator-(const mat4& m, scalar s) {
+    template<class T>
+    inline mat4 operator-(const mat4& m, T s) {
         return {
             m[0] - s,
             m[1] - s,
@@ -182,7 +188,8 @@ namespace wg {
             m0[3] - m1[3]
         };
     }
-    inline mat4 operator*(const mat4& m, scalar s) {
+    template<class T>
+    inline mat4 operator*(const mat4& m, T s) {
         return {
             m[0] * s,
             m[1] * s,
@@ -232,8 +239,8 @@ namespace wg {
         Result[3] = SrcA0 * SrcB3[0] + SrcA1 * SrcB3[1] + SrcA2 * SrcB3[2] + SrcA3 * SrcB3[3];
         return Result;
     }
-
-    inline mat4 operator/(const mat4& m, scalar s) {
+    template<class T>
+    inline mat4 operator/(const mat4& m, T s) {
         return {
             m[0] / s,
             m[1] / s,
