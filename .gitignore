@@ -2,3 +2,8 @@
 /cmake-build-debug/
 /cmake-build-release/
 /graphics/ignore/
+/editor_shaders/vs2022_compiler/.vs/
+
+
+.suo
+.db
