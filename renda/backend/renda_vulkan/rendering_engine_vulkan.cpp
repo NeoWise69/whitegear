@@ -11,11 +11,21 @@
 namespace wg {
 
     rendering_engine_vulkan::rendering_engine_vulkan(const rendering_engine_create_info& info) {
+        VkInstanceCreateInfo ici = { VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO };
 
+        VkApplicationInfo app_info = { VK_STRUCTURE_TYPE_APPLICATION_INFO };
+        app_info.apiVersion = VK_API_VERSION_1_0;
+        app_info.pEngineName = "WhiteGear Engine";
+        app_info.engineVersion = VK_MAKE_VERSION(1, 0, 0);
+        app_info.pApplicationName = "wg_app";
+        app_info.applicationVersion = VK_MAKE_VERSION(1, 1, 1);
+
+        ici.pApplicationInfo = &app_info;
+        mGraphics = new vk_graphics(ici);
     }
 
     rendering_engine_vulkan::~rendering_engine_vulkan() {
-
+        delete mGraphics;
     }
 
     void rendering_engine_vulkan::on_begin_tick() {

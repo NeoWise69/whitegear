@@ -10,6 +10,7 @@
 #define WHITEGEAR_RENDERING_ENGINE_VULKAN_HPP
 
 #include "minimal.hpp"
+#include "vk_graphics.hpp"
 
 namespace wg {
     class rendering_engine_vulkan : public rendering_engine {
@@ -25,7 +26,7 @@ namespace wg {
         void draw_mesh(const mesh_render_data* p_data) override;
 
     private:
-
+        vk_graphics* mGraphics = nullptr;
     };
 }
 
