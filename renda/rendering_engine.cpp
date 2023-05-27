@@ -18,7 +18,11 @@ namespace wg {
             case renderer_api::vulkan_api:
                 return new rendering_engine_vulkan(create_info);
             case renderer_api::directx:
+#if WG_WINDOWS
                 return new rendering_engine_directx(create_info);
+#elif WG_UNIX
+                return new rendering_engine_null(create_info);
+#endif
         }
         return new rendering_engine_null(create_info);
     }
