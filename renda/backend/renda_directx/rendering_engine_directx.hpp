@@ -13,6 +13,7 @@
 
 #include "dx_graphics.hpp"
 #include "dx_info_manager.hpp"
+#include "dx_scene_renderable.hpp"
 
 #if WG_WINDOWS
 
@@ -38,6 +39,8 @@ namespace wg {
         dx_info_manager mInfoManager;
         dx_graphics mGraphics;
         window* mWindow;
+
+        hashmap<entity_t, unique_ptr<dx_scene_renderable>> mSceneRenderables;
     };
 }
 

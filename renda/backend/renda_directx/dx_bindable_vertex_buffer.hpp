@@ -20,7 +20,7 @@ namespace wg {
         inline ~dx_bindable_vertex_buffer() override = default;
 
         template<uint VertexType>
-        inline dx_bindable_vertex_buffer(dx_graphics& gfx, const geometry_buffer<VertexType>& buffer) : mStride(sizeof(vertex_t<VertexType>)) {
+        inline dx_bindable_vertex_buffer(dx_graphics& gfx, const geometry_buffer<VertexType>* buffer) : mStride(sizeof(vertex_t<VertexType>)) {
             D3D11_BUFFER_DESC bd = {};
             bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
             bd.Usage = D3D11_USAGE_DEFAULT;
@@ -29,7 +29,7 @@ namespace wg {
 
             D3D11_SUBRESOURCE_DATA sd = {};
             uint num_vertices = {};
-            sd.pSysMem = buffer.get_vertices(&num_vertices);
+            sd.pSysMem = buffer->get_vertices(&num_vertices);
 
             bd.ByteWidth = uint(sizeof(vertex_t<VertexType>) * num_vertices);
             bd.StructureByteStride = sizeof(vertex_t<VertexType>);

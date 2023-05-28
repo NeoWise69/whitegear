@@ -10,6 +10,7 @@
 #define WHITEGEAR_DX_GRAPHICS_HPP
 
 #include "minimal.hpp"
+#include "math/free_camera.hpp"
 #include <graphics/window.hpp>
 
 #if WG_WINDOWS
@@ -71,7 +72,7 @@ namespace wg {
         inline dx_graphics(dx_graphics&&) noexcept = delete;
         inline dx_graphics& operator=(dx_graphics&&) noexcept = delete;
 
-        void end_frame() const;
+        void end_frame();
         void clear_color(const vec3& color) const noexcept;
 
         void draw_vertices(uint num_vertices) const;
@@ -84,6 +85,8 @@ namespace wg {
 
         void map_resource(const wrl::ComPtr<ID3D11Resource>& resource, D3D11_MAP type, D3D11_MAPPED_SUBRESOURCE* p_mr);
         void unmap_resource(const wrl::ComPtr<ID3D11Resource>& resource);
+
+        inline mat4 get_view_matrix() const { return mGlobalCamera.get_view_matrix(); }
 
         inline auto get_device() const {
             return device;
@@ -116,6 +119,8 @@ namespace wg {
         vertex_shader_stage* mVSStage;
         pixel_shader_stage* mPSStage;
         rasterizer_stage* mRSStage;
+
+        free_camera mGlobalCamera = {{0, 0, 3}};
     };
 }
 

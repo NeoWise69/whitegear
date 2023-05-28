@@ -69,7 +69,7 @@ namespace wg {
         // D3DSafeRelease(device);      // I don't need to release these resources because of <wrl.h>
     }
 
-    void dx_graphics::end_frame() const {
+    void dx_graphics::end_frame() {
         static ret_t hr = S_OK;
         if (hr = swapchain->Present(0u, 0); !hr) {
             if (*hr == DXGI_ERROR_DEVICE_REMOVED) {
@@ -79,6 +79,7 @@ namespace wg {
                 .dead_end();
             }
         }
+        mGlobalCamera.update();
     }
 
     void dx_graphics::clear_color(const vec3 &color) const noexcept {

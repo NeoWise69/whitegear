@@ -18,7 +18,7 @@ namespace wg {
     class dx_bindable_index_buffer : public dx_bindable {
     public:
         template<uint VertexType>
-        inline dx_bindable_index_buffer(dx_graphics& gfx, const geometry_buffer<VertexType>& buffer) : mCount(buffer.get_num_indices()) {
+        inline dx_bindable_index_buffer(dx_graphics& gfx, const geometry_buffer<VertexType>* p_buffer) : mCount(p_buffer->get_num_indices()) {
             D3D11_BUFFER_DESC ibd = {};
             ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
             ibd.Usage = D3D11_USAGE_DEFAULT;
@@ -27,7 +27,7 @@ namespace wg {
             ibd.ByteWidth = uint(mCount * sizeof(uint));
             ibd.StructureByteStride = sizeof(uint);
             D3D11_SUBRESOURCE_DATA isd = {};
-            isd.pSysMem = buffer.get_indices();
+            isd.pSysMem = p_buffer->get_indices();
             gfx.create_buffer(ibd, &mIndexBuffer, &isd);
         }
         void bind(dx_graphics& gfx) noexcept override;

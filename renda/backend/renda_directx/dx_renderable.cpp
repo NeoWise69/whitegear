@@ -8,6 +8,7 @@
 
 #include "dx_renderable.hpp"
 #include "dx_bindable_index_buffer.hpp"
+#include "scene/components/transform.hpp"
 
 #if WG_WINDOWS
 
@@ -27,6 +28,15 @@ namespace wg {
         assert(!mIndexBuffer && "Attempting to add index buffer a second time");
         mIndexBuffer = index_buffer.get();
         mBinds.emplace_back(std::move(index_buffer));
+    }
+
+    material_data_t dx_renderable::get_material_data() const {
+        const auto& transform = pWorldRegistry->get_component<component_transform>(mOwner);
+        material_data_t material_data = {};
+
+        material_data.model_matrix = transform.get_matrix();
+
+        return material_data;
     }
 }
 

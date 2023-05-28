@@ -21,6 +21,8 @@
 namespace wg {
     extern bool GEnableImGui;
 
+    window* GWindow;
+
     void imgui_draw_viewport() {
         ImGui::Text("There are will be a viewporT!");
     }
@@ -30,6 +32,7 @@ namespace wg {
         if (GEnableImGui) {
             init_imgui();
         }
+        GWindow = info.p_window;
 
     }
 
@@ -41,11 +44,50 @@ namespace wg {
     }
 
     void rendering_engine_directx::draw_mesh(const rendering_engine::mesh_render_data *p_data) {
-
+        if (mSceneRenderables.count(p_data->entity) < 1) {
+            out
+            .error("failed to render object[eid=%d]! there are no such entity in loaded list!", p_data->entity)
+            ;
+            return;
+        }
+        else {
+            const auto& renderable = mSceneRenderables[p_data->entity];
+            renderable->render(mGraphics);
+        }
     }
 
     void rendering_engine_directx::load_mesh(const rendering_engine::mesh_load_data *load_data) {
+        auto& renderable = mSceneRenderables[load_data->entity];
+        dx_scene_renderable_configuration config = {};
 
+        geometry_buffer<VERTEX_TYPE_MESH> cube_buffer(8, 36);
+        cube_buffer.emplace_vertex(vec4(-1.0f,-1.0f,-1.0f, 1.0f), color32(255, 000, 255, 255));
+        cube_buffer.emplace_vertex(vec4(1.0f,-1.0f,-1.0f, 1.0f), color32(255, 000, 000, 255));
+        cube_buffer.emplace_vertex(vec4(-1.0f,1.0f,-1.0f, 1.0f), color32(000, 255, 000, 255));
+        cube_buffer.emplace_vertex(vec4(1.0f,1.0f,-1.0f, 1.0f), color32(000, 000, 255, 255));
+        cube_buffer.emplace_vertex(vec4(-1.0f,-1.0f,1.0f, 1.0f), color32(255, 255, 000, 255));
+        cube_buffer.emplace_vertex(vec4(1.0f,-1.0f,1.0f, 1.0f), color32(000, 255, 255, 255));
+        cube_buffer.emplace_vertex(vec4(-1.0f,1.0f,1.0f, 1.0f), color32(255, 255, 255, 255));
+        cube_buffer.emplace_vertex(vec4(1.0f,1.0f,1.0f, 1.0f), color32(000, 000, 000, 255));
+
+        cube_buffer.emplace_index(0); cube_buffer.emplace_index(2); cube_buffer.emplace_index(1);
+        cube_buffer.emplace_index(2); cube_buffer.emplace_index(3); cube_buffer.emplace_index(1);
+        cube_buffer.emplace_index(1); cube_buffer.emplace_index(3); cube_buffer.emplace_index(5);
+        cube_buffer.emplace_index(3); cube_buffer.emplace_index(7); cube_buffer.emplace_index(5);
+        cube_buffer.emplace_index(2); cube_buffer.emplace_index(6); cube_buffer.emplace_index(3);
+        cube_buffer.emplace_index(3); cube_buffer.emplace_index(6); cube_buffer.emplace_index(7);
+        cube_buffer.emplace_index(4); cube_buffer.emplace_index(5); cube_buffer.emplace_index(7);
+        cube_buffer.emplace_index(4); cube_buffer.emplace_index(7); cube_buffer.emplace_index(6);
+        cube_buffer.emplace_index(0); cube_buffer.emplace_index(4); cube_buffer.emplace_index(2);
+        cube_buffer.emplace_index(2); cube_buffer.emplace_index(4); cube_buffer.emplace_index(6);
+        cube_buffer.emplace_index(0); cube_buffer.emplace_index(1); cube_buffer.emplace_index(4);
+        cube_buffer.emplace_index(1); cube_buffer.emplace_index(5); cube_buffer.emplace_index(4);
+
+        config.p_mesh_geometry_buffer = &cube_buffer;
+        config.filename_vs = WG_SHADER_PREFIX_PATH"compiled/vs_basic.cso";
+        config.filename_ps = WG_SHADER_PREFIX_PATH"compiled/ps_basic.cso";
+
+        renderable = make_unique<dx_scene_renderable>(mGraphics, load_data->p_registry, load_data->entity, config);
     }
 
     void rendering_engine_directx::unload_mesh(entity_t entity_id) {
@@ -57,7 +99,7 @@ namespace wg {
             pre_begin_imgui();
         }
         // clearance
-        mGraphics.clear_color({0.6f, 0.4f, 0.5f});
+        mGraphics.clear_color({0.2f, 0.2f, 0.2f});
     }
 
     void rendering_engine_directx::on_end_tick() {
@@ -96,8 +138,8 @@ namespace wg {
         }
 
         // Setup Platform/Renderer bindings
-        bool res = ImGui_ImplGlfw_InitForOther(mWindow->get(), true);
-        res = ImGui_ImplDX11_Init(mGraphics.get_device().Get(), mGraphics.get_context().Get());
+        ImGui_ImplGlfw_InitForOther(mWindow->get(), true);
+        ImGui_ImplDX11_Init(mGraphics.get_device().Get(), mGraphics.get_context().Get());
     }
 
     void rendering_engine_directx::shutdown_imgui() {

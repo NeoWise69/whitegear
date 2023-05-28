@@ -14,7 +14,7 @@ namespace wg {
     dx_bindable_pixel_shader::dx_bindable_pixel_shader(dx_graphics &gfx, const string &filename) {
         wrl::ComPtr<ID3DBlob> code = nullptr;
         WCHAR fname[MAX_PATH] = {};
-        string::u8_to_u16(filename, fname);
+        string::u8_to_u16(filename, fname, MAX_PATH);
         ret_t(D3DReadFileToBlob(fname, &code));
         gfx.create_pixel_shader(code, mPixelShader);
     }

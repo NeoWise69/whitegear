@@ -21,9 +21,9 @@ namespace wg {
             for (uint i = 0; i < glfwExtensionCount; ++i)
                 extensions.emplace_back(glfwExtensions[i]);
 
-            if (WG_UNIX) {
+#if WG_UNIX
                 extensions.emplace_back(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
-            }
+#endif
         }
     }
 
@@ -44,9 +44,9 @@ namespace wg {
         ici.ppEnabledExtensionNames = extensions.data();
         ici.enabledExtensionCount = extensions.size();
 
-        if (WG_UNIX) {
+#if WG_UNIX
             ici.flags |= VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR;
-        }
+#endif
 
         return vkCreateInstance(&ici, nullptr, &mInstance);
     }

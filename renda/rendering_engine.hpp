@@ -27,11 +27,14 @@ namespace wg {
 
         struct mesh_render_data {
             mat4* p_transform;
+            entity_t entity;
+            scalar view_aspect;
         };
         virtual void draw_mesh(const mesh_render_data* p_data) = 0;
         struct mesh_load_data {
             string_view filepath;
-            entity_t entity_id;
+            entity_t entity;
+            world_registry* p_registry;
         };
         virtual void load_mesh(const mesh_load_data* load_data) = 0;
         virtual void unload_mesh(entity_t entity_id) = 0;
