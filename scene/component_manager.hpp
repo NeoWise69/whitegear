@@ -48,6 +48,11 @@ namespace wg {
             return get_component_array<T>()->get_data(entt);
         }
 
+        template<class T>
+        inline const T& get_component(entity_t entt) const {
+            return get_component_array<T>()->get_data(entt);
+        }
+
         inline void on_entity_destroyed(entity_t entt) {
             for (const auto&[name, component] : mComponentArrays) {
                 component->on_entity_destroyed(entt);

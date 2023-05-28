@@ -58,6 +58,12 @@ namespace wg {
             return mComponentArray[mToIndex[entt]];
         }
 
+        inline const T& get_data(entity_t entt) const {
+            assert(mToIndex.find(entt) != mToIndex.end() && "Retrieving non-existent component.");
+
+            return mComponentArray[mToIndex.at(entt)];
+        }
+
         inline void on_entity_destroyed(entity_t entt) override {
             if (mToIndex.find(entt) != mToIndex.end()) {
                 remove_data(entt);

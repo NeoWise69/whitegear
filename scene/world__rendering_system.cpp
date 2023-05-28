@@ -13,6 +13,8 @@
 #include <scene/components/transform.hpp>
 
 namespace wg {
+    extern window* GWindow;
+
     bool world::rendering_system::render_scene(rendering_engine *renda) {
         for (const auto& e : entities) {
             // get transform
@@ -22,6 +24,7 @@ namespace wg {
 
             rendering_engine::mesh_render_data render_data = {};
             render_data.p_transform = &model_transform;
+            render_data.entity = e;
             renda->draw_mesh(&render_data);
         }
 

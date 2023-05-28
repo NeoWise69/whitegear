@@ -8,9 +8,11 @@
 
 #include <scene/world.hpp>
 #include <core/logger.hpp>
+#include <renda/rendering_engine.hpp>
 
 // components
 #include <scene/components/transform.hpp>
+#include "math/geometry_buffer.hpp"
 
 namespace wg {
     bool world::initialize(rendering_engine* p_renda) {
@@ -38,13 +40,18 @@ namespace wg {
          * Load required data from disk
          */
 
-        for (uint i = 0; i < 100; ++i) {
+        for (uint i = 0; i < 1; ++i) {
             const entity_t e = registry.entity_create();
             registry.add_component(e, component_transform{
-                    vec3(scalar(i), scalar(i), scalar(i)),
+                    vec3(scalar(0), scalar(0), scalar(i)),
                     vec3(0),
                     vec3(1)
             });
+            rendering_engine::mesh_load_data load_data = {};
+            load_data.entity = e;
+            load_data.p_registry = &registry;
+
+            renda->load_mesh(&load_data);
         }
 
         return true;
