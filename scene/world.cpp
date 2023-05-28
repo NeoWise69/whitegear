@@ -40,18 +40,20 @@ namespace wg {
          * Load required data from disk
          */
 
-        for (uint i = 0; i < 1; ++i) {
-            const entity_t e = registry.entity_create();
-            registry.add_component(e, component_transform{
-                    vec3(scalar(0), scalar(0), scalar(i)),
-                    vec3(0),
-                    vec3(1)
-            });
-            rendering_engine::mesh_load_data load_data = {};
-            load_data.entity = e;
-            load_data.p_registry = &registry;
+        for (uint x = 0; x < 32; ++x) {
+            for (uint y = 0; y < 32; ++y) {
+                const entity_t e = registry.entity_create();
+                registry.add_component(e, component_transform{
+                        vec3(scalar(x * 4), scalar(0), scalar(y * 4)),
+                        vec3(0),
+                        vec3(1)
+                });
+                rendering_engine::mesh_load_data load_data = {};
+                load_data.entity = e;
+                load_data.p_registry = &registry;
 
-            renda->load_mesh(&load_data);
+                renda->load_mesh(&load_data);
+            }
         }
 
         return true;

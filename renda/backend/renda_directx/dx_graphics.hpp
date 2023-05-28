@@ -114,6 +114,7 @@ namespace wg {
         wrl::ComPtr<IDXGISwapChain> swapchain = nullptr;
         wrl::ComPtr<ID3D11DeviceContext> context = nullptr;
         wrl::ComPtr<ID3D11RenderTargetView> rtv = nullptr;
+        wrl::ComPtr<ID3D11DepthStencilView> dsv = nullptr;
 
         input_assembly_stage* mIAStage;
         vertex_shader_stage* mVSStage;

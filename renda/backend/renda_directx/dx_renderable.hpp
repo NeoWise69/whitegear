@@ -28,8 +28,8 @@ namespace wg {
         inline dx_renderable(world_registry* p_world_reg, entity_t entt) : mOwner(entt), pWorldRegistry(p_world_reg)
         {}
 
-        void render(dx_graphics& gfx) noexcept(!WG_BUILD_DEBUG);
-        void add_bind(unique_ptr<dx_bindable> bind) noexcept(!WG_BUILD_DEBUG);
+        void render(dx_graphics& gfx) noexcept;
+        void add_bind(unique_ptr<dx_bindable> bind) noexcept;
         void add_index_buffer(unique_ptr<dx_bindable_index_buffer> index_buffer) noexcept;
         material_data_t get_material_data() const;
     private:

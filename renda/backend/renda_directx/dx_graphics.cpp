@@ -57,6 +57,35 @@ namespace wg {
                 rtv.GetAddressOf()
                 ));
 
+        D3D11_DEPTH_STENCIL_DESC dsd = {};
+        dsd.DepthEnable = TRUE;
+        dsd.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+        dsd.DepthFunc = D3D11_COMPARISON_LESS;
+        wrl::ComPtr<ID3D11DepthStencilState> dss = nullptr;
+        ret_t(device->CreateDepthStencilState(&dsd, &dss));
+        context->OMSetDepthStencilState(dss.Get(), 1u);
+
+        wrl::ComPtr<ID3D11Texture2D> depth_texture = nullptr;
+        D3D11_TEXTURE2D_DESC t2dd = {};
+        t2dd.Width = swap_chain_desc.BufferDesc.Width;
+        t2dd.Height = swap_chain_desc.BufferDesc.Height;
+        t2dd.MipLevels = 1u;
+        t2dd.ArraySize = 1u;
+        t2dd.Format = DXGI_FORMAT_D32_FLOAT;
+        t2dd.SampleDesc.Count = 1u;
+        t2dd.Usage = D3D11_USAGE_DEFAULT;
+        t2dd.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+        ret_t(device->CreateTexture2D(&t2dd, nullptr, &depth_texture));
+
+        D3D11_DEPTH_STENCIL_VIEW_DESC dsv_desc = {};
+        dsv_desc.Format = DXGI_FORMAT_D32_FLOAT;
+        dsv_desc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+        ret_t(device->CreateDepthStencilView(depth_texture.Get(), &dsv_desc, &dsv));
+
+        context->OMSetRenderTargets(1, rtv.GetAddressOf(), dsv.Get());
+
+
+
         mIAStage = new input_assembly_stage(context);
         mVSStage = new vertex_shader_stage(context);
         mPSStage = new pixel_shader_stage(context);
@@ -84,8 +113,8 @@ namespace wg {
 
     void dx_graphics::clear_color(const vec3 &color) const noexcept {
         const float col[4] = { float(color.r), float(color.g), float(color.b), 1.0f };
-        context->OMSetRenderTargets(1, rtv.GetAddressOf(), nullptr);
         context->ClearRenderTargetView(rtv.Get(), col);
+        context->ClearDepthStencilView(dsv.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
     }
 
     void dx_graphics::draw_vertices(uint num_vertices) const {

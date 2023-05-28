@@ -95,6 +95,14 @@ namespace wg {
     }
 
     void rendering_engine_directx::on_begin_tick() {
+        D3D11_VIEWPORT vp = {
+                  0.0f, 0.0f,
+                  FLOAT(mWindow->get_width()),
+                  FLOAT(mWindow->get_height()),
+                  0.0f, 1.0f
+        };
+        mGraphics.rs()->set_viewports(&vp, 1);
+
         if (GEnableImGui) {
             pre_begin_imgui();
         }

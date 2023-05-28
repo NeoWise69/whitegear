@@ -13,14 +13,14 @@
 #if WG_WINDOWS
 
 namespace wg {
-    void dx_renderable::render(dx_graphics &gfx) noexcept(!WG_BUILD_DEBUG) {
+    void dx_renderable::render(dx_graphics &gfx) noexcept {
         for (uint i = 0; i < mBinds.size(); ++i) {
             mBinds[i]->bind(gfx);
         }
         gfx.draw_indices(mIndexBuffer->get_count());
     }
 
-    void dx_renderable::add_bind(unique_ptr<dx_bindable> bind) noexcept(!WG_BUILD_DEBUG) {
+    void dx_renderable::add_bind(unique_ptr<dx_bindable> bind) noexcept {
         mBinds.emplace_back(std::move(bind));
     }
 
