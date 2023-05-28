@@ -30,8 +30,15 @@ namespace wg {
                 }
             }
         }
-        inline geometry_buffer(uint numVertices) : cb(new control_block{ new vertex_type_t[numVertices]() }) {}
-        inline geometry_buffer(uint numIndices, bool) : cb(new control_block{ .mIndices = new uint[numIndices]() }) {}
+        inline geometry_buffer(uint num_vertices, uint num_indices) {
+            cb = new control_block{
+                new vertex_type_t[num_vertices]{},
+                0,
+                new uint[num_indices]{},
+                0,
+                1
+            };
+        }
 
         inline geometry_buffer(const geometry_buffer& o) : cb(o.cb) { ++cb->mRefCount; }
         inline geometry_buffer(geometry_buffer&& o) noexcept : cb(o.cb) { ++cb->mRefCount; }
@@ -53,14 +60,14 @@ namespace wg {
             if (cb) {
                 return cb->mIndices;
             }
-            return nullptr;
+            return (uint*)nullptr;
         }
 
         inline auto get_num_indices() const {
             if (cb) {
                 return cb->mNumIndices;
             }
-            return 0;
+            return 0u;
         }
 
         inline auto get_vertex(uint at) const {
@@ -76,10 +83,10 @@ namespace wg {
                     *p_num_vertices = cb->mNumVertices;
                 return cb->mVertices;
             }
-            return nullptr;
+            return (vertex_type_t*)nullptr;
         }
 
-        inline uint size() const { return cb ? cb->mNumVertices : 0; }
+        inline uint size() const { return cb ? cb->mNumVertices : 0u; }
 
     private:
         struct control_block {
