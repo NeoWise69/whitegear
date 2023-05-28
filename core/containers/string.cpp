@@ -576,12 +576,10 @@ namespace wg {
         return s;
     }
 
-    void string::u8_to_u16(const string &str8, wchar_t **pp_buffer, uint count) {
-        if (!pp_buffer || !count) return;
-        *pp_buffer = {};
-
+    void string::u8_to_u16(const string &str8, wchar_t *p_buffer, uint count) {
+        if (!p_buffer || !count) return;
         for (uint i = 0; i < str8.size() && i < count; ++i)
-            (*pp_buffer)[i] = char_to_wchar_t(str8[i]);
+            p_buffer[i] = char_to_wchar_t(str8[i]);
     }
 
     string operator+(const string& a, const string& b) {
