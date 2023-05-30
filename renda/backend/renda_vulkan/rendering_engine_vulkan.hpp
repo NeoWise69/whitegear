@@ -24,6 +24,7 @@ namespace wg {
         void load_mesh(const mesh_load_data* load_data) override;
         void unload_mesh(entity_t entity_id) override;
         void draw_mesh(const mesh_render_data* p_data) override;
+        frustum get_frustum() const override;
 
     private:
         vk_graphics* mGraphics = nullptr;

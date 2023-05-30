@@ -38,6 +38,10 @@ namespace wg {
 
         return material_data;
     }
+
+    u64 dx_renderable::get_num_indices() const {
+        return u64(mIndexBuffer->get_count());
+    }
 }
 
 #endif

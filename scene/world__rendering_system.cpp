@@ -15,7 +15,7 @@
 namespace wg {
     extern window* GWindow;
 
-    bool world::rendering_system::render_scene(rendering_engine *renda) {
+    bool world::rendering_system::render_scene(rendering_engine *renda, world_tick_data &data) {
         for (const auto& e : entities) {
             // get transform
             const auto transform_component = registry->get_component<component_transform>(e);
@@ -25,6 +25,9 @@ namespace wg {
             rendering_engine::mesh_render_data render_data = {};
             render_data.p_transform = &model_transform;
             render_data.entity = e;
+            render_data.delta_time = data.delta_time;
+            render_data.p_position = &transform_component.world_position;
+
             renda->draw_mesh(&render_data);
         }
 

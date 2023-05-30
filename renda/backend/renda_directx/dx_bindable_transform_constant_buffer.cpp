@@ -11,14 +11,10 @@
 #if WG_WINDOWS
 
 namespace wg {
-    extern window* GWindow;
-
     void dx_bindable_transform_constant_buffer::bind(dx_graphics &gfx) noexcept {
 
-        static const mat4 proj = perspective(radians(65.0f), GWindow->get_aspect(), 0.05f, 1000.0f);
-
         material_data_t material_data = mParent.get_material_data();
-        material_data.model_matrix = proj * gfx.get_view_matrix() * material_data.model_matrix;
+        material_data.model_matrix = gfx.get_projection_matrix() * gfx.get_view_matrix() * material_data.model_matrix;
 
         mVCBMaterialData.update(gfx, material_data);
         mVCBMaterialData.bind(gfx);

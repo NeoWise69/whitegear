@@ -14,6 +14,7 @@
 
 namespace wg {
     dx_graphics::dx_graphics(wg::window *p_wnd) {
+        mProjectionMatrix = perspective(radians(65.0f), p_wnd->get_aspect(), 0.05f, 1000.0f);
         HWND hWnd = glfwGetWin32Window(p_wnd->get());
 
         DXGI_SWAP_CHAIN_DESC swap_chain_desc = {};
@@ -83,8 +84,6 @@ namespace wg {
         ret_t(device->CreateDepthStencilView(depth_texture.Get(), &dsv_desc, &dsv));
 
         context->OMSetRenderTargets(1, rtv.GetAddressOf(), dsv.Get());
-
-
 
         mIAStage = new input_assembly_stage(context);
         mVSStage = new vertex_shader_stage(context);

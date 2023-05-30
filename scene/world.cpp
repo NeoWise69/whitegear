@@ -12,11 +12,11 @@
 
 // components
 #include <scene/components/transform.hpp>
-#include "math/geometry_buffer.hpp"
 
 namespace wg {
     bool world::initialize(rendering_engine* p_renda) {
-        this->renda = p_renda;
+        renda = p_renda;
+        renda->set_parent_world(this);
 
         registry.register_component<component_transform>();
 
@@ -40,8 +40,8 @@ namespace wg {
          * Load required data from disk
          */
 
-        for (uint x = 0; x < 32; ++x) {
-            for (uint y = 0; y < 32; ++y) {
+        for (uint x = 0; x < 16; ++x) {
+            for (uint y = 0; y < 16; ++y) {
                 const entity_t e = registry.entity_create();
                 registry.add_component(e, component_transform{
                         vec3(scalar(x * 4), scalar(0), scalar(y * 4)),
@@ -71,8 +71,14 @@ namespace wg {
     }
 
     bool world::on_tick(world_tick_data &data) {
-        if (!renderingSystem->render_scene(renda))
+        if (!renderingSystem->render_scene(renda, data))
             return false;
+
+        auto& world_stats = stats();
+        out
+        .trace("DC:%d VPS:%d IPS:%d VPF:%d IPF:%d",
+               world_stats.draw_calls, world_stats.vertices_on_scene, world_stats.indices_on_scene,
+                                        world_stats.vertices_per_frame, world_stats.indices_per_frame);
 
         return true;
     }

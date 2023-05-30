@@ -7,8 +7,6 @@
  ******************************************************************************/
 
 #include "rendering_engine_directx.hpp"
-#include <math/vertex.hpp>
-#include <math/free_camera.hpp>
 
 #if WG_WINDOWS
 
@@ -21,8 +19,6 @@
 namespace wg {
     extern bool GEnableImGui;
 
-    window* GWindow;
-
     void imgui_draw_viewport() {
         ImGui::Text("There are will be a viewporT!");
     }
@@ -32,7 +28,6 @@ namespace wg {
         if (GEnableImGui) {
             init_imgui();
         }
-        GWindow = info.p_window;
 
     }
 
@@ -51,8 +46,17 @@ namespace wg {
             return;
         }
         else {
+            auto& world_stats = get_parent_world()->stats();
+            ++world_stats.draw_calls;
+
             const auto& renderable = mSceneRenderables[p_data->entity];
-            renderable->render(mGraphics);
+
+            const auto f = get_frustum();
+            if (f.in_frustum(renderable->get_bounding(*p_data->p_position))) {
+                renderable->render(mGraphics);
+                world_stats.vertices_per_frame += renderable->get_num_vertices();
+                world_stats.indices_per_frame += renderable->get_num_indices();
+            }
         }
     }
 
@@ -60,28 +64,11 @@ namespace wg {
         auto& renderable = mSceneRenderables[load_data->entity];
         dx_scene_renderable_configuration config = {};
 
-        geometry_buffer<VERTEX_TYPE_MESH> cube_buffer(8, 36);
-        cube_buffer.emplace_vertex(vec4(-1.0f,-1.0f,-1.0f, 1.0f), color32(255, 000, 255, 255));
-        cube_buffer.emplace_vertex(vec4(1.0f,-1.0f,-1.0f, 1.0f), color32(255, 000, 000, 255));
-        cube_buffer.emplace_vertex(vec4(-1.0f,1.0f,-1.0f, 1.0f), color32(000, 255, 000, 255));
-        cube_buffer.emplace_vertex(vec4(1.0f,1.0f,-1.0f, 1.0f), color32(000, 000, 255, 255));
-        cube_buffer.emplace_vertex(vec4(-1.0f,-1.0f,1.0f, 1.0f), color32(255, 255, 000, 255));
-        cube_buffer.emplace_vertex(vec4(1.0f,-1.0f,1.0f, 1.0f), color32(000, 255, 255, 255));
-        cube_buffer.emplace_vertex(vec4(-1.0f,1.0f,1.0f, 1.0f), color32(255, 255, 255, 255));
-        cube_buffer.emplace_vertex(vec4(1.0f,1.0f,1.0f, 1.0f), color32(000, 000, 000, 255));
+        const auto& cube_buffer = geometry_buffer<VERTEX_TYPE_MESH>::get_cube();
 
-        cube_buffer.emplace_index(0); cube_buffer.emplace_index(2); cube_buffer.emplace_index(1);
-        cube_buffer.emplace_index(2); cube_buffer.emplace_index(3); cube_buffer.emplace_index(1);
-        cube_buffer.emplace_index(1); cube_buffer.emplace_index(3); cube_buffer.emplace_index(5);
-        cube_buffer.emplace_index(3); cube_buffer.emplace_index(7); cube_buffer.emplace_index(5);
-        cube_buffer.emplace_index(2); cube_buffer.emplace_index(6); cube_buffer.emplace_index(3);
-        cube_buffer.emplace_index(3); cube_buffer.emplace_index(6); cube_buffer.emplace_index(7);
-        cube_buffer.emplace_index(4); cube_buffer.emplace_index(5); cube_buffer.emplace_index(7);
-        cube_buffer.emplace_index(4); cube_buffer.emplace_index(7); cube_buffer.emplace_index(6);
-        cube_buffer.emplace_index(0); cube_buffer.emplace_index(4); cube_buffer.emplace_index(2);
-        cube_buffer.emplace_index(2); cube_buffer.emplace_index(4); cube_buffer.emplace_index(6);
-        cube_buffer.emplace_index(0); cube_buffer.emplace_index(1); cube_buffer.emplace_index(4);
-        cube_buffer.emplace_index(1); cube_buffer.emplace_index(5); cube_buffer.emplace_index(4);
+        auto& world_stats = get_parent_world()->stats();
+        world_stats.vertices_on_scene += cube_buffer.get_num_vertices();
+        world_stats.indices_on_scene += cube_buffer.get_num_indices();
 
         config.p_mesh_geometry_buffer = &cube_buffer;
         config.filename_vs = WG_SHADER_PREFIX_PATH"compiled/vs_basic.cso";
@@ -108,6 +95,10 @@ namespace wg {
         }
         // clearance
         mGraphics.clear_color({0.2f, 0.2f, 0.2f});
+        auto& world_stats = get_parent_world()->stats();
+        world_stats.draw_calls = 0;
+        world_stats.indices_per_frame = 0;
+        world_stats.vertices_per_frame = 0;
     }
 
     void rendering_engine_directx::on_end_tick() {
@@ -174,6 +165,10 @@ namespace wg {
             ImGui::UpdatePlatformWindows();
             ImGui::RenderPlatformWindowsDefault();
         }
+    }
+
+    frustum rendering_engine_directx::get_frustum() const {
+        return { mGraphics.get_projection_matrix(), mGraphics.get_view_matrix() };
     }
 }
 

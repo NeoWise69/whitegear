@@ -13,6 +13,7 @@
 #include <graphics/window.hpp>
 #include <math/mat.hpp>
 #include <scene/world.hpp>
+#include "math/geometry.hpp"
 
 #define WG_SHADER_PREFIX_PATH "./editor_shaders/"
 
@@ -26,9 +27,11 @@ namespace wg {
         virtual ~rendering_engine() = default;
 
         struct mesh_render_data {
-            mat4* p_transform;
+            const mat4* p_transform;
+            const vec3* p_position;
             entity_t entity;
             scalar view_aspect;
+            scalar delta_time;
         };
         virtual void draw_mesh(const mesh_render_data* p_data) = 0;
         struct mesh_load_data {
@@ -42,7 +45,16 @@ namespace wg {
         virtual void on_begin_tick() = 0;
         virtual void on_end_tick() = 0;
 
+        virtual frustum get_frustum() const = 0;
+
         static rendering_engine* create(const rendering_engine_create_info& create_info);
+
+        inline world* get_parent_world() { return mParent; }
+        inline const world* get_parent_world() const { return mParent; }
+        inline void set_parent_world(world* p_parent) { mParent = p_parent; }
+
+    protected:
+        world* mParent = nullptr;
     };
 }
 

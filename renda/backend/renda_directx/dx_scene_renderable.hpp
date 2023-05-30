@@ -18,8 +18,8 @@
 namespace wg {
     struct dx_scene_renderable_configuration {
         union {
-            geometry_buffer<VERTEX_TYPE_MESH> *p_mesh_geometry_buffer;
-            geometry_buffer<VERTEX_TYPE_NONE> *p_basic_geometry_buffer;
+            const geometry_buffer<VERTEX_TYPE_MESH> *p_mesh_geometry_buffer;
+            const geometry_buffer<VERTEX_TYPE_NONE> *p_basic_geometry_buffer;
         };
         string_view filename_vs;
         string_view filename_ps;

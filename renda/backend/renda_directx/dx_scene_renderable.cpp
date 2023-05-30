@@ -16,12 +16,17 @@
 #include "dx_bindable_input_layout.hpp"
 #include "dx_bindable_geometry_topology.hpp"
 #include "dx_bindable_transform_constant_buffer.hpp"
+#include <math/geometry.hpp>
 
 #if WG_WINDOWS
 
 namespace wg {
     dx_scene_renderable::dx_scene_renderable(dx_graphics& gfx, world_registry* p_world_reg, entity_t entt, const dx_scene_renderable_configuration& config)
         : dx_renderable(p_world_reg, entt) {
+
+        mNumVertices = config.p_mesh_geometry_buffer->get_num_vertices();
+
+        mBoundingCube = geometry::cube::generate_bounding(config.p_mesh_geometry_buffer->get_vertices(), mNumVertices);
 
         add_bind(make_unique<dx_bindable_vertex_buffer>(gfx, config.p_mesh_geometry_buffer));
         auto vs = make_unique<dx_bindable_vertex_shader>(gfx, config.filename_vs.c_str());

@@ -87,6 +87,7 @@ namespace wg {
         void unmap_resource(const wrl::ComPtr<ID3D11Resource>& resource);
 
         inline mat4 get_view_matrix() const { return mGlobalCamera.get_view_matrix(); }
+        inline mat4 get_projection_matrix() const { return mProjectionMatrix; }
 
         inline auto get_device() const {
             return device;
@@ -122,6 +123,7 @@ namespace wg {
         rasterizer_stage* mRSStage;
 
         free_camera mGlobalCamera = {{0, 0, 3}};
+        mat4 mProjectionMatrix = {};
     };
 }
 

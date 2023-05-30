@@ -15,7 +15,14 @@ namespace wg {
     class rendering_engine;
 
     struct world_tick_data {
-
+        real delta_time;
+    };
+    struct world_statistics {
+        u64 draw_calls;
+        u64 vertices_per_frame;
+        u64 indices_per_frame;
+        u64 vertices_on_scene;
+        u64 indices_on_scene;
     };
 
     class world {
@@ -26,7 +33,7 @@ namespace wg {
 
             inline rendering_system(world_registry* reg) : registry(reg) {}
 
-            bool render_scene(rendering_engine* renda);
+            bool render_scene(rendering_engine* renda, world_tick_data &data);
 
         private:
             world_registry* registry = nullptr;
@@ -39,7 +46,11 @@ namespace wg {
 
         bool on_tick(world_tick_data& data);
 
+        inline world_statistics& stats() { return mStats; }
+        inline const world_statistics& stats() const { return mStats; }
+
     private:
+        world_statistics mStats = {};
         rendering_engine* renda = nullptr;
         world_registry registry = {};
 
