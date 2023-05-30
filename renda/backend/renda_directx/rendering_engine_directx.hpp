@@ -13,7 +13,7 @@
 
 #include "dx_graphics.hpp"
 #include "dx_info_manager.hpp"
-#include "dx_scene_renderable.hpp"
+#include "dx_renderable.hpp"
 
 #if WG_WINDOWS
 
@@ -27,6 +27,7 @@ namespace wg {
 
         void draw_mesh(const mesh_render_data *p_data) override;
         void load_mesh(const mesh_load_data *load_data) override;
+        void create_common_mesh(const common_mesh_create_info* create_data) override;
         void unload_mesh(entity_t entity_id) override;
         void on_begin_tick() override;
         void on_end_tick() override;
@@ -41,7 +42,7 @@ namespace wg {
         dx_graphics mGraphics;
         window* mWindow;
 
-        hashmap<entity_t, unique_ptr<dx_scene_renderable>> mSceneRenderables;
+        hashmap<entity_t, unique_ptr<dx_renderable>> mRenderables;
     };
 }
 

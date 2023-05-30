@@ -30,20 +30,24 @@ namespace wg {
 
         void render(dx_graphics& gfx) noexcept;
         void add_bind(unique_ptr<dx_bindable> bind) noexcept;
+        static void add_static_bind(unique_ptr<dx_bindable> bind) noexcept;
         void add_index_buffer(unique_ptr<dx_bindable_index_buffer> index_buffer) noexcept;
+        void add_static_index_buffer(unique_ptr<dx_bindable_index_buffer> index_buffer) noexcept;
         material_data_t get_material_data() const;
         inline u64 get_num_vertices() const { return mNumVertices; }
         u64 get_num_indices() const;
         inline auto get_bounding(const vec3& pos) const { mBoundingCube.set_position(pos); return mBoundingCube; }
+        void set_index_from_static();
     private:
         const dx_bindable_index_buffer* mIndexBuffer = nullptr;
         bounded_array<unique_ptr<dx_bindable>, 16> mBinds = {};
+        inline static bounded_array<unique_ptr<dx_bindable>, 16> mStaticBinds = {};
         entity_t mOwner = -1;
         const world_registry* pWorldRegistry = nullptr;
 
     protected:
         u64 mNumVertices = {};
-        mutable geometry::cube mBoundingCube = {};
+        inline static geometry::cube mBoundingCube = {};
     };
 }
 

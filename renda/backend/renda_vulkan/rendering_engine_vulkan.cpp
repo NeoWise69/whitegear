@@ -40,6 +40,10 @@ namespace wg {
 
     }
 
+    void rendering_engine_vulkan::create_common_mesh(const rendering_engine::common_mesh_create_info *create_data) {
+
+    }
+
     void rendering_engine_vulkan::unload_mesh(entity_t entity_id) {
 
     }

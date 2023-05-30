@@ -15,6 +15,7 @@
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_dx11.h>
 
+#include "dx_common_mesh_cube.hpp"
 
 namespace wg {
     extern bool GEnableImGui;
@@ -39,7 +40,7 @@ namespace wg {
     }
 
     void rendering_engine_directx::draw_mesh(const rendering_engine::mesh_render_data *p_data) {
-        if (mSceneRenderables.count(p_data->entity) < 1) {
+        if (mRenderables.count(p_data->entity) < 1) {
             out
             .error("failed to render object[eid=%d]! there are no such entity in loaded list!", p_data->entity)
             ;
@@ -49,7 +50,7 @@ namespace wg {
             auto& world_stats = get_parent_world()->stats();
             ++world_stats.draw_calls;
 
-            const auto& renderable = mSceneRenderables[p_data->entity];
+            const auto& renderable = mRenderables[p_data->entity];
 
             const auto f = get_frustum();
             if (f.in_frustum(renderable->get_bounding(*p_data->p_position))) {
@@ -61,20 +62,22 @@ namespace wg {
     }
 
     void rendering_engine_directx::load_mesh(const rendering_engine::mesh_load_data *load_data) {
-        auto& renderable = mSceneRenderables[load_data->entity];
-        dx_scene_renderable_configuration config = {};
+        WG_NOT_IMPLEMENTED
+    }
 
-        const auto& cube_buffer = geometry_buffer<VERTEX_TYPE_MESH>::get_cube();
-
+    void rendering_engine_directx::create_common_mesh(const rendering_engine::common_mesh_create_info *create_data) {
+        auto& renderable = mRenderables[create_data->entity];
         auto& world_stats = get_parent_world()->stats();
-        world_stats.vertices_on_scene += cube_buffer.get_num_vertices();
-        world_stats.indices_on_scene += cube_buffer.get_num_indices();
 
-        config.p_mesh_geometry_buffer = &cube_buffer;
-        config.filename_vs = WG_SHADER_PREFIX_PATH"compiled/vs_basic.cso";
-        config.filename_ps = WG_SHADER_PREFIX_PATH"compiled/ps_basic.cso";
+        if (create_data->mesh == common_mesh_create_info::COMMON_MESH_CUBE) {
+            world_stats.vertices_on_scene += 8;
+            world_stats.indices_on_scene += 36;
 
-        renderable = make_unique<dx_scene_renderable>(mGraphics, load_data->p_registry, load_data->entity, config);
+            dx_common_mesh_cube::create_info config = {};
+            config.filename_vs = WG_SHADER_PREFIX_PATH"compiled/vs_basic.cso";
+            config.filename_ps = WG_SHADER_PREFIX_PATH"compiled/ps_basic.cso";
+            renderable = make_unique<dx_common_mesh_cube>(mGraphics, create_data->p_registry, create_data->entity, config);
+        }
     }
 
     void rendering_engine_directx::unload_mesh(entity_t entity_id) {
@@ -170,6 +173,7 @@ namespace wg {
     frustum rendering_engine_directx::get_frustum() const {
         return { mGraphics.get_projection_matrix(), mGraphics.get_view_matrix() };
     }
+
 }
 
 #endif

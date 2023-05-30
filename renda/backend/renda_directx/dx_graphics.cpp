@@ -85,6 +85,9 @@ namespace wg {
 
         context->OMSetRenderTargets(1, rtv.GetAddressOf(), dsv.Get());
 
+        D3D11_RASTERIZER_DESC rd = {};
+
+
         mIAStage = new input_assembly_stage(context);
         mVSStage = new vertex_shader_stage(context);
         mPSStage = new pixel_shader_stage(context);

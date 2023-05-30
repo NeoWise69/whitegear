@@ -19,6 +19,7 @@ namespace wg {
 
         inline void draw_mesh(const mesh_render_data*) override {}
         inline void load_mesh(const mesh_load_data*) override {}
+        inline void create_common_mesh(const common_mesh_create_info* create_data) override {}
         inline void unload_mesh(entity_t) override {}
         inline void on_begin_tick() override {}
         inline void on_end_tick() override {}

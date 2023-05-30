@@ -48,11 +48,12 @@ namespace wg {
                         vec3(0),
                         vec3(1)
                 });
-                rendering_engine::mesh_load_data load_data = {};
-                load_data.entity = e;
-                load_data.p_registry = &registry;
+                rendering_engine::common_mesh_create_info create_info = {};
+                create_info.entity = e;
+                create_info.p_registry = &registry;
+                create_info.mesh = rendering_engine::common_mesh_create_info::COMMON_MESH_CUBE;
 
-                renda->load_mesh(&load_data);
+                renda->create_common_mesh(&create_info);
             }
         }
 

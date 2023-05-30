@@ -40,6 +40,15 @@ namespace wg {
             world_registry* p_registry;
         };
         virtual void load_mesh(const mesh_load_data* load_data) = 0;
+        struct common_mesh_create_info {
+            enum type_t : uint {
+                COMMON_MESH_CUBE,
+            };
+            type_t mesh;
+            entity_t entity;
+            world_registry* p_registry;
+        };
+        virtual void create_common_mesh(const common_mesh_create_info* create_data) = 0;
         virtual void unload_mesh(entity_t entity_id) = 0;
 
         virtual void on_begin_tick() = 0;
