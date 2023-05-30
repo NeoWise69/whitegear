@@ -10,34 +10,13 @@ of <b>"The WhiteGear Studio"</b>.
 ---
 ## <b>For developers</b>
 
-### + Dependencies: VulkanSDK
+### + Dependencies: VulkanSDK, DXErr, GLFW, IMGUI, YAML-CPP
 
 ### + What IDE should I use to develop for this codebase?
 
 #### Answer:
 
 Main and strongly recommended IDE was and always will be <b>JetBrains CLion</b>
-
-
-### + How to make a changes in certain engine module (i.e. in core module)?
-
-#### TL;DR: 
-    1 - Switch to target branch or if it doesn't exist yet, create one; 
-    2 - Make your changes there;
-    3 - Commit it;
-    4 - Merge it into MAIN
-
-#### Answer:
-
-Every time you'll need to make a changes in engine codebase, firstly you
-need to decide <b><i>on what part of the engine this changes will be?</i></b>
-Usually all changes and the whole engine codebase is split into something called
-<b>module</b>. It's required to have a separate branch for every 'module'. This
-means that if your changes is up to already existing codebase's module, the only
-thing you'll need is to switch current branch to chosen one. If this changes requires
-to create new module, then you should to create the new branch firstly. When your
-changes are ready, the only thing you'll need to do is to merge this branch into 'main'
-branch.
 
 ---
 ## <b>License</b> 
