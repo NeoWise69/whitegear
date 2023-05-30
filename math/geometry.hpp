@@ -28,6 +28,9 @@ namespace wg {
         struct cube {
             vec3 center_position;
             scalar size;
+
+            static cube generate_bounding(const mesh_vertex_t* vertices, u64 num_vertices);
+            void set_position(const vec3& position);
         };
     }
     /**

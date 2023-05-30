@@ -7,6 +7,7 @@
  ******************************************************************************/
 
 #include <math/geometry.hpp>
+#include <limits>
 
 namespace wg {
     void frustum::normalize(vec4* p_plane) {
@@ -116,5 +117,32 @@ namespace wg {
             return false;
         }
         return true;
+    }
+
+    geometry::cube geometry::cube::generate_bounding(const mesh_vertex_t *vertices, u64 num_vertices) {
+        vec3 minAABB = vec3(std::numeric_limits<scalar>::max());
+        vec3 maxAABB = vec3(std::numeric_limits<scalar>::min());
+        for (u64 i = 0; i < num_vertices; ++i)
+        {
+            auto& pos = vertices[i].v_position;
+
+            minAABB.x = fmin(minAABB.x, pos.x);
+            minAABB.y = fmin(minAABB.y, pos.y);
+            minAABB.z = fmin(minAABB.z, pos.z);
+
+            maxAABB.x = fmax(maxAABB.x, pos.x);
+            maxAABB.y = fmax(maxAABB.y, pos.y);
+            maxAABB.z = fmax(maxAABB.z, pos.z);
+        }
+
+        const auto center = (minAABB + maxAABB) * 0.5f;
+
+        const auto size = length(abs(maxAABB - minAABB));
+
+        return { center, size };
+    }
+
+    void geometry::cube::set_position(const vec3 &position) {
+        center_position = position;
     }
 }

@@ -86,7 +86,9 @@ namespace wg {
             return (vertex_type_t*)nullptr;
         }
 
-        inline uint size() const { return cb ? cb->mNumVertices : 0u; }
+        inline uint get_num_vertices() const { return cb ? cb->mNumVertices : 0u; }
+
+        inline static const geometry_buffer<VertexType>& get_cube() { return {}; }
 
     private:
         struct control_block {
@@ -99,6 +101,70 @@ namespace wg {
             uint mRefCount = 0;
         } *cb;
     };
+
+    template<>
+    inline const geometry_buffer<VERTEX_TYPE_MESH>& geometry_buffer<VERTEX_TYPE_MESH>::get_cube() {
+        static bool mIsInitialized = false;
+        static geometry_buffer<VERTEX_TYPE_MESH> cube_buffer(8, 36);
+        if (!mIsInitialized) {
+            cube_buffer.emplace_vertex(vec4(-1.0f,-1.0f,-1.0f, 1.0f), color32(255, 000, 255, 255));
+            cube_buffer.emplace_vertex(vec4(1.0f,-1.0f,-1.0f, 1.0f), color32(255, 000, 000, 255));
+            cube_buffer.emplace_vertex(vec4(-1.0f,1.0f,-1.0f, 1.0f), color32(000, 255, 000, 255));
+            cube_buffer.emplace_vertex(vec4(1.0f,1.0f,-1.0f, 1.0f), color32(000, 000, 255, 255));
+            cube_buffer.emplace_vertex(vec4(-1.0f,-1.0f,1.0f, 1.0f), color32(255, 255, 000, 255));
+            cube_buffer.emplace_vertex(vec4(1.0f,-1.0f,1.0f, 1.0f), color32(000, 255, 255, 255));
+            cube_buffer.emplace_vertex(vec4(-1.0f,1.0f,1.0f, 1.0f), color32(255, 255, 255, 255));
+            cube_buffer.emplace_vertex(vec4(1.0f,1.0f,1.0f, 1.0f), color32(000, 000, 000, 255));
+
+            cube_buffer.emplace_index(0); cube_buffer.emplace_index(2); cube_buffer.emplace_index(1);
+            cube_buffer.emplace_index(2); cube_buffer.emplace_index(3); cube_buffer.emplace_index(1);
+            cube_buffer.emplace_index(1); cube_buffer.emplace_index(3); cube_buffer.emplace_index(5);
+            cube_buffer.emplace_index(3); cube_buffer.emplace_index(7); cube_buffer.emplace_index(5);
+            cube_buffer.emplace_index(2); cube_buffer.emplace_index(6); cube_buffer.emplace_index(3);
+            cube_buffer.emplace_index(3); cube_buffer.emplace_index(6); cube_buffer.emplace_index(7);
+            cube_buffer.emplace_index(4); cube_buffer.emplace_index(5); cube_buffer.emplace_index(7);
+            cube_buffer.emplace_index(4); cube_buffer.emplace_index(7); cube_buffer.emplace_index(6);
+            cube_buffer.emplace_index(0); cube_buffer.emplace_index(4); cube_buffer.emplace_index(2);
+            cube_buffer.emplace_index(2); cube_buffer.emplace_index(4); cube_buffer.emplace_index(6);
+            cube_buffer.emplace_index(0); cube_buffer.emplace_index(1); cube_buffer.emplace_index(4);
+            cube_buffer.emplace_index(1); cube_buffer.emplace_index(5); cube_buffer.emplace_index(4);
+            mIsInitialized = true;
+        }
+
+        return cube_buffer;
+    }
+
+    template<>
+    inline const geometry_buffer<VERTEX_TYPE_NONE>& geometry_buffer<VERTEX_TYPE_NONE>::get_cube() {
+        static bool mIsInitialized = false;
+        static geometry_buffer<VERTEX_TYPE_NONE> cube_buffer(8, 36);
+        if (!mIsInitialized) {
+            cube_buffer.emplace_vertex(vec4(-1.0f,-1.0f,-1.0f, 1.0f));
+            cube_buffer.emplace_vertex(vec4(1.0f,-1.0f,-1.0f, 1.0f));
+            cube_buffer.emplace_vertex(vec4(-1.0f,1.0f,-1.0f, 1.0f));
+            cube_buffer.emplace_vertex(vec4(1.0f,1.0f,-1.0f, 1.0f));
+            cube_buffer.emplace_vertex(vec4(-1.0f,-1.0f,1.0f, 1.0f));
+            cube_buffer.emplace_vertex(vec4(1.0f,-1.0f,1.0f, 1.0f));
+            cube_buffer.emplace_vertex(vec4(-1.0f,1.0f,1.0f, 1.0f));
+            cube_buffer.emplace_vertex(vec4(1.0f,1.0f,1.0f, 1.0f));
+
+            cube_buffer.emplace_index(0); cube_buffer.emplace_index(2); cube_buffer.emplace_index(1);
+            cube_buffer.emplace_index(2); cube_buffer.emplace_index(3); cube_buffer.emplace_index(1);
+            cube_buffer.emplace_index(1); cube_buffer.emplace_index(3); cube_buffer.emplace_index(5);
+            cube_buffer.emplace_index(3); cube_buffer.emplace_index(7); cube_buffer.emplace_index(5);
+            cube_buffer.emplace_index(2); cube_buffer.emplace_index(6); cube_buffer.emplace_index(3);
+            cube_buffer.emplace_index(3); cube_buffer.emplace_index(6); cube_buffer.emplace_index(7);
+            cube_buffer.emplace_index(4); cube_buffer.emplace_index(5); cube_buffer.emplace_index(7);
+            cube_buffer.emplace_index(4); cube_buffer.emplace_index(7); cube_buffer.emplace_index(6);
+            cube_buffer.emplace_index(0); cube_buffer.emplace_index(4); cube_buffer.emplace_index(2);
+            cube_buffer.emplace_index(2); cube_buffer.emplace_index(4); cube_buffer.emplace_index(6);
+            cube_buffer.emplace_index(0); cube_buffer.emplace_index(1); cube_buffer.emplace_index(4);
+            cube_buffer.emplace_index(1); cube_buffer.emplace_index(5); cube_buffer.emplace_index(4);
+            mIsInitialized = true;
+        }
+
+        return cube_buffer;
+    }
 }
 
 #endif //WHITEGEAR_GEOMETRY_BUFFER_HPP
