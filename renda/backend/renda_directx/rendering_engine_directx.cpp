@@ -25,7 +25,6 @@ namespace wg {
     }
 
     rendering_engine_directx::rendering_engine_directx(const rendering_engine_create_info &info) : mWindow(info.p_window), mGraphics(info.p_window) {
-
         if (GEnableImGui) {
             init_imgui();
         }
@@ -48,7 +47,6 @@ namespace wg {
         }
         else {
             auto& world_stats = get_parent_world()->stats();
-            ++world_stats.draw_calls;
 
             const auto& renderable = mRenderables[p_data->entity];
 
@@ -57,6 +55,7 @@ namespace wg {
                 renderable->render(mGraphics);
                 world_stats.vertices_per_frame += renderable->get_num_vertices();
                 world_stats.indices_per_frame += renderable->get_num_indices();
+                ++world_stats.draw_calls;
             }
         }
     }
@@ -173,7 +172,6 @@ namespace wg {
     frustum rendering_engine_directx::get_frustum() const {
         return { mGraphics.get_projection_matrix(), mGraphics.get_view_matrix() };
     }
-
 }
 
 #endif

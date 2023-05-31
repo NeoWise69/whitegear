@@ -9,17 +9,16 @@
 #include <scene/world.hpp>
 #include <renda/rendering_engine.hpp>
 
-// components
+// Components
 #include <scene/components/transform.hpp>
+#include <scene/components/common_geometry.hpp>
 
 namespace wg {
-    extern window* GWindow;
-
-    bool world::rendering_system::render_scene(rendering_engine *renda, world_tick_data &data) {
-        /*
+    bool world::common_mesh_rendering_system::render_common_meshes(rendering_engine *renda, world_tick_data &data) {
         for (const auto& e : entities) {
             // get transform
             const auto transform_component = registry->get_component<component_transform>(e);
+            const auto common_geometry_component = registry->get_component<component_common_geometry>(e);
             mat4 model_transform = transform_component.get_matrix();
             // get some rendering stuff
 
@@ -31,7 +30,6 @@ namespace wg {
 
             renda->draw_mesh(&render_data);
         }
-        */
         return true;
     }
 }

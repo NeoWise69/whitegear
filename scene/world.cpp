@@ -12,6 +12,7 @@
 
 // components
 #include <scene/components/transform.hpp>
+#include <scene/components/common_geometry.hpp>
 
 namespace wg {
     bool world::initialize(rendering_engine* p_renda) {
@@ -19,17 +20,30 @@ namespace wg {
         renda->set_parent_world(this);
 
         registry.register_component<component_transform>();
+        registry.register_component<component_common_geometry>();
 
         renderingSystem = registry.register_scene_system<rendering_system>(&registry);
+        commonMeshRenderingSystem = registry.register_scene_system<common_mesh_rendering_system>(&registry);
         if (!renderingSystem) {
             out
             .error("Failed to register_scene_system<rendering_system>()!");
             return false;
         }
+        if (!commonMeshRenderingSystem) {
+            out
+            .error("Failed to register_scene_system<common_mesh_rendering_system>()!");
+            return false;
+        }
         {   /* setup rendering_system components model */
-            footprint rendering_system_footprint;
-            rendering_system_footprint.set(registry.get_component_type<component_transform>());
-            registry.assign_scene_system_footprint<rendering_system>(rendering_system_footprint);
+            footprint fp;
+            fp.set(registry.get_component_type<component_transform>());
+            registry.assign_scene_system_footprint<rendering_system>(fp);
+        }
+        {   /* setup common_mesh_rendering_system components model */
+            footprint fp;
+            fp.set(registry.get_component_type<component_transform>());
+            fp.set(registry.get_component_type<component_common_geometry>());
+            registry.assign_scene_system_footprint<common_mesh_rendering_system>(fp);
         }
 
         return true;
@@ -47,6 +61,9 @@ namespace wg {
                         vec3(scalar(x * 4), scalar(0), scalar(y * 4)),
                         vec3(0),
                         vec3(1)
+                });
+                registry.add_component(e, component_common_geometry{
+                    component_common_geometry::COMMON_GEOMETRY_CUBE
                 });
                 rendering_engine::common_mesh_create_info create_info = {};
                 create_info.entity = e;
@@ -72,6 +89,8 @@ namespace wg {
     }
 
     bool world::on_tick(world_tick_data &data) {
+        if (!commonMeshRenderingSystem->render_common_meshes(renda, data))
+            return false;
         if (!renderingSystem->render_scene(renda, data))
             return false;
 

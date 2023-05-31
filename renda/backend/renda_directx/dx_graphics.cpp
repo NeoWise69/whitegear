@@ -7,7 +7,7 @@
  ******************************************************************************/
 
 #include "dx_graphics.hpp"
-#include "math/geometry_buffer.hpp"
+#include <math/geometry_buffer.hpp>
 #include <GLFW/glfw3.h>
 
 #if WG_WINDOWS
@@ -85,13 +85,10 @@ namespace wg {
 
         context->OMSetRenderTargets(1, rtv.GetAddressOf(), dsv.Get());
 
-        D3D11_RASTERIZER_DESC rd = {};
-
-
-        mIAStage = new input_assembly_stage(context);
-        mVSStage = new vertex_shader_stage(context);
-        mPSStage = new pixel_shader_stage(context);
-        mRSStage = new rasterizer_stage(context);
+        mIAStage = make_unique<input_assembly_stage>(context);
+        mVSStage = make_unique<vertex_shader_stage>(context);
+        mPSStage = make_unique<pixel_shader_stage>(context);
+        mRSStage = make_unique<rasterizer_stage>(context);
     }
 
     dx_graphics::~dx_graphics() {

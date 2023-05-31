@@ -39,6 +39,18 @@ namespace wg {
             world_registry* registry = nullptr;
         };
 
+        class common_mesh_rendering_system : public scene_system {
+        public:
+            WG_DECL_SCENE_SYSTEM()
+
+            inline common_mesh_rendering_system(world_registry* reg) : registry(reg) {}
+
+            bool render_common_meshes(rendering_engine* renda, world_tick_data &data);
+
+        private:
+            world_registry* registry = nullptr;
+        };
+
         bool initialize(rendering_engine* p_renda);
         bool load();
         bool unload();
@@ -55,6 +67,7 @@ namespace wg {
         world_registry registry = {};
 
         shared_ptr<rendering_system> renderingSystem = nullptr;
+        shared_ptr<common_mesh_rendering_system> commonMeshRenderingSystem = nullptr;
     };
 }
 

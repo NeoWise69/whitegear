@@ -10,7 +10,7 @@
 #define WHITEGEAR_DX_GRAPHICS_HPP
 
 #include "minimal.hpp"
-#include "math/free_camera.hpp"
+#include <math/free_camera.hpp>
 #include <graphics/window.hpp>
 
 #if WG_WINDOWS
@@ -99,16 +99,16 @@ namespace wg {
             return context;
         }
         inline auto* ia() const {
-            return mIAStage;
+            return mIAStage.get();
         }
         inline auto* vs() const {
-            return mVSStage;
+            return mVSStage.get();
         }
         inline auto* ps() const {
-            return mPSStage;
+            return mPSStage.get();
         }
         inline auto* rs() const {
-            return mRSStage;
+            return mRSStage.get();
         }
     private:
         wrl::ComPtr<ID3D11Device> device = nullptr;
@@ -117,10 +117,10 @@ namespace wg {
         wrl::ComPtr<ID3D11RenderTargetView> rtv = nullptr;
         wrl::ComPtr<ID3D11DepthStencilView> dsv = nullptr;
 
-        input_assembly_stage* mIAStage;
-        vertex_shader_stage* mVSStage;
-        pixel_shader_stage* mPSStage;
-        rasterizer_stage* mRSStage;
+        unique_ptr<input_assembly_stage> mIAStage;
+        unique_ptr<vertex_shader_stage> mVSStage;
+        unique_ptr<pixel_shader_stage> mPSStage;
+        unique_ptr<rasterizer_stage> mRSStage;
 
         free_camera mGlobalCamera = {{0, 0, 3}};
         mat4 mProjectionMatrix = {};
