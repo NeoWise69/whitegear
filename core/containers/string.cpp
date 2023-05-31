@@ -453,9 +453,8 @@ namespace wg {
                 mImpl->data.large.ptr = tmp;
                 mImpl->data.large.size = sz + len;
                 mImpl->data.large.cap = alloc_size;
+                mImpl->is_static = false;
             }
-
-            mImpl->is_static = false;
         }
         else {
             if (len < (size() - capacity())) {
