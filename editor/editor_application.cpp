@@ -7,10 +7,10 @@
  ******************************************************************************/
 
 #include <editor/editor_application.hpp>
-#include <scene/scene_module.hpp>
 
 // modules
 #include <editor/world_editor_module.hpp>
+#include <scene/scene_module.hpp>
 
 namespace wg {
     void notify_renderer_api() {
