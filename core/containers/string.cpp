@@ -392,37 +392,28 @@ namespace wg {
         if (mImpl->is_static) {
             const auto sz = size();
             if (len < (24 - sz)) {
-                for (u64 i = sz; i < len + sz; ++i) {
-                    mImpl->data.small.ptr[i] = c;
-                }
+                memset(mImpl->data.small.ptr + sz, c, len);
             }
             else {
                 const auto alloc_size = get_alloc_size(sz + len);
                 char* tmp = new char[alloc_size]{};
                 memcpy(tmp, get_ptr(), sz);
-                for (u64 i = sz; i < sz + len; ++i) {
-                    tmp[i] = c;
-                }
+                memset(tmp + sz, c, len);
                 mImpl->data.large.ptr = tmp;
                 mImpl->data.large.size = sz + len;
                 mImpl->data.large.cap = alloc_size;
+                mImpl->is_static = false;
             }
-
-            mImpl->is_static = false;
         }
         else {
             if (len < (size() - capacity())) {
-                for (u64 i = size(); i < size() + len; ++i) {
-                    mImpl->data.large.ptr[i] = c;
-                }
+                memset(mImpl->data.large.ptr + size(), c, len);
             }
             else {
                 const auto alloc_size = get_alloc_size(size() + len);
                 char* tmp = new char[alloc_size]{};
                 memcpy(tmp, get_ptr(), size());
-                for (u64 i = size(); i < size() + len; ++i) {
-                    tmp[i] = c;
-                }
+                memset(tmp + size(), c, len);
                 mImpl->data.large.ptr = tmp;
                 mImpl->data.large.size = size() + len;
                 mImpl->data.large.cap = alloc_size;
@@ -581,6 +572,8 @@ namespace wg {
         for (uint i = 0; i < str8.size() && i < count; ++i)
             p_buffer[i] = char_to_wchar_t(str8[i]);
     }
+
+    string::string(const string_view &sv) : string(sv.c_str(), sv.size()) {}
 
     string operator+(const string& a, const string& b) {
         return string(a) += b;

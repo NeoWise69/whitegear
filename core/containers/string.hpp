@@ -10,6 +10,7 @@
 #define WHITEGEAR_STRING_HPP
 
 #include <core/typedefs.hpp>
+#include "string_view.hpp"
 
 namespace wg {
     struct string_impl;
@@ -27,6 +28,7 @@ namespace wg {
         string(const char* s);
         string& operator=(const char* s);
         string(const char* s, u64 len);
+        string(const string_view& sv);
 
         // access/write
         string& append(const char* s);
