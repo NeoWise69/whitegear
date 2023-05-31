@@ -16,25 +16,25 @@
 #include <core/containers/bounded_array.hpp>
 
 namespace wg {
-    i64 hash_string(const string& s);
-    i64 hash_string_view(const string_view& s);
+    u64 hash_string(const string& s);
+    u64 hash_string_view(const string_view& s);
     template<class T>
-    i64 hash_array_view(const array_view<T>& a);
+    u64 hash_array_view(const array_view<T>& a);
     template<class T, uint N>
-    i64 hash_bounded_array(const bounded_array<T, N>& a);
+    u64 hash_bounded_array(const bounded_array<T, N>& a);
 }
 
 namespace wg {
     template<class T>
-    inline i64 hash_array_view(const array_view<T>& a) {
-        i64 ret = {};
+    inline u64 hash_array_view(const array_view<T>& a) {
+        u64 ret = {};
         for (uint i = 0; i < a.size(); ++i)
             ret *= std::hash<T>{}(a[i]) * 0xB00B5;
         return ret;
     }
     template<class T, uint N>
-    inline i64 hash_bounded_array(const bounded_array<T, N>& a) {
-        i64 ret = {};
+    inline u64 hash_bounded_array(const bounded_array<T, N>& a) {
+        u64 ret = {};
         for (uint i = 0; i < a.size(); ++i)
             ret *= std::hash<T>{}(a[i]) * 0xB00B5;
         return ret;

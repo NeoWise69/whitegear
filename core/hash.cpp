@@ -9,26 +9,23 @@
 #include <core/hash.hpp>
 
 namespace wg {
-    i64 hash_string(const string& s) {
-        constexpr int p = 31;
-        constexpr int m = int(1e9 + 9);
-        long long hash_value = 0;
-        long long p_pow = 1;
-        for (const char& c : s) {
-            hash_value = (hash_value + (c - 'a' + 1) * p_pow) % m;
-            p_pow = (p_pow * p) % m;
+    static constexpr auto OFFSET = 0xcbf29ce484222325;
+    static constexpr auto PRIME = 0x00000100000001B3;
+
+    u64 hash_string(const string& s) {
+        u64 h = OFFSET;
+        for (const char c : s) {
+            h ^= (u64)(u8)c;
+            h *= PRIME;
         }
-        return hash_value;
+        return h;
     }
-    i64 hash_string_view(const string_view& s) {
-        constexpr int p = 31;
-        constexpr int m = int(1e9 + 9);
-        long long hash_value = 0;
-        long long p_pow = 1;
-        for (const char& c : s) {
-            hash_value = (hash_value + (c - 'a' + 1) * p_pow) % m;
-            p_pow = (p_pow * p) % m;
+    u64 hash_string_view(const string_view& s) {
+        u64 h = OFFSET;
+        for (const char c : s) {
+            h ^= (u64)(u8)c;
+            h *= PRIME;
         }
-        return hash_value;
+        return h;
     }
 }
