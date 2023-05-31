@@ -48,8 +48,8 @@ namespace wg::resource {
             return mCache.size();
         }
 
-        virtual bool save_to_file(const file& f) const = 0;
-        virtual bool load_from_file(const file& f) = 0;
+        virtual bool save_to_file(const string_view& filename) const = 0;
+        virtual bool load_from_file(const string_view& filename) = 0;
     protected:
         hashmap<name_t, handle_type> mCache = {};
     };

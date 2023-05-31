@@ -14,14 +14,16 @@
 namespace wg::resource {
     class text_cache : public cache<string> {
     public:
-        bool save_to_file(const file& f) const override;
-        bool load_from_file(const file& f) override;
+        bool save_to_file(const string_view& filename) const override;
+        bool load_from_file(const string_view& filename) override;
     };
 
     class text_loader : public loader<string, string_view> {
     public:
         handle<string> load(const name_t& name_id, string_view&& sv) const override;
     };
+
+    text_cache& get_text_cache(name_t&& name = "global");
 }
 
 #endif //WHITEGEAR_TEXT_RESOURCE_HPP

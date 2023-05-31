@@ -18,7 +18,9 @@ namespace wg::resource {
         uint text_size;
     };
 
-    bool text_cache::save_to_file(const wg::file &f) const {
+    bool text_cache::save_to_file(const string_view& filename) const {
+        file f(filename, "wb");
+
         if (!f.is_opened()) return false;
 
         text_resource_info resource_info = {
@@ -36,10 +38,13 @@ namespace wg::resource {
             f.write(text->c_str(), pair_info.text_size);
         }
 
+        f.close();
         return true;
     }
 
-    bool text_cache::load_from_file(const wg::file &f) {
+    bool text_cache::load_from_file(const string_view& filename) {
+        file f(filename, "rb");
+
         if (!f.is_opened()) return false;
 
         text_resource_info resource_info = {};
@@ -54,10 +59,17 @@ namespace wg::resource {
                 buffer.append('\0', max(pair_info.name_size, pair_info.text_size));
             f.read(buffer.data(), pair_info.name_size);
             auto& text = mCache[buffer.c_str()];
-            f.read(buffer.data(), pair_info.text_size);
-            text = make_handle<string>(buffer.c_str(), buffer.size());
+            text = make_handle<string>();
+            text->append('\0', pair_info.text_size);
+            f.read(text->data(), pair_info.text_size);
         }
 
+        f.close();
         return true;
+    }
+
+    text_cache& get_text_cache(name_t&& name) {
+        static hashmap<name_t, text_cache> caches = {};
+        return caches[name];
     }
 }
