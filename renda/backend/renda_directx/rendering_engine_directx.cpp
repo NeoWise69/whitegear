@@ -39,7 +39,7 @@ namespace wg {
     }
 
     void rendering_engine_directx::draw_mesh(const rendering_engine::mesh_render_data *p_data) {
-        if (mRenderables.count(p_data->entity) < 1) {
+        if (!mRenderables.contains(p_data->entity)) {
             out
             .error("failed to render object[eid=%d]! there are no such entity in loaded list!", p_data->entity)
             ;
@@ -75,7 +75,7 @@ namespace wg {
             dx_common_mesh_cube::create_info config = {};
             config.filename_vs = WG_SHADER_PREFIX_PATH"compiled/vs_basic.cso";
             config.filename_ps = WG_SHADER_PREFIX_PATH"compiled/ps_basic.cso";
-            renderable = make_unique<dx_common_mesh_cube>(mGraphics, create_data->p_registry, create_data->entity, config);
+            renderable = make_shared<dx_common_mesh_cube>(mGraphics, create_data->p_registry, create_data->entity, config);
         }
     }
 

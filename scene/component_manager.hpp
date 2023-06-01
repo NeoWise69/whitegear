@@ -12,6 +12,9 @@
 #include <scene/component_array.hpp>
 #include <core/smart_ptr.hpp>
 
+// experimental
+#include <core/experimental/hashmap.hpp>
+
 namespace wg {
     class component_manager {
     public:
@@ -22,8 +25,8 @@ namespace wg {
         template<class T>
         inline void register_component() {
             assert(mComponentTypes.find(T::COMPONENT_ID) == mComponentTypes.end() && "Registering component type more than once.");
-            mComponentTypes.insert({T::COMPONENT_ID, mNextComponentType});
-            mComponentArrays.insert({T::COMPONENT_ID, make_shared<component_array<T>>()});
+            mComponentTypes.insert(T::COMPONENT_ID, mNextComponentType);
+            mComponentArrays.insert(T::COMPONENT_ID, make_shared<component_array<T>>());
             ++mNextComponentType;
         }
 
@@ -60,8 +63,8 @@ namespace wg {
         }
 
     private:
-        hashmap<component_id, component_type_t> mComponentTypes;
-        hashmap<component_id, shared_ptr<component_array_base>> mComponentArrays;
+        experimental::hashmap<component_id, component_type_t> mComponentTypes;
+        experimental::hashmap<component_id, shared_ptr<component_array_base>> mComponentArrays;
         component_type_t mNextComponentType;
 
         template<class T>

@@ -166,7 +166,7 @@ namespace wg::experimental {
             return *this;
         }
 
-        value_type& operator[](const key_type& key) {
+        inline value_type& operator[](const key_type& key) {
             if (!mPtrs) {
                 return _insert_node(key, value_type(), false)->pair.second;
             }
@@ -175,13 +175,31 @@ namespace wg::experimental {
             return p_node ? p_node->pair.second : _insert_node(key, value_type(), false)->pair.second;
         }
 
-        value_type* operator[](const key_type& key) const {
+        inline value_type* operator[](const key_type& key) const {
             if (!mPtrs) {
                 return nullptr;
             }
             const auto key_hash = _make_hash(key);
             auto* p_node = _find_node(key, key_hash);
             return p_node ? &p_node->pair.second : nullptr;
+        }
+
+        inline const value_type& at(const key_type& key) const {
+            if (!mPtrs) {
+                return _insert_node(key, value_type(), false)->pair.second;
+            }
+            const auto key_hash = _make_hash(key);
+            auto* p_node = _find_node(key, key_hash);
+            return p_node ? p_node->pair.second : _insert_node(key, value_type(), false)->pair.second;
+        }
+
+        inline value_type& at(const key_type& key) {
+            if (!mPtrs) {
+                return _insert_node(key, value_type(), false)->pair.second;
+            }
+            const auto key_hash = _make_hash(key);
+            auto* p_node = _find_node(key, key_hash);
+            return p_node ? p_node->pair.second : _insert_node(key, value_type(), false)->pair.second;
         }
 
         inline hashmap& populate(const key_type& key, const value_type& val) {
@@ -274,6 +292,7 @@ namespace wg::experimental {
         inline const_iterator end() const { return iterator(_tail()); }
         inline const key_value& front() const { return *begin(); }
         inline const key_value& back() const { return *end(); }
+        using hash_base::size;
 
         inline iterator find(const key_type& key) {
             if (!mPtrs) return end();
@@ -431,7 +450,7 @@ namespace wg::experimental {
             return new_node;
         }
 
-        inline u64 _make_hash(const key_type& key) {
+        inline u64 _make_hash(const key_type& key) const {
             return make_hash(key) & (get_num_buckets() - 1);
         }
     };

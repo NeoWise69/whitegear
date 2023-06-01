@@ -13,6 +13,9 @@
 #include <core/io.hpp>
 #include <core/containers/hashmap.hpp>
 
+// experimental
+#include <core/experimental/hashmap.hpp>
+
 namespace wg::resource {
     template<class T>
     class cache {
@@ -25,7 +28,7 @@ namespace wg::resource {
             if (it != mCache.end())
                 return it->second;
             else
-                return handle_type((mCache.emplace(name_id, std::move(loader_instance.load(name_id, std::forward<Args>(args)...))).first)->second);
+                return handle_type((mCache.insert(name_id, std::move(loader_instance.load(name_id, std::forward<Args>(args)...))).first)->second);
         }
         template<class loader_class, class...Args>
         inline handle_type set(const loader_class& loader_instance, const name_t& name_id, Args&&...args) {
@@ -51,7 +54,7 @@ namespace wg::resource {
         virtual bool save_to_file(const string_view& filename) const = 0;
         virtual bool load_from_file(const string_view& filename) = 0;
     protected:
-        hashmap<name_t, handle_type> mCache = {};
+        experimental::hashmap<name_t, handle_type> mCache = {};
     };
 }
 

@@ -15,6 +15,9 @@
 #include <core/containers/hashmap.hpp>
 #include <core/smart_ptr.hpp>
 
+// experimental
+#include <core/experimental/hashmap.hpp>
+
 /**
  * Macro used for system declaration,
  * setups it with SYSTEM_ID variable,
@@ -42,7 +45,7 @@ namespace wg {
             assert(mSystems.find(T::SCENE_SYSTEM_ID) == mSystems.end() && "Registering system more than once!");
 
             auto s = make_shared<T>(std::forward<Args>(args)...);
-            mSystems.insert({T::SCENE_SYSTEM_ID, s});
+            mSystems.insert(T::SCENE_SYSTEM_ID, s);
             return s;
         }
 
@@ -50,15 +53,15 @@ namespace wg {
         inline void assign_footprint(const footprint& f) {
             assert(mSystems.find(T::SCENE_SYSTEM_ID) != mSystems.end() && "System used before being registered!");
 
-            mFootprints.insert({T::SCENE_SYSTEM_ID, f});
+            mFootprints.insert(T::SCENE_SYSTEM_ID, f);
         }
 
         void on_entity_destroyed(entity_t entt);
         void on_entity_footprint_changed(entity_t entt, const footprint& f);
 
     private:
-        hashmap<scene_system_id, footprint> mFootprints;
-        hashmap<scene_system_id, shared_ptr<scene_system>> mSystems;
+        experimental::hashmap<scene_system_id, footprint> mFootprints;
+        experimental::hashmap<scene_system_id, shared_ptr<scene_system>> mSystems;
     };
 
 }

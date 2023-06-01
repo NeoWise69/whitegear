@@ -13,7 +13,7 @@
 #include <graphics/window.hpp>
 #include <math/mat.hpp>
 #include <scene/world.hpp>
-#include "math/geometry.hpp"
+#include <math/geometry.hpp>
 
 #define WG_SHADER_PREFIX_PATH "./editor_shaders/"
 

@@ -15,6 +15,9 @@
 #include "dx_info_manager.hpp"
 #include "dx_renderable.hpp"
 
+// experimental
+#include <core/experimental/hashmap.hpp>
+
 #if WG_WINDOWS
 
 namespace wg {
@@ -42,7 +45,7 @@ namespace wg {
         dx_graphics mGraphics;
         window* mWindow;
 
-        hashmap<entity_t, unique_ptr<dx_renderable>> mRenderables;
+        experimental::hashmap<entity_t, shared_ptr<dx_renderable>> mRenderables;
     };
 }
 

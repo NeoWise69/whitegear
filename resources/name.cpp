@@ -7,7 +7,6 @@
  ******************************************************************************/
 
 #include "base.hpp"
-#include <core/hash.hpp>
 
 namespace wg::resource {
     name_t::name_t(const char *p_name) : mName(p_name), mHash(make_hash(p_name)) {}

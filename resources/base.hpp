@@ -12,6 +12,7 @@
 #include <core/typedefs.hpp>
 #include <core/containers/string.hpp>
 #include <core/smart_ptr.hpp>
+#include <core/hash.hpp>
 #include <core/containers/string_view.hpp>
 
 namespace wg::resource {
@@ -67,10 +68,10 @@ namespace wg::resource {
     };
 }
 
-namespace std {
+namespace wg::fnv {
     template<>
-    struct hash<wg::resource::name_t> {
-        inline size_t operator()(const wg::resource::name_t& name) const {
+    struct hash<sizeof(wg::resource::name_t)> {
+        inline auto operator()(const wg::resource::name_t& name) const {
             return name.get_hash();
         }
     };

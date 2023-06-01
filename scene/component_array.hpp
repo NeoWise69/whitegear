@@ -13,6 +13,9 @@
 #include <scene/component.hpp>
 #include <scene/entity.hpp>
 
+// experimental
+#include <core/experimental/hashmap.hpp>
+
 namespace wg {
     class component_array_base {
     public:
@@ -72,8 +75,8 @@ namespace wg {
 
     private:
         T mComponentArray[MAX_ENTITIES];
-        hashmap<entity_t, u64> mToIndex;
-        hashmap<u64, entity_t> mToEntity;
+        experimental::hashmap<entity_t, u64> mToIndex;
+        experimental::hashmap<u64, entity_t> mToEntity;
         u64 mSize;
     };
 }
