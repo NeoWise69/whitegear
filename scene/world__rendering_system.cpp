@@ -20,7 +20,7 @@ namespace wg {
         for (const auto& e : entities) {
             // get transform
             const auto transform_component = registry->get_component<component_transform>(e);
-            mat4 model_transform = transform_component.get_matrix();
+            mat4 model_transform = transform_component.update();
             // get some rendering stuff
 
             rendering_engine::mesh_render_data render_data = {};

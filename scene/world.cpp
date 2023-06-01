@@ -54,8 +54,8 @@ namespace wg {
          * Load required data from disk
          */
 
-        for (uint x = 0; x < 16; ++x) {
-            for (uint y = 0; y < 16; ++y) {
+        for (uint x = 0; x < 32; ++x) {
+            for (uint y = 0; y < 32; ++y) {
                 const entity_t e = registry.entity_create();
                 registry.add_component(e, component_transform{
                         vec3(scalar(x * 4), scalar(0), scalar(y * 4)),

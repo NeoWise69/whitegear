@@ -34,11 +34,8 @@ namespace wg {
     }
 
     material_data_t dx_renderable::get_material_data() const {
-        const auto& transform = pWorldRegistry->get_component<component_transform>(mOwner);
         material_data_t material_data = {};
-
-        material_data.model_matrix = transform.get_matrix();
-
+        material_data.model_matrix = get_transform_matrix();
         return material_data;
     }
 

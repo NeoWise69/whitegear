@@ -52,6 +52,9 @@ namespace wg {
 
             const auto f = get_frustum();
             if (f.in_frustum(renderable->get_bounding(*p_data->p_position))) {
+                if (!renderable->is_transform_ptr_provided()) {
+                    renderable->set_transform_matrix_ptr(p_data->p_transform);
+                }
                 renderable->render(mGraphics);
                 world_stats.vertices_per_frame += renderable->get_num_vertices();
                 world_stats.indices_per_frame += renderable->get_num_indices();
@@ -75,7 +78,7 @@ namespace wg {
             dx_common_mesh_cube::create_info config = {};
             config.filename_vs = WG_SHADER_PREFIX_PATH"compiled/vs_basic.cso";
             config.filename_ps = WG_SHADER_PREFIX_PATH"compiled/ps_basic.cso";
-            renderable = make_shared<dx_common_mesh_cube>(mGraphics, create_data->p_registry, create_data->entity, config);
+            renderable = make_shared<dx_common_mesh_cube>(mGraphics, config);
         }
     }
 

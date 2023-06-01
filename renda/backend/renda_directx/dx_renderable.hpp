@@ -25,9 +25,6 @@ namespace wg {
         inline dx_renderable(const dx_renderable&) = delete;
         inline virtual ~dx_renderable() = default;
 
-        inline dx_renderable(world_registry* p_world_reg, entity_t entt) : mOwner(entt), pWorldRegistry(p_world_reg)
-        {}
-
         void render(dx_graphics& gfx) noexcept;
         void add_bind(unique_ptr<dx_bindable> bind) noexcept;
         static void add_static_bind(unique_ptr<dx_bindable> bind) noexcept;
@@ -38,15 +35,18 @@ namespace wg {
         u64 get_num_indices() const;
         inline auto get_bounding(const vec3& pos) const { mBoundingCube.set_position(pos); return mBoundingCube; }
         void set_index_from_static();
+        inline auto get_transform_matrix() const { return *mTransformPtr; }
+        inline void set_transform_matrix_ptr(const mat4* p_transform) { mTransformPtr = p_transform; }
+        inline bool is_transform_ptr_provided() const { return mTransformPtr != nullptr; }
     private:
         const dx_bindable_index_buffer* mIndexBuffer = nullptr;
         bounded_array<unique_ptr<dx_bindable>, 16> mBinds = {};
         inline static bounded_array<unique_ptr<dx_bindable>, 16> mStaticBinds = {};
-        entity_t mOwner = -1;
-        const world_registry* pWorldRegistry = nullptr;
+        const mat4* mTransformPtr = nullptr;
 
     protected:
         u64 mNumVertices = {};
+
         inline static geometry::cube mBoundingCube = {};
     };
 }

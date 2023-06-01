@@ -26,7 +26,7 @@ namespace wg {
     };
     class dx_scene_renderable : public dx_renderable {
     public:
-        dx_scene_renderable(dx_graphics& gfx, world_registry* p_world_reg, entity_t entt, const dx_scene_renderable_configuration& config);
+        dx_scene_renderable(dx_graphics& gfx, const dx_scene_renderable_configuration& config);
     };
 }
 

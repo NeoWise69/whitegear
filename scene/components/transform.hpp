@@ -20,15 +20,16 @@ namespace wg {
         vec3 world_position;
         vec3 world_rotation;
         vec3 world_scale;
+        mat4 transform_matrix;
 
-        inline mat4 get_matrix() const {
-            mat4 m(1);
-            m = scale(m, world_scale);
-            m = rotate(m, world_rotation.x, { 1, 0, 0 });
-            m = rotate(m, world_rotation.y, { 0, 1, 0 });
-            m = rotate(m, world_rotation.z, { 0, 0, 1 });
-            m = translate(m, world_position);
-            return m;
+        inline const mat4& update() {
+            transform_matrix = mat4(1);
+            transform_matrix = scale(transform_matrix, world_scale);
+            transform_matrix = rotate(transform_matrix, world_rotation.x, { 1, 0, 0 });
+            transform_matrix = rotate(transform_matrix, world_rotation.y, { 0, 1, 0 });
+            transform_matrix = rotate(transform_matrix, world_rotation.z, { 0, 0, 1 });
+            transform_matrix = translate(transform_matrix, world_position);
+            return transform_matrix;
         }
     };
 }

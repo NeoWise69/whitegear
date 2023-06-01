@@ -17,13 +17,13 @@ namespace wg {
     bool world::common_mesh_rendering_system::render_common_meshes(rendering_engine *renda, world_tick_data &data) {
         for (const auto& e : entities) {
             // get transform
-            const auto transform_component = registry->get_component<component_transform>(e);
-            const auto common_geometry_component = registry->get_component<component_common_geometry>(e);
-            mat4 model_transform = transform_component.get_matrix();
+            auto& transform_component = registry->get_component<component_transform>(e);
+            transform_component.update();
+            //const auto common_geometry_component = registry->get_component<component_common_geometry>(e);
             // get some rendering stuff
 
             rendering_engine::mesh_render_data render_data = {};
-            render_data.p_transform = &model_transform;
+            render_data.p_transform = &transform_component.transform_matrix;
             render_data.entity = e;
             render_data.delta_time = data.delta_time;
             render_data.p_position = &transform_component.world_position;

@@ -22,7 +22,7 @@ namespace wg {
             string_view filename_ps;
         };
 
-        explicit dx_common_mesh_cube(dx_graphics& gfx, world_registry* p_world_reg, entity_t entt, const create_info& cv_create_info);
+        explicit dx_common_mesh_cube(dx_graphics& gfx, const create_info& cv_create_info);
     };
 }
 

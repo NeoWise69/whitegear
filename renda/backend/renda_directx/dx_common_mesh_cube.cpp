@@ -20,10 +20,7 @@
 namespace wg {
     static bool SCommonMeshInitialized = false;
 
-    dx_common_mesh_cube::dx_common_mesh_cube(dx_graphics &gfx, world_registry *p_world_reg, entity_t entt,
-                                             const dx_common_mesh_cube::create_info &cv_create_info)
-         : dx_renderable(p_world_reg, entt) {
-
+    dx_common_mesh_cube::dx_common_mesh_cube(dx_graphics &gfx, const dx_common_mesh_cube::create_info &cv_create_info) {
         mNumVertices = 8;
 
         static const auto cube_geometry = geometry_buffer<VERTEX_TYPE_MESH>::get_cube();

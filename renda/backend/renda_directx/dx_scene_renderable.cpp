@@ -18,8 +18,7 @@
 #if WG_WINDOWS
 
 namespace wg {
-    dx_scene_renderable::dx_scene_renderable(dx_graphics& gfx, world_registry* p_world_reg, entity_t entt, const dx_scene_renderable_configuration& config)
-        : dx_renderable(p_world_reg, entt) {
+    dx_scene_renderable::dx_scene_renderable(dx_graphics& gfx, const dx_scene_renderable_configuration& config) {
 
         mNumVertices = config.p_mesh_geometry_buffer->get_num_vertices();
 
