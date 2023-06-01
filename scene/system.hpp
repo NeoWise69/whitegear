@@ -12,11 +12,8 @@
 #include <scene/entity.hpp>
 #include <scene/component.hpp>
 #include <core/containers/set.hpp>
-#include <core/containers/hashmap.hpp>
 #include <core/smart_ptr.hpp>
-
-// experimental
-#include <core/experimental/hashmap.hpp>
+#include <core/containers/hashmap.hpp>
 
 /**
  * Macro used for system declaration,
@@ -60,8 +57,8 @@ namespace wg {
         void on_entity_footprint_changed(entity_t entt, const footprint& f);
 
     private:
-        experimental::hashmap<scene_system_id, footprint> mFootprints;
-        experimental::hashmap<scene_system_id, shared_ptr<scene_system>> mSystems;
+        hashmap<scene_system_id, footprint> mFootprints;
+        hashmap<scene_system_id, shared_ptr<scene_system>> mSystems;
     };
 
 }

@@ -69,7 +69,7 @@ namespace wg::resource {
     }
 
     text_cache& get_text_cache(name_t&& name) {
-        static experimental::hashmap<name_t, text_cache> caches = {};
+        static hashmap<name_t, text_cache> caches = {};
         return caches[name];
     }
 }

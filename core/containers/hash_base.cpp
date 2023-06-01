@@ -8,7 +8,7 @@
 
 #include "hash_base.hpp"
 
-namespace wg::experimental {
+namespace wg {
     void hash_iterator_base::next_node() {
         if (mPtr)
             mPtr = mPtr->mNext;

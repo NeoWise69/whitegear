@@ -10,11 +10,8 @@
 #define WHITEGEAR_CACHE_HPP
 
 #include "base.hpp"
-#include <core/io.hpp>
 #include <core/containers/hashmap.hpp>
-
-// experimental
-#include <core/experimental/hashmap.hpp>
+#include <core/io.hpp>
 
 namespace wg::resource {
     template<class T>
@@ -54,7 +51,7 @@ namespace wg::resource {
         virtual bool save_to_file(const string_view& filename) const = 0;
         virtual bool load_from_file(const string_view& filename) = 0;
     protected:
-        experimental::hashmap<name_t, handle_type> mCache = {};
+        hashmap<name_t, handle_type> mCache = {};
     };
 }
 

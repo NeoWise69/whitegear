@@ -10,10 +10,8 @@
 #define WHITEGEAR_COMPONENT_MANAGER_HPP
 
 #include <scene/component_array.hpp>
+#include <core/containers/hashmap.hpp>
 #include <core/smart_ptr.hpp>
-
-// experimental
-#include <core/experimental/hashmap.hpp>
 
 namespace wg {
     class component_manager {
@@ -63,8 +61,8 @@ namespace wg {
         }
 
     private:
-        experimental::hashmap<component_id, component_type_t> mComponentTypes;
-        experimental::hashmap<component_id, shared_ptr<component_array_base>> mComponentArrays;
+        hashmap<component_id, component_type_t> mComponentTypes;
+        hashmap<component_id, shared_ptr<component_array_base>> mComponentArrays;
         component_type_t mNextComponentType;
 
         template<class T>

@@ -10,13 +10,11 @@
 #define WHITEGEAR_RENDERING_ENGINE_DIRECTX_HPP
 
 #include "minimal.hpp"
+#include <core/containers/hashmap.hpp>
 
 #include "dx_graphics.hpp"
 #include "dx_info_manager.hpp"
 #include "dx_renderable.hpp"
-
-// experimental
-#include <core/experimental/hashmap.hpp>
 
 #if WG_WINDOWS
 
@@ -45,7 +43,7 @@ namespace wg {
         dx_graphics mGraphics;
         window* mWindow;
 
-        experimental::hashmap<entity_t, shared_ptr<dx_renderable>> mRenderables;
+        hashmap<entity_t, shared_ptr<dx_renderable>> mRenderables;
     };
 }
 

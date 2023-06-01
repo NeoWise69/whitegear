@@ -9,12 +9,9 @@
 #ifndef WHITEGEAR_COMPONENT_ARRAY_HPP
 #define WHITEGEAR_COMPONENT_ARRAY_HPP
 
-#include <core/containers/hashmap.hpp>
 #include <scene/component.hpp>
 #include <scene/entity.hpp>
-
-// experimental
-#include <core/experimental/hashmap.hpp>
+#include <core/containers/hashmap.hpp>
 
 namespace wg {
     class component_array_base {
@@ -75,8 +72,8 @@ namespace wg {
 
     private:
         T mComponentArray[MAX_ENTITIES];
-        experimental::hashmap<entity_t, u64> mToIndex;
-        experimental::hashmap<u64, entity_t> mToEntity;
+        hashmap<entity_t, u64> mToIndex;
+        hashmap<u64, entity_t> mToEntity;
         u64 mSize;
     };
 }

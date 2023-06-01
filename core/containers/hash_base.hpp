@@ -9,11 +9,11 @@
 #ifndef WHITEGEAR_HASH_BASE_HPP
 #define WHITEGEAR_HASH_BASE_HPP
 
-#include <core/hash.hpp>
-#include <core/utils.hpp>
-#include <core/containers/blocked_allocator.hpp>
+#include "core/hash.hpp"
+#include "core/utils.hpp"
+#include "blocked_allocator.hpp"
 
-namespace wg::experimental {
+namespace wg {
     /**
      * Node base class.
      */
@@ -89,7 +89,7 @@ namespace wg::experimental {
 }
 namespace wg {
     template<>
-    inline void swap(experimental::hash_base& a, experimental::hash_base& b) {
+    inline void swap(hash_base& a, hash_base& b) {
         swap(a.mHead, b.mHead);
         swap(a.mTail, b.mTail);
         swap(a.mPtrs, b.mPtrs);
