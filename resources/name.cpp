@@ -10,9 +10,9 @@
 #include <core/hash.hpp>
 
 namespace wg::resource {
-    name_t::name_t(const char *p_name) : mName(p_name), mHash(hash_string(p_name)) {}
-    name_t::name_t(const string_view &sv) : mName(sv), mHash(hash_string_view(sv)) {}
-    name_t::name_t(const string &str) : mName(str), mHash(hash_string(str)) {}
+    name_t::name_t(const char *p_name) : mName(p_name), mHash(make_hash(p_name)) {}
+    name_t::name_t(const string_view &sv) : mName(sv), mHash(make_hash(sv)) {}
+    name_t::name_t(const string &str) : mName(str), mHash(make_hash(str)) {}
     bool operator==(const name_t& a, const name_t& b) {
         return a.get_hash() == b.get_hash();
     }

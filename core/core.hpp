@@ -14,6 +14,7 @@
 #include "arch_info.hpp"
 #include "logger.hpp"
 #include "ret.hpp"
+#include "utils.hpp"
 
 // containers
 #include "containers/array_view.hpp"
@@ -21,63 +22,5 @@
 #include "containers/string.hpp"
 #include "containers/bounded_array.hpp"
 #include "containers/hashmap.hpp"
-
-/**
- * Returns lower between parameters
- */
-template<class A>
-inline constexpr A min(A x) {
-    return x;
-}
-/**
- * Returns lower between parameters
- */
-template<class A, class B>
-inline constexpr A min(A x, B y) {
-    return (x < B(y)) ? x : B(y);
-}
-/**
- * Returns lower between parameters
- */
-template<class A, class B, class C>
-inline constexpr A min(A x, B y, C z) {
-    return min(min(x, y), z);
-}
-/**
- * Returns lower between parameters
- */
-template<class A, class B, class C, class D>
-inline constexpr A min(A x, B y, C z, D w) {
-    return min(min(x, y), min(z, w));
-}
-
-/**
- * Returns higher between parameters
- */
-template<class A>
-inline constexpr A max(A x) {
-    return x;
-}
-/**
- * Returns higher between parameters
- */
-template<class A, class B>
-inline constexpr A max(A x, B y) {
-    return (x > B(y)) ? x : B(y);
-}
-/**
- * Returns higher between parameters
- */
-template<class A, class B, class C>
-inline constexpr A max(A x, B y, C z) {
-    return max(max(x, y), z);
-}
-/**
- * Returns higher between parameters
- */
-template<class A, class B, class C, class D>
-inline constexpr A max(A x, B y, C z, D w) {
-    return max(max(x, y), max(z, w));
-}
 
 #endif //WHITEGEAR_CORE_HPP
