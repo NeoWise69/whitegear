@@ -16,12 +16,19 @@
 #include <core/containers/bounded_array.hpp>
 
 namespace wg {
+    /**
+     * Namespace for all FNV algorithm related stuff.
+     */
     namespace fnv {
-        template<uint N>
-        struct hash;
+        template<uint N> struct hash;
+        /**
+         * Good seed and prime, recommended by 'http://isthe.com/chongo/tech/comp/fnv/'
+         */
         inline u64 seed = 14695981039346656037ull;
         inline constexpr static u64 prime = 1099511628211ull;
-
+        /**
+         * FNV1a hash for single byte.
+         */
         template<>
         struct hash<sizeof(i8)> {
             inline auto operator()(i8 v, u64 h = seed) {
@@ -32,7 +39,9 @@ namespace wg {
                 return (v ^ h) * prime;
             }
         };
-
+        /**
+         * FNV1a hash for two bytes.
+         */
         template<>
         struct hash<sizeof(i16)> {
             inline auto operator()(i16 v, u64 h = seed) {
@@ -47,7 +56,9 @@ namespace wg {
                 return hash<1>()(*p, h);
             }
         };
-
+        /**
+         * FNV1a hash for four bytes.
+         */
         template<>
         struct hash<sizeof(i32)> {
             inline auto operator()(i32 v, u64 h = seed) {
@@ -65,7 +76,9 @@ namespace wg {
                 h = hash<1>()(*p++, h);
                 return hash<1>()(*p, h);
             }
-
+            /**
+             * Special operator for 32bit FP numbers.
+             */
             inline auto operator()(float f, u64 h = seed) {
                 const i8 *p = (const i8 *) &f;
                 h = hash<1>()(*p++, h);
@@ -74,7 +87,9 @@ namespace wg {
                 return hash<1>()(*p, h);
             }
         };
-
+        /**
+         * FNV1a hash for eight bytes.
+         */
         template<>
         struct hash<sizeof(i64)> {
             inline auto operator()(i64 v, u64 h = seed) {
@@ -100,7 +115,9 @@ namespace wg {
                 h = hash<1>()(*p++, h);
                 return hash<1>()(*p, h);
             }
-
+            /**
+             * Special operator for 64bit FP numbers.
+             */
             inline auto operator()(double v, u64 h = seed) {
                 const i8 *p = (const i8 *) &v;
                 h = hash<1>()(*p++, h);
@@ -112,7 +129,9 @@ namespace wg {
                 h = hash<1>()(*p++, h);
                 return hash<1>()(*p, h);
             }
-
+            /**
+             * Special operator for string (NULL_TERM) hashing.
+             */
             inline auto operator()(const char *s, u64 h = seed) {
                 if (!s) return 0ull;
                 while (*s) {
@@ -120,7 +139,9 @@ namespace wg {
                 }
                 return h;
             }
-
+            /**
+             * Special operator for sized string hashing.
+             */
             inline auto operator()(const char *s, uint len, u64 h = seed) {
                 if (!s) return 0ull;
                 for (uint i = 0; i < len && s[i] != 0; ++i) {
