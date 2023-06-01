@@ -68,6 +68,12 @@ namespace wg {
     inline constexpr A max(A x, B y, C z, D w) {
         return max(max(x, y), max(z, w));
     }
+    template<class T>
+    inline void swap(T& a, T& b) {
+        T t = a;
+        a = b;
+        b = t;
+    }
 }
 
 #endif //WHITEGEAR_UTILS_HPP
