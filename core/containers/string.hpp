@@ -92,6 +92,9 @@ namespace wg {
         string_impl* mImpl;
     };
 
+    bool operator==(const string& a, const string& b);
+    bool operator!=(const string& a, const string& b);
+
     string operator+(const string& a, const string& b);
     string operator+(const string& a, const char& b);
     string operator+(const string& a, const char* b);

@@ -54,6 +54,19 @@ namespace wg {
         const_pointer_type mPtr;
         size_type mSize;
     };
+    template<class T>
+    inline bool operator==(const array_view<T>& a, const array_view<T>& b) {
+        if (a.size() != b.size()) return false;
+        for (uint i = 0; i < a.size(); ++i) {
+            if (a[i] != b[i])
+                return false;
+        }
+        return true;
+    }
+    template<class T>
+    inline bool operator!=(const array_view<T>& a, const array_view<T>& b) {
+        return !(a == b);
+    }
 }
 
 #endif //WHITEGEAR_ARRAY_VIEW_HPP

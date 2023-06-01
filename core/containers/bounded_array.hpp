@@ -162,6 +162,20 @@ namespace wg {
     private:
         uint mSize = {};
     };
+
+    template<class T, uint N1, uint N2>
+    inline bool operator==(const bounded_array<T, N1>& a, const bounded_array<T, N2>& b) {
+        if (a.size() != b.size()) return false;
+        for (uint i = 0; i < a.size(); ++i) {
+            if (a[i] != b[i])
+                return false;
+        }
+        return true;
+    }
+    template<class T, uint N1, uint N2>
+    inline bool operator!=(const bounded_array<T, N1>& a, const bounded_array<T, N2>& b) {
+        return !(a == b);
+    }
 }
 
 #endif //WHITEGEAR_BOUNDED_ARRAY_HPP

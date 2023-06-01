@@ -7,6 +7,8 @@
  ******************************************************************************/
 
 #include <core/containers/string.hpp>
+#include <core/utils.hpp>
+
 #include <cstring>
 #include <new>
 #include <cstdio>
@@ -574,6 +576,14 @@ namespace wg {
 
     string::string(const string_view &sv) : string(sv.c_str(), sv.size()) {}
 
+    bool operator==(const string& a, const string& b) {
+        if (a.size() != b.size()) return false;
+        return !strncmp(a.c_str(), b.c_str(), min(a.size(), b.size()));
+    }
+    bool operator!=(const string& a, const string& b) {
+        return !(a == b);
+    }
+
     string operator+(const string& a, const string& b) {
         return string(a) += b;
     }
@@ -641,6 +651,4 @@ namespace wg {
         snprintf(buf, 20, "%f", v);
         return { buf, 23 };
     }
-
-
 }
