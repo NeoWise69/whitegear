@@ -28,7 +28,7 @@ namespace wg {
         /**
          * Direct call to D3D for binding.
          */
-        virtual void bind(dx_graphics& gfx) noexcept = 0;
+        virtual void bind(dx_graphics& gfx) const noexcept = 0;
     };
 }
 

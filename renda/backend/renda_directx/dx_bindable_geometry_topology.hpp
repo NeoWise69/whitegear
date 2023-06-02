@@ -17,7 +17,7 @@ namespace wg {
     class dx_bindable_geometry_topology : public dx_bindable {
     public:
         inline dx_bindable_geometry_topology(dx_graphics& gfx, D3D11_PRIMITIVE_TOPOLOGY topo) : mTopo(topo) {}
-        void bind(dx_graphics& gfx) noexcept override;
+        void bind(dx_graphics& gfx) const noexcept override;
     private:
         D3D11_PRIMITIVE_TOPOLOGY mTopo = D3D11_PRIMITIVE_TOPOLOGY_UNDEFINED;
     };

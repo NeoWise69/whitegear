@@ -6,18 +6,18 @@
  * report this source code leak and delete all copies of source code from all your machines.
  ******************************************************************************/
 
-#include "dx_bindable_transform_constant_buffer.hpp"
+#include "dx_bindable_per_frame_constant_buffer.hpp"
 
 #if WG_WINDOWS
 
 namespace wg {
-    void dx_bindable_transform_constant_buffer::bind(dx_graphics &gfx) noexcept {
+    void dx_bindable_per_frame_constant_buffer::bind(wg::dx_graphics &gfx) const noexcept {
+        frame_data_t frame_data = {};
+        frame_data.projection_matrix = gfx.get_projection_matrix();
+        frame_data.view_matrix = gfx.get_view_matrix();
 
-        material_data_t material_data = mParent.get_material_data();
-        material_data.model_matrix = gfx.get_projection_matrix() * gfx.get_view_matrix() * material_data.model_matrix;
-
-        mVCBMaterialData.update(gfx, material_data);
-        mVCBMaterialData.bind(gfx);
+        mVCBFrameData.update(gfx, frame_data);
+        mVCBFrameData.bind(gfx, 1);
     }
 }
 

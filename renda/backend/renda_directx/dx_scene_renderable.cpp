@@ -13,7 +13,7 @@
 #include "dx_bindable_pixel_shader.hpp"
 #include "dx_bindable_input_layout.hpp"
 #include "dx_bindable_geometry_topology.hpp"
-#include "dx_bindable_transform_constant_buffer.hpp"
+#include "dx_bindable_per_renderable_constant_buffer.hpp"
 
 #if WG_WINDOWS
 
@@ -38,7 +38,7 @@ namespace wg {
         };
         add_bind(make_unique<dx_bindable_input_layout>(gfx, ied, vsbc));
         add_bind(make_unique<dx_bindable_geometry_topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
-        add_bind(make_unique<dx_bindable_transform_constant_buffer>(gfx, *this));
+        add_bind(make_unique<dx_bindable_per_renderable_constant_buffer>(gfx, *this));
     }
 }
 

@@ -83,8 +83,8 @@ namespace wg {
         void create_pixel_shader(const wrl::ComPtr<ID3DBlob>& blob, wrl::ComPtr<ID3D11PixelShader>& PS) const;
         void create_input_layout(const D3D11_INPUT_ELEMENT_DESC* p_elements, uint num_elements, const wrl::ComPtr<ID3DBlob>& code, wrl::ComPtr<ID3D11InputLayout>& il) const;
 
-        void map_resource(const wrl::ComPtr<ID3D11Resource>& resource, D3D11_MAP type, D3D11_MAPPED_SUBRESOURCE* p_mr);
-        void unmap_resource(const wrl::ComPtr<ID3D11Resource>& resource);
+        void map_resource(const wrl::ComPtr<ID3D11Resource>& resource, D3D11_MAP type, D3D11_MAPPED_SUBRESOURCE* p_mr) const;
+        void unmap_resource(const wrl::ComPtr<ID3D11Resource>& resource) const;
 
         inline mat4 get_view_matrix() const { return mGlobalCamera.get_view_matrix(); }
         inline mat4 get_projection_matrix() const { return mProjectionMatrix; }

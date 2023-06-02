@@ -28,7 +28,7 @@ namespace wg {
         if (GEnableImGui) {
             init_imgui();
         }
-
+        mFrameData = make_unique<dx_bindable_per_frame_constant_buffer>(mGraphics);
     }
 
     rendering_engine_directx::~rendering_engine_directx() {
@@ -55,6 +55,7 @@ namespace wg {
                 if (!renderable->is_transform_ptr_provided()) {
                     renderable->set_transform_matrix_ptr(p_data->p_transform);
                 }
+
                 renderable->render(mGraphics);
                 world_stats.vertices_per_frame += renderable->get_num_vertices();
                 world_stats.indices_per_frame += renderable->get_num_indices();
@@ -104,6 +105,8 @@ namespace wg {
         world_stats.draw_calls = 0;
         world_stats.indices_per_frame = 0;
         world_stats.vertices_per_frame = 0;
+
+        mFrameData->bind(mGraphics);
     }
 
     void rendering_engine_directx::on_end_tick() {

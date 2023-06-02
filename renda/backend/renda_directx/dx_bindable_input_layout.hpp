@@ -17,7 +17,7 @@ namespace wg {
     class dx_bindable_input_layout : public dx_bindable {
     public:
         dx_bindable_input_layout(dx_graphics& gfx, const bounded_array<D3D11_INPUT_ELEMENT_DESC, 16>& layout, ID3DBlob* p_bytecode);
-        void bind(dx_graphics& gfx) noexcept override;
+        void bind(dx_graphics& gfx) const noexcept override;
     private:
         wrl::ComPtr<ID3D11InputLayout> mInputLayout = nullptr;
     };

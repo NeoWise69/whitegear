@@ -33,12 +33,6 @@ namespace wg {
         mBinds.emplace_back(std::move(index_buffer));
     }
 
-    material_data_t dx_renderable::get_material_data() const {
-        material_data_t material_data = {};
-        material_data.model_matrix = get_transform_matrix();
-        return material_data;
-    }
-
     u64 dx_renderable::get_num_indices() const {
         return u64(mIndexBuffer->get_count());
     }

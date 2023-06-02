@@ -30,7 +30,8 @@ namespace wg {
         vec3 mPosition = {};
         vec3 mFront = {0, 0, -1};
         vec3 mUp = {0, 1, 0};
-        scalar mFlySpeed = 0.05f;
+        scalar mFlySpeed = 0.1f;
+        scalar mFlySpeedUpMultiplier = 4.5f;
         scalar mSense = 0.3f;
         bool mFirst = true;
         vec2 mLastMousePos = {};

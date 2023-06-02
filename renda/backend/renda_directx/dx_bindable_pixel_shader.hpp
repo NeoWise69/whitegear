@@ -17,7 +17,7 @@ namespace wg {
     class dx_bindable_pixel_shader : public dx_bindable {
     public:
         dx_bindable_pixel_shader(dx_graphics& gfx, const string& filename);
-        void bind(dx_graphics& gfx) noexcept override;
+        void bind(dx_graphics& gfx) const noexcept override;
     private:
         wrl::ComPtr<ID3D11PixelShader> mPixelShader = nullptr;
     };

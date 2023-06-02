@@ -15,6 +15,7 @@
 #include "dx_graphics.hpp"
 #include "dx_info_manager.hpp"
 #include "dx_renderable.hpp"
+#include "dx_bindable_per_frame_constant_buffer.hpp"
 
 #if WG_WINDOWS
 
@@ -44,6 +45,7 @@ namespace wg {
         window* mWindow;
 
         hashmap<entity_t, shared_ptr<dx_renderable>> mRenderables;
+        unique_ptr<dx_bindable_per_frame_constant_buffer> mFrameData;
     };
 }
 

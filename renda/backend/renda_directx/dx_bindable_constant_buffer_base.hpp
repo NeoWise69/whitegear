@@ -39,7 +39,7 @@ namespace wg {
             csd.pSysMem = &cb;
             gfx.create_buffer(cbd, &mConstantBuffer, &csd);
         }
-        inline void update(dx_graphics& gfx, const CB& cb) {
+        inline void update(dx_graphics& gfx, const CB& cb) const {
             D3D11_MAPPED_SUBRESOURCE mr = {};
             gfx.map_resource(mConstantBuffer, D3D11_MAP_WRITE_DISCARD, &mr);
             memcpy(mr.pData, &cb, sizeof(cb));
@@ -55,8 +55,11 @@ namespace wg {
     public:
         using dx_bindable_constant_buffer_base<CB>::dx_bindable_constant_buffer_base;
 
-        inline void bind(dx_graphics& gfx) noexcept override {
-            gfx.vs()->set_constant_buffers(mConstantBuffer.GetAddressOf(), 1);
+        inline void bind(dx_graphics& gfx) const noexcept override {
+            gfx.vs()->set_constant_buffers((ID3D11Buffer**)mConstantBuffer.GetAddressOf(), 1);
+        }
+        inline void bind(dx_graphics& gfx, uint start_slot) const noexcept {
+            gfx.vs()->set_constant_buffers((ID3D11Buffer**)mConstantBuffer.GetAddressOf(), 1, start_slot);
         }
     };
 
@@ -66,8 +69,11 @@ namespace wg {
     public:
         using dx_bindable_constant_buffer_base<CB>::dx_bindable_constant_buffer_base;
 
-        inline void bind(dx_graphics& gfx) noexcept override {
-            gfx.ps()->set_constant_buffers(mConstantBuffer.GetAddressOf(), 1);
+        inline void bind(dx_graphics& gfx) const noexcept override {
+            gfx.ps()->set_constant_buffers((ID3D11Buffer**)mConstantBuffer.GetAddressOf(), 1);
+        }
+        inline void bind(dx_graphics& gfx, uint start_slot) const noexcept {
+            gfx.ps()->set_constant_buffers((ID3D11Buffer**)mConstantBuffer.GetAddressOf(), 1, start_slot);
         }
     };
 }

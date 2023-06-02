@@ -6,14 +6,18 @@
  * report this source code leak and delete all copies of source code from all your machines.
  ******************************************************************************/
 
-#include "dx_bindable_vertex_buffer.hpp"
+#include "dx_bindable_per_renderable_constant_buffer.hpp"
 
 #if WG_WINDOWS
 
 namespace wg {
-    void dx_bindable_vertex_buffer::bind(dx_graphics &gfx) const noexcept {
-        const uint offset = 0u;
-        gfx.ia()->set_vertex_buffers(1, mVertexBuffer.GetAddressOf(), &mStride, &offset);
+    void dx_bindable_per_renderable_constant_buffer::bind(dx_graphics &gfx) const noexcept {
+
+        material_data_t material_data = {};
+        material_data.model_matrix = mParent.get_transform_matrix();
+
+        mVCBMaterialData.update(gfx, material_data);
+        mVCBMaterialData.bind(gfx);
     }
 }
 

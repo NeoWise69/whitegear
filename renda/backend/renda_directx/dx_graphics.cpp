@@ -143,11 +143,11 @@ namespace wg {
     }
 
     void dx_graphics::map_resource(const wrl::ComPtr<ID3D11Resource> &resource, D3D11_MAP type,
-                                   D3D11_MAPPED_SUBRESOURCE *p_mr) {
+                                   D3D11_MAPPED_SUBRESOURCE *p_mr) const {
         ret_t(context->Map(resource.Get(), 0u, type, 0u, p_mr));
     }
 
-    void dx_graphics::unmap_resource(const wrl::ComPtr<ID3D11Resource> &resource) {
+    void dx_graphics::unmap_resource(const wrl::ComPtr<ID3D11Resource> &resource) const {
         context->Unmap(resource.Get(), 0u);
     }
 

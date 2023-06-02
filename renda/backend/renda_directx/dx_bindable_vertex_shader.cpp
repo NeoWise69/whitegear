@@ -17,7 +17,7 @@ namespace wg {
         ret_t(D3DReadFileToBlob(fname, &mBytecode));
         gfx.create_vertex_shader(mBytecode, mVertexShader);
     }
-    void dx_bindable_vertex_shader::bind(dx_graphics &gfx) noexcept {
+    void dx_bindable_vertex_shader::bind(dx_graphics &gfx) const noexcept {
         gfx.vs()->bind(mVertexShader);
     }
 }

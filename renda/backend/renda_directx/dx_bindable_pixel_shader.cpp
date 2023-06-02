@@ -19,7 +19,7 @@ namespace wg {
         gfx.create_pixel_shader(code, mPixelShader);
     }
 
-    void dx_bindable_pixel_shader::bind(dx_graphics &gfx) noexcept {
+    void dx_bindable_pixel_shader::bind(dx_graphics &gfx) const noexcept {
         gfx.ps()->bind(mPixelShader);
     }
 }

@@ -38,6 +38,11 @@ namespace wg {
     struct material_data_t {
         mat4 model_matrix;
     };
+
+    struct frame_data_t {
+        mat4 projection_matrix;
+        mat4 view_matrix;
+    };
 }
 
 #endif //WHITEGEAR_VERTEX_HPP

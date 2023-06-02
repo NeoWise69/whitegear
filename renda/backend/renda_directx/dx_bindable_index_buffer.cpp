@@ -11,7 +11,7 @@
 #if WG_WINDOWS
 
 namespace wg {
-    void dx_bindable_index_buffer::bind(dx_graphics &gfx) noexcept {
+    void dx_bindable_index_buffer::bind(dx_graphics &gfx) const noexcept {
         gfx.ia()->set_index_buffer(mIndexBuffer.Get(), DXGI_FORMAT_R32_UINT);
     }
 }

@@ -30,7 +30,7 @@ namespace wg {
             isd.pSysMem = p_buffer->get_indices();
             gfx.create_buffer(ibd, &mIndexBuffer, &isd);
         }
-        void bind(dx_graphics& gfx) noexcept override;
+        void bind(dx_graphics& gfx) const noexcept override;
         inline uint get_count() const noexcept { return mCount; }
     private:
         wrl::ComPtr<ID3D11Buffer> mIndexBuffer = nullptr;

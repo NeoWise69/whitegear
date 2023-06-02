@@ -30,7 +30,6 @@ namespace wg {
         static void add_static_bind(unique_ptr<dx_bindable> bind) noexcept;
         void add_index_buffer(unique_ptr<dx_bindable_index_buffer> index_buffer) noexcept;
         void add_static_index_buffer(unique_ptr<dx_bindable_index_buffer> index_buffer) noexcept;
-        material_data_t get_material_data() const;
         inline u64 get_num_vertices() const { return mNumVertices; }
         u64 get_num_indices() const;
         inline auto get_bounding(const vec3& pos) const { mBoundingCube.set_position(pos); return mBoundingCube; }

@@ -37,7 +37,7 @@ namespace wg {
             gfx.create_buffer(bd, &mVertexBuffer, &sd);
         }
 
-        void bind(dx_graphics& gfx) noexcept override;
+        void bind(dx_graphics& gfx) const noexcept override;
     private:
         uint mStride = {};
         wrl::ComPtr<ID3D11Buffer> mVertexBuffer = nullptr;

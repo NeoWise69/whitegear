@@ -6,8 +6,8 @@
  * report this source code leak and delete all copies of source code from all your machines.
  ******************************************************************************/
 
-#ifndef WHITEGEAR_DX_BINDABLE_TRANSFORM_CONSTANT_BUFFER_HPP
-#define WHITEGEAR_DX_BINDABLE_TRANSFORM_CONSTANT_BUFFER_HPP
+#ifndef WHITEGEAR_DX_BINDABLE_PER_RENDERABLE_CONSTANT_BUFFER_HPP
+#define WHITEGEAR_DX_BINDABLE_PER_RENDERABLE_CONSTANT_BUFFER_HPP
 
 #include "dx_bindable_constant_buffer_base.hpp"
 #include "dx_renderable.hpp"
@@ -16,12 +16,12 @@
 #if WG_WINDOWS
 
 namespace wg {
-    class dx_bindable_transform_constant_buffer : public dx_bindable {
+    class dx_bindable_per_renderable_constant_buffer : public dx_bindable {
     public:
-        inline dx_bindable_transform_constant_buffer(dx_graphics& gfx, const dx_renderable& parent)
+        inline dx_bindable_per_renderable_constant_buffer(dx_graphics& gfx, const dx_renderable& parent)
             : mVCBMaterialData(gfx), mParent(parent)
         {}
-        void bind(dx_graphics& gfx) noexcept override;
+        void bind(dx_graphics& gfx) const noexcept override;
     private:
         dx_bindable_vertex_constant_buffer<material_data_t> mVCBMaterialData;
         const dx_renderable& mParent;
@@ -30,4 +30,4 @@ namespace wg {
 
 #endif
 
-#endif //WHITEGEAR_DX_BINDABLE_TRANSFORM_CONSTANT_BUFFER_HPP
+#endif //WHITEGEAR_DX_BINDABLE_PER_RENDERABLE_CONSTANT_BUFFER_HPP

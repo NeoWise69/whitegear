@@ -11,7 +11,7 @@
 #if WG_WINDOWS
 
 namespace wg {
-    void dx_bindable_geometry_topology::bind(dx_graphics &gfx) noexcept {
+    void dx_bindable_geometry_topology::bind(dx_graphics &gfx) const noexcept {
         gfx.ia()->set_primitive_topology(mTopo);
     }
 }

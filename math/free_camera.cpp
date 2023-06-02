@@ -22,24 +22,35 @@ namespace wg {
     }
 
     void free_camera::update() {
+        auto fly_speed = mFlySpeed;
+        if (input::get().kbd_is_pressed(KEY_LEFT_SHIFT)) {
+            fly_speed *= mFlySpeedUpMultiplier;
+        }
+
+        auto acceleration = vec3(0);
+
         if (input::get().kbd_is_pressed(KEY_W)) {
-            mPosition += mFront * mFlySpeed;
+            acceleration += mFront * fly_speed;
         }
         if (input::get().kbd_is_pressed(KEY_S)) {
-            mPosition -= mFront * mFlySpeed;
+            acceleration -= mFront * fly_speed;
         }
         if (input::get().kbd_is_pressed(KEY_A)) {
-            mPosition -= normalize(cross(mFront, mUp)) * mFlySpeed;
+            acceleration -= normalize(cross(mFront, mUp)) * fly_speed;
         }
         if (input::get().kbd_is_pressed(KEY_D)) {
-            mPosition += normalize(cross(mFront, mUp)) * mFlySpeed;
+            acceleration += normalize(cross(mFront, mUp)) * fly_speed;
         }
         if (input::get().kbd_is_pressed(KEY_Q)) {
-            mPosition -= mUp * mFlySpeed;
+            acceleration -= mUp * fly_speed;
         }
         if (input::get().kbd_is_pressed(KEY_E)) {
-            mPosition += mUp * mFlySpeed;
+            acceleration += mUp * fly_speed;
         }
+
+        acceleration = fmin(acceleration, vec3(fly_speed));
+
+        mPosition += acceleration;
 
         { // camera rotation
             const auto ms = input::get().ms_get_position();

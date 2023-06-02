@@ -16,7 +16,7 @@ namespace wg {
                                                        ID3DBlob *p_bytecode) {
         gfx.create_input_layout(layout.data(), layout.size(), p_bytecode, mInputLayout);
     }
-    void dx_bindable_input_layout::bind(dx_graphics &gfx) noexcept {
+    void dx_bindable_input_layout::bind(dx_graphics &gfx) const noexcept {
         gfx.ia()->set_input_layout(mInputLayout);
     }
 }

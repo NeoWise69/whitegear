@@ -6,25 +6,27 @@
  * report this source code leak and delete all copies of source code from all your machines.
  ******************************************************************************/
 
-#ifndef WHITEGEAR_DX_BINDABLE_VERTEX_SHADER_HPP
-#define WHITEGEAR_DX_BINDABLE_VERTEX_SHADER_HPP
+#ifndef WHITEGEAR_DX_BINDABLE_PER_FRAME_CONSTANT_BUFFER_HPP
+#define WHITEGEAR_DX_BINDABLE_PER_FRAME_CONSTANT_BUFFER_HPP
 
-#include "dx_bindable.hpp"
+#include "dx_bindable_constant_buffer_base.hpp"
+#include "dx_renderable.hpp"
+#include <math/geometry.hpp>
 
 #if WG_WINDOWS
 
 namespace wg {
-    class dx_bindable_vertex_shader : public dx_bindable {
+    class dx_bindable_per_frame_constant_buffer : public dx_bindable {
     public:
-        dx_bindable_vertex_shader(dx_graphics& gfx, const string& filename);
+        inline dx_bindable_per_frame_constant_buffer(dx_graphics& gfx)
+                : mVCBFrameData(gfx)
+        {}
         void bind(dx_graphics& gfx) const noexcept override;
-        inline ID3DBlob* get_bytecode() const noexcept { return mBytecode.Get(); }
     private:
-        wrl::ComPtr<ID3DBlob> mBytecode = nullptr;
-        wrl::ComPtr<ID3D11VertexShader> mVertexShader = nullptr;
+        dx_bindable_vertex_constant_buffer<frame_data_t> mVCBFrameData;
     };
 }
 
 #endif
 
-#endif //WHITEGEAR_DX_BINDABLE_VERTEX_SHADER_HPP
+#endif //WHITEGEAR_DX_BINDABLE_PER_FRAME_CONSTANT_BUFFER_HPP
