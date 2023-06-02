@@ -82,6 +82,11 @@ namespace wg {
          */
         inline bool is_alive() const { return mInfo.alive; }
         /**
+         * Tells whether window is minimized or not.
+         * @return
+         */
+        inline bool is_suspended() const { return mInfo.w == 0 || mInfo.h == 0; }
+        /**
          * Returns if window is fullscreen.
          */
         inline bool is_fullscreen() const { return mInfo.fullscreen; }

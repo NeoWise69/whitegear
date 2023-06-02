@@ -88,6 +88,8 @@ namespace wg {
     }
 
     void rendering_engine_directx::on_begin_tick() {
+        mFrameStartTime = time_point::now();
+
         D3D11_VIEWPORT vp = {
                   0.0f, 0.0f,
                   FLOAT(mWindow->get_width()),
@@ -114,6 +116,9 @@ namespace wg {
             end_imgui();
         }
         mGraphics.end_frame();
+
+        const auto frame_end_time = time_point::now();
+        GTimeStats.frame_time = frame_end_time - mFrameStartTime;
     }
 
     void rendering_engine_directx::init_imgui() {

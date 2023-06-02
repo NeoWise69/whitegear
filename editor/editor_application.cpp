@@ -11,6 +11,7 @@
 // modules
 #include <editor/world_editor_module.hpp>
 #include <scene/scene_module.hpp>
+#include "core/time.hpp"
 
 namespace wg {
     void notify_renderer_api() {
@@ -66,24 +67,34 @@ namespace wg {
         runtime_tick_info tick_info = {};
 
         while (mCore.is_running() && mWindow.is_alive()) {
-            window::platform_update();
-
-            if (input::get().kbd_is_released(KEY_ESCAPE)) {
-                request_exit();
-            }
-
-            if (input::get().ms_is_released(KEY_MOUSE_LEFT)) {
-                const auto& pos = input::get().ms_get_position();
-                out
-                .trace("mouse click: %dx%d", i32(pos.x), i32(pos.y));
-            }
-
-            if (mCore.is_running()) {
+            if (!mWindow.is_suspended()) {
+                /* RENDERING CODE */
+                const auto begin_time_start = time_point::now();
                 mRenda->on_begin_tick();
+                const auto begin_time_end = time_point::now();
+                GTimeStats.frame_begin_time = begin_time_end - begin_time_start;
                 if (const auto code = mCore.tick(&tick_info)) {
                     return code;
                 }
+            }
+            { /* UPDATE LOGIC CODE */
+                window::platform_update();
+
+                if (input::get().kbd_is_released(KEY_ESCAPE)) {
+                    request_exit();
+                }
+
+                if (input::get().ms_is_released(KEY_MOUSE_LEFT)) {
+                    const auto &pos = input::get().ms_get_position();
+                    out
+                            .trace("mouse click: %dx%d", i32(pos.x), i32(pos.y));
+                }
+            }
+            { /* FRAME END & PRESENT CODE */
+                const auto end_time_start = time_point::now();
                 mRenda->on_end_tick();
+                const auto end_time_end = time_point::now();
+                GTimeStats.frame_end_time = end_time_end - end_time_start;
             }
         }
 

@@ -7,6 +7,7 @@
  ******************************************************************************/
 
 #include <runtime/runtime_core.hpp>
+#include <core/time.hpp>
 
 namespace wg {
     int runtime_core::initialize() {
@@ -36,11 +37,16 @@ namespace wg {
 
     int runtime_core::tick(runtime_tick_info *info) {
 
+        const auto start = time_point::now();
+
         for (auto& mod : mModules) {
             if (const auto code = mod->on_tick()) {
                 return code;
             }
         }
+
+        const auto end = time_point::now();
+        GTimeStats.tick_time = end - start;
 
         return 0;
     }

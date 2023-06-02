@@ -13,6 +13,7 @@
 // components
 #include <scene/components/transform.hpp>
 #include <scene/components/common_geometry.hpp>
+#include "core/time.hpp"
 
 namespace wg {
     bool world::initialize(rendering_engine* p_renda) {
@@ -22,8 +23,8 @@ namespace wg {
         registry.register_component<component_transform>();
         registry.register_component<component_common_geometry>();
 
-        renderingSystem = registry.register_scene_system<rendering_system>(&registry);
         commonMeshRenderingSystem = registry.register_scene_system<common_mesh_rendering_system>(&registry);
+        renderingSystem = registry.register_scene_system<rendering_system>(&registry);
         if (!renderingSystem) {
             out
             .error("Failed to register_scene_system<rendering_system>()!");
@@ -89,16 +90,33 @@ namespace wg {
     }
 
     bool world::on_tick(world_tick_data &data) {
+
+        const auto start = time_point::now();
+
         if (!commonMeshRenderingSystem->render_common_meshes(renda, data))
             return false;
         if (!renderingSystem->render_scene(renda, data))
             return false;
 
+        /**
+         * HERE UPDATE PASS
+         */
+        {
+
+        }
+
+        const auto end = time_point::now();
+        GTimeStats.world_tick_time = end - start;
+
         auto& world_stats = stats();
         out
-        .trace("DC:%d VPS:%d IPS:%d VPF:%d IPF:%d",
-               world_stats.draw_calls, world_stats.vertices_on_scene, world_stats.indices_on_scene,
-                                        world_stats.vertices_per_frame, world_stats.indices_per_frame);
+        .trace("frame_time=%.2fms, tick_time=%.2fms frame_begin_time=%.2fms frame_end_time=%.2fms world_tick_time=%.2fms",
+               GTimeStats.frame_time.get(time_point::milliseconds),
+               GTimeStats.tick_time.get(time_point::milliseconds),
+               GTimeStats.frame_begin_time.get(time_point::milliseconds),
+               GTimeStats.frame_end_time.get(time_point::milliseconds),
+               GTimeStats.world_tick_time.get(time_point::milliseconds)
+               );
 
         return true;
     }
