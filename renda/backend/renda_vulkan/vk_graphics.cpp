@@ -39,7 +39,25 @@ namespace wg {
         bool is_validation_layers_support() {
             uint layer_count = {};
             vkEnumerateInstanceLayerProperties(&layer_count, nullptr);
+            VkLayerProperties available_layers[MAX_VALIDATION_LAYERS] = {};
+            vkEnumerateInstanceLayerProperties(&layer_count, available_layers);
 
+            for (uint i = 0; i < GValidationLayers.size(); ++i) {
+                const auto& layer_name = GValidationLayers[i];
+                bool found = false;
+                for (uint j = 0; j < layer_count; ++j) {
+                    const string_view name = available_layers[j].layerName;
+                    if (name == layer_name) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 
