@@ -123,7 +123,7 @@ namespace wg {
         /**
          * Aspect ration of width and height.
          */
-        inline scalar get_aspect_ratio() const { mAspectRatio; }
+        inline scalar get_aspect_ratio() const { return mAspectRatio; }
         /**
          * Access to FOV in radians.
          */

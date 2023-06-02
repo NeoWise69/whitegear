@@ -7,11 +7,11 @@
  ******************************************************************************/
 
 #include <editor/editor_application.hpp>
+#include <core/time.hpp>
 
 // modules
 #include <editor/world_editor_module.hpp>
 #include <scene/scene_module.hpp>
-#include "core/time.hpp"
 
 namespace wg {
     void notify_renderer_api() {
@@ -38,8 +38,8 @@ namespace wg {
 
         {
             window_create_info wnd_info = {};
-            wnd_info.w = 1280;
-            wnd_info.h = 720;
+            wnd_info.w = 800;
+            wnd_info.h = 600;
             wnd_info.title = "ed";
             wnd_info.fullscreen = false;
 

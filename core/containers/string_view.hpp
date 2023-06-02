@@ -28,7 +28,7 @@ namespace wg {
         using const_pointer_type = const Char*;
         using reference_type = Char&;
         using const_reference_type = const Char&;
-        using size_type = size_t;
+        using size_type = uint;
 
         inline string_view_base(const string_view_base&) = default;
         inline string_view_base& operator=(const string_view_base&) = default;
