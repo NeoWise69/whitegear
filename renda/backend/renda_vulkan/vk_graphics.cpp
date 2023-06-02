@@ -11,9 +11,19 @@
 #include <GLFW/glfw3.h>
 
 #define MAX_INSTANCE_EXTENSIONS 32
+#define MAX_VALIDATION_LAYERS 8
 
 namespace wg {
     namespace {
+        bounded_array<const char*, MAX_VALIDATION_LAYERS> GValidationLayers = {
+            "VK_LAYER_KHRONOS_validation",
+        };
+#if WG_BUILD_DEBUG
+        constexpr bool GEnableValidationLayers = true;
+#else
+        constexpr bool GEnableValidationLayers = false;
+#endif
+
         void get_instance_extensions(bounded_array<const char*, MAX_INSTANCE_EXTENSIONS>& extensions) {
             u32 glfwExtensionCount = 0;
             const char** glfwExtensions = nullptr;
@@ -22,22 +32,28 @@ namespace wg {
                 extensions.emplace_back(glfwExtensions[i]);
 
 #if WG_UNIX
-                extensions.emplace_back(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
+            extensions.emplace_back(VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME);
 #endif
+        }
+
+        bool is_validation_layers_support() {
+            uint layer_count = {};
+            vkEnumerateInstanceLayerProperties(&layer_count, nullptr);
+
         }
     }
 
     vk_graphics::vk_graphics(const VkInstanceCreateInfo &create_info) {
-        ret_t(initialize_graphics(create_info));
+        ret_t(initialize_instance(create_info));
     }
 
     vk_graphics::~vk_graphics() {
         if (mInstance) {
-            uninitialize_graphics();
+            uninitialize_instance();
         }
     }
 
-    VkResult vk_graphics::initialize_graphics(const VkInstanceCreateInfo &create_info) {
+    VkResult vk_graphics::initialize_instance(const VkInstanceCreateInfo &create_info) {
         VkInstanceCreateInfo ici = create_info;
         bounded_array<const char*, MAX_INSTANCE_EXTENSIONS> extensions;
         get_instance_extensions(extensions);
@@ -48,10 +64,15 @@ namespace wg {
             ici.flags |= VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR;
 #endif
 
+        if (is_validation_layers_support() && GEnableValidationLayers) {
+            ici.ppEnabledLayerNames = GValidationLayers.data();
+            ici.enabledLayerCount = GValidationLayers.size();
+        }
+
         return vkCreateInstance(&ici, nullptr, &mInstance);
     }
 
-    void vk_graphics::uninitialize_graphics() {
+    void vk_graphics::uninitialize_instance() {
         vkDestroyInstance(mInstance, nullptr);
     }
 }

@@ -31,7 +31,7 @@ namespace wg {
 
     template<>
     inline bool ret_t<VkResult>::is_ok() const {
-        return mValue == VK_SUCCESS;
+        return SUCCESS(mValue);
     }
 
     template<>

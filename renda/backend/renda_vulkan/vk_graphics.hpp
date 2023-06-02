@@ -27,8 +27,8 @@ namespace wg {
         inline VkInstance get_instance() const { return mInstance; }
 
     private:
-        VkResult initialize_graphics(const VkInstanceCreateInfo& create_info);
-        void uninitialize_graphics();
+        VkResult initialize_instance(const VkInstanceCreateInfo& create_info);
+        void uninitialize_instance();
 
         VkInstance mInstance = nullptr;
         VkDevice mLogicalDevice = nullptr;
