@@ -67,7 +67,7 @@ namespace wg {
         runtime_tick_info tick_info = {};
 
         while (mCore.is_running() && mWindow.is_alive()) {
-            if (!mWindow.is_suspended()) {
+            if (!mWindow.is_suspended() && mCore.is_running()) {
                 /* RENDERING CODE */
                 const auto begin_time_start = time_point::now();
                 mRenda->on_begin_tick();
@@ -78,7 +78,7 @@ namespace wg {
                 }
             }
             { /* UPDATE LOGIC CODE */
-                window::platform_update();
+                mWindow.platform_update();
 
                 if (input::get().kbd_is_released(KEY_ESCAPE)) {
                     request_exit();
@@ -89,7 +89,10 @@ namespace wg {
                     out
                             .trace("mouse click: %dx%d", i32(pos.x), i32(pos.y));
                 }
+
             }
+            // this required because of potential request_exit and call to non-existing renda ptr.
+            if (mCore.is_running())
             { /* FRAME END & PRESENT CODE */
                 const auto end_time_start = time_point::now();
                 mRenda->on_end_tick();

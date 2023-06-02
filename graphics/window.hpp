@@ -12,6 +12,8 @@
 #include <core/core.hpp>
 #include <runtime/user_input.hpp>
 #include <graphics/cursor.hpp>
+#include <math/viewport.hpp>
+
 /**
  * Forward declaration of GLFW's window opaque type.
  */
@@ -44,6 +46,7 @@ namespace wg {
      */
     struct window_info : window_create_info {
         bool alive;
+        viewport vp = {};
     };
     /**
      * Main visual output device.
@@ -62,24 +65,6 @@ namespace wg {
          * through p_info window_create_info pointer.
          */
         void open(window_create_info* p_info);
-        /**
-         * Returns current width of window.
-         * [NOTE] Changes in realtime on window resize.
-         */
-        inline uint get_width() const { return mInfo.w; }
-        /**
-         * Returns current height of window.
-         * [NOTE] Changes in realtime on window resize.
-         */
-        inline uint get_height() const { return mInfo.h; }
-        /**
-         * Returns an aspect of the window.
-         * @return
-         */
-        inline scalar get_aspect() const { return scalar(mInfo.w) / scalar(mInfo.h); }
-        /**
-         * Tells whether window is still alive or not.
-         */
         inline bool is_alive() const { return mInfo.alive; }
         /**
          * Tells whether window is minimized or not.
@@ -100,12 +85,21 @@ namespace wg {
         void set_cursor(cursor c, cursor_state state = CURSOR_STATE_NORMAL);
         /**
          * Polls all platform-dependent events.
+         * Updates viewport.
          */
-        static void platform_update();
+        void platform_update();
         /**
          * Access to GLFW window pointer.
          */
         GLFWwindow* get() const;
+        /**
+         * Access to the window's viewport.
+         */
+        inline viewport get_viewport() const { return mInfo.vp; }
+        /**
+         * Access to the window's viewport.
+         */
+        inline viewport& get_viewport() { return mInfo.vp; }
     private:
         window_info mInfo = {};
         GLFWwindow* mWindow = {};

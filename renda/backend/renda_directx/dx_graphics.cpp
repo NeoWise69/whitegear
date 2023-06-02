@@ -13,13 +13,13 @@
 #if WG_WINDOWS
 
 namespace wg {
-    dx_graphics::dx_graphics(wg::window *p_wnd) {
-        mProjectionMatrix = perspective(radians(65.0f), p_wnd->get_aspect(), 0.05f, 1000.0f);
+    dx_graphics::dx_graphics(window *p_wnd) {
+        mViewport = &p_wnd->get_viewport();
         HWND hWnd = glfwGetWin32Window(p_wnd->get());
 
         DXGI_SWAP_CHAIN_DESC swap_chain_desc = {};
-        swap_chain_desc.BufferDesc.Width = p_wnd->get_width();
-        swap_chain_desc.BufferDesc.Height = p_wnd->get_height();
+        swap_chain_desc.BufferDesc.Width = mViewport->get_width();
+        swap_chain_desc.BufferDesc.Height = mViewport->get_height();
         swap_chain_desc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
         swap_chain_desc.BufferDesc.RefreshRate.Numerator = 0;
         swap_chain_desc.BufferDesc.RefreshRate.Denominator = 0;

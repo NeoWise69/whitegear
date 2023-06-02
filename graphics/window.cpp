@@ -32,6 +32,7 @@ namespace wg {
         mInfo.w = p_info->w;
         mInfo.h = p_info->h;
         mInfo.title = p_info->title;
+        mInfo.vp = viewport(p_info->w, p_info->h);
 
         {   /* first ever glfw instance creation */
             if (!GIsGLFWInitialized) {
@@ -65,6 +66,7 @@ namespace wg {
             if (info) {
                 info->w = w;
                 info->h = h;
+                info->vp.set_size(w, h);
             }
         });
 
@@ -140,6 +142,7 @@ namespace wg {
         auto& ms = input::get().get_mouse();
         kbd.process_release_keys();
         ms.process_release_keys();
+        mInfo.vp.update();
 
         glfwPollEvents();
     }

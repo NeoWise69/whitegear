@@ -13,7 +13,7 @@
 namespace wg {
     void dx_bindable_per_frame_constant_buffer::bind(wg::dx_graphics &gfx) const noexcept {
         frame_data_t frame_data = {};
-        frame_data.projection_matrix = gfx.get_projection_matrix();
+        frame_data.projection_matrix = gfx.get_viewport().get_projection_matrix();
         frame_data.view_matrix = gfx.get_view_matrix();
 
         mVCBFrameData.update(gfx, frame_data);

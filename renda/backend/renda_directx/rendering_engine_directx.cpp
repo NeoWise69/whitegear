@@ -92,8 +92,8 @@ namespace wg {
 
         D3D11_VIEWPORT vp = {
                   0.0f, 0.0f,
-                  FLOAT(mWindow->get_width()),
-                  FLOAT(mWindow->get_height()),
+                  FLOAT(mWindow->get_viewport().get_width()),
+                  FLOAT(mWindow->get_viewport().get_height()),
                   0.0f, 1.0f
         };
         mGraphics.rs()->set_viewports(&vp, 1);
@@ -168,8 +168,8 @@ namespace wg {
 
     void rendering_engine_directx::end_imgui() {
         ImGuiIO& io = ImGui::GetIO();
-        io.DisplaySize.x = float(mWindow->get_width());
-        io.DisplaySize.y = float(mWindow->get_height());
+        io.DisplaySize.x = float(mWindow->get_viewport().get_width());
+        io.DisplaySize.y = float(mWindow->get_viewport().get_height());
 
         // Rendering IMGUI
         ImGui::Render();
@@ -181,7 +181,7 @@ namespace wg {
     }
 
     frustum rendering_engine_directx::get_frustum() const {
-        return { mGraphics.get_projection_matrix(), mGraphics.get_view_matrix() };
+        return { mGraphics.get_viewport().get_projection_matrix(), mGraphics.get_view_matrix() };
     }
 }
 

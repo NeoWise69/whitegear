@@ -7,6 +7,7 @@
  ******************************************************************************/
 
 #include "viewport.hpp"
+#include <core/utils.hpp>
 
 namespace wg {
     namespace {
@@ -67,14 +68,19 @@ namespace wg {
     }
 
     void viewport::set_standard_aspect_ratio(aspect_ratio::standard ar) {
-        // get maximum of width or height of current viewport state
-        // reduce other side of viewport corresponding to chosen aspect ratio standard
-        // set dirty flag to TRUE
+        mAspectRatio = aspect_ratio(ar);
+        const auto min_size = min(mWidth, mHeight);
+        const scalar f_aspect = mAspectRatio;
+        mWidth = uint(scalar(min_size) * f_aspect);
+        mHeight = min_size;
+        mDirty = true;
     }
 
     void viewport::update() {
-        // check dirty flag, if TRUE:
-        // recalculate aspect
-        // recalculate projection
+        if (mDirty) {
+            mAspectRatio = aspect_ratio(mWidth, mHeight);
+            mProjectionMatrix = perspective(mFieldOfView, mAspectRatio, mNearClipPlane, mFarClipPlane);
+            mDirty = false;
+        }
     }
 }
