@@ -474,10 +474,15 @@ namespace wg {
     template<uint N>
     inline vec<N> rsqrt(const vec<N>& x) { return details::caller1<vec, N>::call(wg::rsqrt, x); }
     /**
-     * Calculate the normalize product of two vectors.
+     * Calculate normalized vector.
      */
     template<uint N>
     inline vec<N> normalize(const vec<N>& x) { return x * rsqrt(dot(x, x)); }
+    /**
+     * Calculate normalized vector.
+     */
+    template<uint N>
+    inline void normalize(vec<N>* x) { *x *= rsqrt(dot(*x, *x)); }
     /**
      * Checks if vector is zero, and doesn't require any computation.
      */
