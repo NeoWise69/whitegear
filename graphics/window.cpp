@@ -32,7 +32,7 @@ namespace wg {
         mInfo.w = p_info->w;
         mInfo.h = p_info->h;
         mInfo.title = p_info->title;
-        mInfo.vp = window_viewport(p_info->w, p_info->h, p_info->fullscreen);
+        mInfo.vp = viewport(p_info->w, p_info->h, p_info->fullscreen);
 
         {   /* first ever glfw instance creation */
             if (!GIsGLFWInitialized) {

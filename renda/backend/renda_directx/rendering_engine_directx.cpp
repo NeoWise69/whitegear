@@ -19,40 +19,47 @@
 
 namespace wg {
     namespace {
+        /**
+         * Required for handling editor render target,
+         * with this design.
+         * TODO: revisit editor viewport system.
+         */
         dx_graphics* GGraphics = nullptr;
     }
+    /**
+     * Depends on build type,
+     * determines is this an editor build or
+     * plain runtime executable.
+     */
     extern bool GEnableImGui;
-    extern viewport* GEditorViewport;
-    extern bool GViewportResized;
 
-    void imgui_draw_viewport() {
+    extern void imgui_draw_viewport(viewport* p_viewport) {
         static vec2 viewport_size = { ImGui::GetWindowSize().x, ImGui::GetWindowSize().y };
 
         const auto render_target_buffer = GGraphics->get_render_target_buffer();
         const auto viewport_srv = render_target_buffer->get_shader_resource_view();
         const auto viewport_texture = ImTextureID(viewport_srv.Get());
-        vec2 v_size = {float(GEditorViewport->get_width()), float(GEditorViewport->get_height())};
-        ImGui::Image(viewport_texture, {v_size.x, v_size.y});
+        ImGui::Image(viewport_texture, {viewport_size.x, viewport_size.y});
 
         const vec2 current_viewport_size = { ImGui::GetWindowSize().x, ImGui::GetWindowSize().y };
+        bool is_resized = p_viewport->is_resized();
         if (current_viewport_size != viewport_size) {
             viewport_size = current_viewport_size;
-            GViewportResized = true;
+            is_resized = true;
         }
 
-        if (GViewportResized) {
-            GEditorViewport->set_size(viewport_size.x + 18, viewport_size.y - 35);
+        if (is_resized) {
+            p_viewport->set_size(uint(viewport_size.x) + 18, uint(viewport_size.y) - 35);
         }
     }
 
-    rendering_engine_directx::rendering_engine_directx(const rendering_engine_create_info &info)
-        : mWindowP(info.p_window->get()), mViewport(info.p_window->get_viewport().to_base()), mGraphics(info.p_window->get(), &info.p_window->get_viewport()) {
+    rendering_engine_directx::rendering_engine_directx(const rendering_engine::create_info &info)
+        : mWindowP(info.p_window->get()), mViewport(info.p_viewport), mGraphics(info.p_window->get(), info.p_viewport) {
         if (GEnableImGui) {
             init_imgui();
         }
 
         GGraphics = &mGraphics;
-        GEditorViewport = mViewport;
 
         mFrameData = make_unique<dx_bindable_per_frame_constant_buffer>(mGraphics);
     }
@@ -116,15 +123,10 @@ namespace wg {
     void rendering_engine_directx::on_begin_tick() {
         mFrameStartTime = time_point::now();
 
-        // --> TODO: temporal code!
-        int w, h;
-        glfwGetWindowSize(mWindowP, &w, &h);
-        // --> TODO: temporal code!
-
         D3D11_VIEWPORT vp = {
                   0.0f, 0.0f,
-                  FLOAT(w),
-                  FLOAT(h),
+                  FLOAT(mViewport->get_width()),
+                  FLOAT(mViewport->get_height()),
                   0.0f, 1.0f
         };
         mGraphics.rs()->set_viewports(&vp, 1);
@@ -205,8 +207,10 @@ namespace wg {
 
     void rendering_engine_directx::end_imgui() {
         ImGuiIO& io = ImGui::GetIO();
-        io.DisplaySize.x = float(mViewport->get_width());
-        io.DisplaySize.y = float(mViewport->get_height());
+        int w, h;
+        glfwGetWindowSize(mWindowP, &w, &h);
+        io.DisplaySize.x = float(w);
+        io.DisplaySize.y = float(h);
 
         // Rendering IMGUI
         ImGui::Render();

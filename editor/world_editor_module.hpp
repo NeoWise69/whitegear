@@ -10,11 +10,12 @@
 #define WHITEGEAR_WORLD_EDITOR_MODULE_HPP
 
 #include <runtime/runtime_module.hpp>
+#include <math/viewport.hpp>
 
 namespace wg {
     class world_editor_module : public runtime_module {
     public:
-        inline explicit world_editor_module(runtime_core* cp) : runtime_module(cp) {}
+        inline explicit world_editor_module(runtime_core* cp, viewport* p_viewport) : runtime_module(cp), mWorldViewport(p_viewport) {}
 
         int on_tick() override;
 
@@ -25,6 +26,8 @@ namespace wg {
         void inspector_ui();
         void console_ui();
         void log_ui();
+
+        viewport* mWorldViewport = {};
     };
 }
 

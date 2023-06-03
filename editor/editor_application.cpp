@@ -45,16 +45,21 @@ namespace wg {
 
             mWindow.open(&wnd_info);
         }
-
+        /**
+         * Create editor viewport based on window's one. (Copy)
+         */
+        auto* ep_viewport = new viewport(mWindow.get_viewport());
+        ep_viewport->set_size(320, 240);
         {
-            rendering_engine_create_info info = {};
+            rendering_engine::create_info info = {};
             info.p_app_name = "wg_ed";
             info.p_window = &mWindow;
+            info.p_viewport = ep_viewport;
 
             mRenda = rendering_engine::create(info);
         }
         mCore.add_module<scene_module>(mRenda);
-        mCore.add_module<world_editor_module>();
+        mCore.add_module<world_editor_module>(ep_viewport);
 
         const auto code = mCore.initialize();
         if (code) return code;

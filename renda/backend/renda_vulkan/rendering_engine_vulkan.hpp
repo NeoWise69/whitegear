@@ -15,7 +15,7 @@
 namespace wg {
     class rendering_engine_vulkan : public rendering_engine {
     public:
-        explicit rendering_engine_vulkan(const rendering_engine_create_info& info);
+        explicit rendering_engine_vulkan(const rendering_engine::create_info& info);
         ~rendering_engine_vulkan() override;
 
         void on_begin_tick() override;

@@ -8,21 +8,24 @@
 
 #include "dx_graphics.hpp"
 #include <math/geometry_buffer.hpp>
+#include <memory>
 #include <GLFW/glfw3.h>
 
 #if WG_WINDOWS
 
 namespace wg {
-    viewport* GEditorViewport = nullptr;
-    bool GViewportResized = true;
 
-    dx_graphics::dx_graphics(GLFWwindow* p_window_handle, window_viewport* p_window_viewport) {
-        mViewport = p_window_viewport;
+    dx_graphics::dx_graphics(GLFWwindow* p_window_handle, viewport* p_viewport) {
+        mViewport = p_viewport;
         HWND hWnd = glfwGetWin32Window(p_window_handle);
 
+        // Required for swapchain
+        int w, h;
+        glfwGetWindowSize(p_window_handle, &w, &h);
+
         DXGI_SWAP_CHAIN_DESC swap_chain_desc = {};
-        swap_chain_desc.BufferDesc.Width = mViewport->get_width();
-        swap_chain_desc.BufferDesc.Height = mViewport->get_height();
+        swap_chain_desc.BufferDesc.Width = w;
+        swap_chain_desc.BufferDesc.Height = h;
         swap_chain_desc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
         swap_chain_desc.BufferDesc.RefreshRate.Numerator = 0;
         swap_chain_desc.BufferDesc.RefreshRate.Denominator = 0;
@@ -30,7 +33,7 @@ namespace wg {
         swap_chain_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
         swap_chain_desc.BufferCount = 1;
         swap_chain_desc.OutputWindow = hWnd;
-        swap_chain_desc.Windowed = !p_window_viewport->is_fullscreen();
+        swap_chain_desc.Windowed = !mViewport->is_fullscreen();
         swap_chain_desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 
         UINT flags = {};
@@ -112,21 +115,20 @@ namespace wg {
                 .dead_end();
             }
         }
-        mGlobalCamera.update();
-        mViewport->update();
 
-        if (GViewportResized) {
+        /**
+         * Viewport resize handling.
+         */
+        if (mViewport->is_resized()) {
 
             out
             .trace("Viewport resized: (%dx%d)", mViewport->get_width(), mViewport->get_height())
             ;
-
-            const auto* rtb = mRenderTargetBuffer.get();
-
-
-            GViewportResized = false;
+            mRenderTargetBuffer = std::make_unique<dx_render_target_buffer>(mDevice.Get(), mViewport->get_width(), mViewport->get_height());
         }
 
+        mGlobalCamera.update();
+        mViewport->update();
     }
 
     void dx_graphics::clear_color(const vec3 &color) const noexcept {

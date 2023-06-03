@@ -23,7 +23,7 @@
 namespace wg {
     class rendering_engine_directx : public rendering_engine {
     public:
-        explicit rendering_engine_directx(const rendering_engine_create_info &info);
+        explicit rendering_engine_directx(const rendering_engine::create_info &info);
         ~rendering_engine_directx() override;
 
         inline rendering_engine_directx(const rendering_engine_directx&) = delete;

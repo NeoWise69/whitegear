@@ -65,7 +65,7 @@ namespace wg {
             wrl::ComPtr<ID3D11DeviceContext> context = nullptr;
         };
 
-        dx_graphics(GLFWwindow* p_window_handle, window_viewport* p_window_viewport);
+        dx_graphics(GLFWwindow* p_window_handle, viewport* p_viewport);
         ~dx_graphics();
 
         inline dx_graphics(const dx_graphics&) = delete;

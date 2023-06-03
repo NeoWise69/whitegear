@@ -42,27 +42,11 @@ namespace wg {
         bool fullscreen;
     };
     /**
-     * Special viewport for window object.
-     */
-    class window_viewport : public viewport {
-    public:
-        using viewport::viewport;
-
-        inline window_viewport(uint w, uint h, bool b_is_fullscreen) : viewport(w, h), mIsFullscreen(b_is_fullscreen)
-        {}
-
-        inline bool is_fullscreen() const { return mIsFullscreen; }
-
-        using viewport::update;
-    private:
-        bool mIsFullscreen;
-    };
-    /**
      * Structure, contains whole data required for window.
      */
     struct window_info : window_create_info {
         bool alive;
-        window_viewport vp = {};
+        viewport vp = {};
     };
     /**
      * Main visual output device.
@@ -111,11 +95,11 @@ namespace wg {
         /**
          * Access to the window's viewport.
          */
-        inline window_viewport get_viewport() const { return mInfo.vp; }
+        inline const viewport& get_viewport() const { return mInfo.vp; }
         /**
          * Access to the window's viewport.
          */
-        inline window_viewport& get_viewport() { return mInfo.vp; }
+        inline viewport& get_viewport() { return mInfo.vp; }
     private:
         window_info mInfo = {};
         GLFWwindow* mWindow = {};

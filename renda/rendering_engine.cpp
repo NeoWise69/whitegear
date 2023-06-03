@@ -13,7 +13,7 @@
 #include "backend/renda_directx/rendering_engine_directx.hpp"
 
 namespace wg {
-    rendering_engine* rendering_engine::create(const rendering_engine_create_info &create_info) {
+    rendering_engine* rendering_engine::create(const rendering_engine::create_info &create_info) {
         switch (renderer_api::get_type()) {
             case renderer_api::vulkan_api:
                 return new rendering_engine_vulkan(create_info);

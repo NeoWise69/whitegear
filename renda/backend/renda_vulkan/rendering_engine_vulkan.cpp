@@ -10,7 +10,7 @@
 
 namespace wg {
 
-    rendering_engine_vulkan::rendering_engine_vulkan(const rendering_engine_create_info& info) {
+    rendering_engine_vulkan::rendering_engine_vulkan(const rendering_engine::create_info& info) {
         VkInstanceCreateInfo ici = { VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO };
 
         VkApplicationInfo app_info = { VK_STRUCTURE_TYPE_APPLICATION_INFO };

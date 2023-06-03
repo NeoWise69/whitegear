@@ -13,7 +13,7 @@
 
 namespace wg {
     extern bool GEnableImGui;
-    extern void imgui_draw_viewport();
+    void imgui_draw_viewport(viewport* p_viewport);
 
     int world_editor_module::on_tick() {
         if (GEnableImGui) {
@@ -81,7 +81,7 @@ namespace wg {
 
             { // Main viewport
                 if (ImGui::Begin("Game")) {
-                    imgui_draw_viewport();
+                    imgui_draw_viewport(mWorldViewport);
                 }
                 ImGui::End();
             }

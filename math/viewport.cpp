@@ -81,6 +81,7 @@ namespace wg {
             mAspectRatio = aspect_ratio(mWidth, mHeight);
             mProjectionMatrix = perspective(mFieldOfView, mAspectRatio, mNearClipPlane, mFarClipPlane);
             mDirty = false;
+            mIsResized = false;
         }
     }
 }

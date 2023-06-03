@@ -78,20 +78,24 @@ namespace wg {
     class viewport {
     public:
         inline viewport() = default;
-        inline viewport(uint w, uint h) : mWidth(w), mHeight(h), mAspectRatio(w, h)
+        inline viewport(uint w, uint h)
+            : mWidth(w), mHeight(h), mIsResized(true), mAspectRatio(w, h)
+        {}
+        inline viewport(uint w, uint h, bool b_is_fullscreen)
+            : mWidth(w), mHeight(h), mIsFullscreen(b_is_fullscreen), mIsResized(true), mAspectRatio(w, h)
         {}
         /**
          * Sets only width of the viewport.
          */
-        inline void set_width(uint w) { mWidth = w; mDirty = true; }
+        inline void set_width(uint w) { mWidth = w; mIsResized = mDirty = true; }
         /**
          * Sets only height of the viewport.
          */
-        inline void set_height(uint h) { mHeight = h; mDirty = true; }
+        inline void set_height(uint h) { mHeight = h; mIsResized = mDirty = true; }
         /**
          * Sets width and height of the viewport.
          */
-        inline void set_size(uint w, uint h) { mWidth = w; mHeight = h; mDirty = true; }
+        inline void set_size(uint w, uint h) { mWidth = w; mHeight = h; mIsResized = mDirty = true; }
         /**
          * Sets near clip plane distance.
          */
@@ -141,6 +145,14 @@ namespace wg {
          */
         inline scalar get_far_clipping_plane() const { return mFarClipPlane; }
         /**
+         * Tells if viewport is fullscreen.
+         */
+        inline bool is_fullscreen() const { return mIsFullscreen; }
+        /**
+         * Tells if viewport was resized.
+         */
+        inline bool is_resized() const { return mIsResized; }
+        /**
          * Sets standard aspect ratio.
          * Affects width or height of viewport.
          */
@@ -149,11 +161,6 @@ namespace wg {
          * Recalculate matrix and aspect ratio, if required.
          */
         void update();
-        /**
-         * Simple utility method for access to base viewport
-         * without headache.
-         */
-        inline viewport* to_base() { return this; }
     private:
         uint mWidth = {};
         uint mHeight = {};
@@ -162,6 +169,8 @@ namespace wg {
         scalar mNearClipPlane = 0.05f;
         scalar mFarClipPlane = 5000.0f;
         mat4 mProjectionMatrix;
+        bool mIsFullscreen = false;
+        bool mIsResized = false;
         bool mDirty = true;
     };
 }

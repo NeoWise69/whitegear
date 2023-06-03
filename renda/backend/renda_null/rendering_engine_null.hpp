@@ -14,7 +14,7 @@
 namespace wg {
     class rendering_engine_null : public rendering_engine {
     public:
-        inline explicit rendering_engine_null(const rendering_engine_create_info&) {}
+        inline explicit rendering_engine_null(const rendering_engine::create_info&) {}
         inline ~rendering_engine_null() override = default;
 
         inline void draw_mesh(const mesh_render_data*) override {}

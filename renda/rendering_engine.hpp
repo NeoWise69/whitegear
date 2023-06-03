@@ -18,12 +18,14 @@
 #define WG_SHADER_PREFIX_PATH "./editor_shaders/"
 
 namespace wg {
-    struct rendering_engine_create_info {
-        window* p_window;
-        const char* p_app_name;
-    };
     class rendering_engine {
     public:
+        struct create_info {
+            window* p_window;
+            viewport* p_viewport;
+            const char* p_app_name;
+        };
+
         virtual ~rendering_engine() = default;
 
         struct mesh_render_data {
@@ -56,7 +58,7 @@ namespace wg {
 
         virtual frustum_view get_frustum() const = 0;
 
-        static rendering_engine* create(const rendering_engine_create_info& create_info);
+        static rendering_engine* create(const rendering_engine::create_info& create_info);
 
         inline world* get_parent_world() { return mParent; }
         inline const world* get_parent_world() const { return mParent; }
