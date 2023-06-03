@@ -52,8 +52,8 @@ namespace wg {
 
     }
 
-    frustum rendering_engine_vulkan::get_frustum() const {
-        return frustum();
+    frustum_view rendering_engine_vulkan::get_frustum() const {
+        return frustum_view();
     }
 
 }

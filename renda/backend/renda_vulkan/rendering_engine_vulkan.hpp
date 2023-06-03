@@ -25,7 +25,7 @@ namespace wg {
         void create_common_mesh(const common_mesh_create_info* create_data) override;
         void unload_mesh(entity_t entity_id) override;
         void draw_mesh(const mesh_render_data* p_data) override;
-        frustum get_frustum() const override;
+        frustum_view get_frustum() const override;
 
     private:
         vk_graphics* mGraphics = nullptr;

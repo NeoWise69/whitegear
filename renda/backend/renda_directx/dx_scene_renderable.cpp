@@ -22,7 +22,7 @@ namespace wg {
 
         mNumVertices = config.p_mesh_geometry_buffer->get_num_vertices();
 
-        mBoundingCube = geometry::cube::generate_bounding(config.p_mesh_geometry_buffer->get_vertices(), mNumVertices);
+        mBoundingCube = geometry::box::generate_bounding(config.p_mesh_geometry_buffer->get_vertices(), mNumVertices);
 
         add_bind(make_unique<dx_bindable_vertex_buffer>(gfx, config.p_mesh_geometry_buffer));
         auto vs = make_unique<dx_bindable_vertex_shader>(gfx, config.filename_vs.c_str());

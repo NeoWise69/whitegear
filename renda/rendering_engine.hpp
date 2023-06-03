@@ -54,7 +54,7 @@ namespace wg {
         virtual void on_begin_tick() = 0;
         virtual void on_end_tick() = 0;
 
-        virtual frustum get_frustum() const = 0;
+        virtual frustum_view get_frustum() const = 0;
 
         static rendering_engine* create(const rendering_engine_create_info& create_info);
 

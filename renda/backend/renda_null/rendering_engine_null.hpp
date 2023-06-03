@@ -23,7 +23,7 @@ namespace wg {
         inline void unload_mesh(entity_t) override {}
         inline void on_begin_tick() override {}
         inline void on_end_tick() override {}
-        inline frustum get_frustum() const override { return {}; }
+        inline frustum_view get_frustum() const override { return {}; }
     };
 }
 

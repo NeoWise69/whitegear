@@ -10,16 +10,13 @@
 #include <limits>
 
 namespace wg {
-    void frustum::normalize(vec4* p_plane) {
+    void frustum_view::normalize(vec4* p_plane) {
         auto& plane = *p_plane;
-        const scalar mag = sqrt(plane.x * plane.x + plane.y * plane.y + plane.z * plane.z);
-        plane.x /= mag;
-        plane.y /= mag;
-        plane.z /= mag;
-        plane.w /= mag;
+        const scalar one_over_mag = rsqrt(plane.x * plane.x + plane.y * plane.y + plane.z * plane.z);
+        plane *= one_over_mag;
     }
 
-    frustum::frustum(const mat4 &proj, const mat4 &model) {
+    frustum_view::frustum_view(const mat4 &proj, const mat4 &model) {
         scalar clip[16] = {};
         const scalar* mdl = &model[0][0];
         const scalar* prj = &proj[0][0];
@@ -88,38 +85,44 @@ namespace wg {
         normalize(&plane_front);
     }
 
-    bool frustum::in_frustum(const vec3 &point) const {
+    bool frustum_view::is_in_view(const vec3 &point) const {
         for (auto & plane : planes) {
-            if ((plane.x * point.x + plane.y * point.y + plane.z * point.z + plane.w) <= 0)
+            if ((dot(plane, vec4(point, 1))) <= 0)
                 return false;
         }
         return true;
     }
 
-    bool frustum::in_frustum(const geometry::sphere &sp) const {
+    bool frustum_view::is_in_view(const geometry::sphere &b_sphere) const {
         for (auto& plane : planes) {
-            if ((plane.x * sp.position.x + plane.y * sp.position.y + plane.z * sp.position.z + plane.w) <= -sp.radius)
+            if (dot(plane, vec4(b_sphere.position, 1)) <= -b_sphere.radius)
                 return false;
         }
         return true;
     }
 
-    bool frustum::in_frustum(const geometry::cube &c) const {
+    bool frustum_view::is_in_view(const geometry::box &b_box) const {
+        const auto min_pos = b_box.center_position - b_box.size;
+        const auto max_pos = b_box.center_position + b_box.size;
+
         for (auto& plane : planes) {
-            if(plane.x * (c.center_position.x - c.size) + plane.y * (c.center_position.y - c.size) + plane.z * (c.center_position.z - c.size) + plane.w > 0) continue;
-            if(plane.x * (c.center_position.x + c.size) + plane.y * (c.center_position.y - c.size) + plane.z * (c.center_position.z - c.size) + plane.w > 0) continue;
-            if(plane.x * (c.center_position.x - c.size) + plane.y * (c.center_position.y + c.size) + plane.z * (c.center_position.z - c.size) + plane.w > 0) continue;
-            if(plane.x * (c.center_position.x + c.size) + plane.y * (c.center_position.y + c.size) + plane.z * (c.center_position.z - c.size) + plane.w > 0) continue;
-            if(plane.x * (c.center_position.x - c.size) + plane.y * (c.center_position.y - c.size) + plane.z * (c.center_position.z + c.size) + plane.w > 0) continue;
-            if(plane.x * (c.center_position.x + c.size) + plane.y * (c.center_position.y - c.size) + plane.z * (c.center_position.z + c.size) + plane.w > 0) continue;
-            if(plane.x * (c.center_position.x - c.size) + plane.y * (c.center_position.y + c.size) + plane.z * (c.center_position.z + c.size) + plane.w > 0) continue;
-            if(plane.x * (c.center_position.x + c.size) + plane.y * (c.center_position.y + c.size) + plane.z * (c.center_position.z + c.size) + plane.w > 0) continue;
+            const auto min_pos_dot = plane * min_pos;
+            const auto max_pos_dot = plane * max_pos;
+
+            if(min_pos_dot.x + min_pos_dot.y + min_pos_dot.z + plane.w > 0) continue;
+            if(max_pos_dot.x + min_pos_dot.y + min_pos_dot.z + plane.w > 0) continue;
+            if(min_pos_dot.x + max_pos_dot.y + min_pos_dot.z + plane.w > 0) continue;
+            if(max_pos_dot.x + max_pos_dot.y + min_pos_dot.z + plane.w > 0) continue;
+            if(min_pos_dot.x + min_pos_dot.y + max_pos_dot.z + plane.w > 0) continue;
+            if(max_pos_dot.x + min_pos_dot.y + max_pos_dot.z + plane.w > 0) continue;
+            if(min_pos_dot.x + max_pos_dot.y + max_pos_dot.z + plane.w > 0) continue;
+            if(max_pos_dot.x + max_pos_dot.y + max_pos_dot.z + plane.w > 0) continue;
             return false;
         }
         return true;
     }
 
-    geometry::cube geometry::cube::generate_bounding(const mesh_vertex_t *vertices, u64 num_vertices) {
+    geometry::box geometry::box::generate_bounding(const mesh_vertex_t *vertices, u64 num_vertices) {
         vec3 minAABB = vec3(std::numeric_limits<scalar>::max());
         vec3 maxAABB = vec3(std::numeric_limits<scalar>::min());
         for (u64 i = 0; i < num_vertices; ++i)
@@ -137,12 +140,12 @@ namespace wg {
 
         const auto center = (minAABB + maxAABB) * 0.5f;
 
-        const auto size = length(abs(maxAABB - minAABB));
+        const auto size = abs(maxAABB - minAABB);
 
         return { center, size };
     }
 
-    void geometry::cube::set_position(const vec3 &position) {
+    void geometry::box::set_position(const vec3 &position) {
         center_position = position;
     }
 }

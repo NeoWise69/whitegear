@@ -46,7 +46,7 @@ namespace wg {
     protected:
         u64 mNumVertices = {};
 
-        inline static geometry::cube mBoundingCube = {};
+        inline static geometry::box mBoundingCube = {};
     };
 }
 

@@ -34,7 +34,7 @@ namespace wg {
         void unload_mesh(entity_t entity_id) override;
         void on_begin_tick() override;
         void on_end_tick() override;
-        frustum get_frustum() const override;
+        frustum_view get_frustum() const override;
     private:
         void init_imgui();
         void pre_begin_imgui();
@@ -45,7 +45,7 @@ namespace wg {
         dx_graphics mGraphics;
         window* mWindow;
 
-        time_point mFrameStartTime;
+        time_point mFrameStartTime = 0;
 
         hashmap<entity_t, shared_ptr<dx_renderable>> mRenderables;
         unique_ptr<dx_bindable_per_frame_constant_buffer> mFrameData;

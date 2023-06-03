@@ -22,42 +22,37 @@ namespace wg {
             scalar radius;
         };
         /**
-         * Simplest mathematical cube representation.
+         * Simplest mathematical box representation.
          * Used in math simulations.
          */
-        struct cube {
+        struct box {
             vec3 center_position;
-            scalar size;
+            vec3 size;
 
-            static cube generate_bounding(const mesh_vertex_t* vertices, u64 num_vertices);
+            static box generate_bounding(const mesh_vertex_t* vertices, u64 num_vertices);
             void set_position(const vec3& position);
         };
     }
     /**
      * Frustum clip space structure to check for
-     * if elements (sphere, cube) is inside frustum
-     * shape. Used for frustum fulling (mostly).
+     * if elements (sphere, box) is inside frustum_view
+     * shape. Used for frustum culling (mostly).
      */
-    struct frustum {
-        inline frustum() : planes() {}
-        frustum(const mat4& proj, const mat4& model);
+    struct frustum_view {
+        inline frustum_view() : planes() {}
+        frustum_view(const mat4& proj, const mat4& model);
         /**
-         * Check if point is inside frustum shape.
+         * Check if point is inside frustum_view shape.
          */
-        bool in_frustum(const vec3& point) const;
+        bool is_in_view(const vec3& point) const;
         /**
-         * Check if sphere is inside frustum shape.
+         * Check if sphere is inside frustum_view shape.
          */
-        bool in_frustum(const geometry::sphere& sp) const;
+        bool is_in_view(const geometry::sphere& b_sphere) const;
         /**
-         * Check if cube is inside frustum shape.
+         * Check if box is inside frustum_view shape.
          */
-        bool in_frustum(const geometry::cube& c) const;
-
-        /**
-         * Simple function to normalize vec4 plane.
-         */
-        void normalize(vec4* p_plane);
+        bool is_in_view(const geometry::box& b_box) const;
 
         union {
             /* x, y, z -> xyz normal values; w -> coordinates of start distance */
@@ -71,6 +66,11 @@ namespace wg {
                 vec4 plane_front;
             };
         };
+    private:
+        /**
+         * Simple function to normalize vec4 plane.
+         */
+        void normalize(vec4* p_plane);
     };
 }
 

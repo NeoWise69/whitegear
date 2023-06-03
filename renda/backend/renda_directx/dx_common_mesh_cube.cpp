@@ -26,8 +26,8 @@ namespace wg {
         static const auto cube_geometry = geometry_buffer<VERTEX_TYPE_MESH>::get_cube();
 
         if (!SCommonMeshInitialized) {
-            mBoundingCube = geometry::cube::generate_bounding(cube_geometry.get_vertices(),
-                                                              cube_geometry.get_num_vertices());
+            mBoundingCube = geometry::box::generate_bounding(cube_geometry.get_vertices(),
+                                                             cube_geometry.get_num_vertices());
 
             add_static_bind(make_unique<dx_bindable_vertex_buffer>(gfx, &cube_geometry));
             auto vs = make_unique<dx_bindable_vertex_shader>(gfx, cv_create_info.filename_vs.c_str());

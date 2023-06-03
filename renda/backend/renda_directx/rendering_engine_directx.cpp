@@ -52,7 +52,7 @@ namespace wg {
             const auto& renderable = mRenderables[p_data->entity];
 
             const auto f = get_frustum();
-            if (f.in_frustum(renderable->get_bounding(*p_data->p_position))) {
+            if (f.is_in_view(renderable->get_bounding(*p_data->p_position))) {
                 if (!renderable->is_transform_ptr_provided()) {
                     renderable->set_transform_matrix_ptr(p_data->p_transform);
                 }
@@ -181,7 +181,7 @@ namespace wg {
         }
     }
 
-    frustum rendering_engine_directx::get_frustum() const {
+    frustum_view rendering_engine_directx::get_frustum() const {
         return { mGraphics.get_viewport().get_projection_matrix(), mGraphics.get_view_matrix() };
     }
 }
