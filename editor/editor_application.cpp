@@ -67,6 +67,9 @@ namespace wg {
         runtime_tick_info tick_info = {};
 
         while (mCore.is_running() && mWindow.is_alive()) {
+
+            const auto delta_time_begin = time_point::now();
+
             if (!mWindow.is_suspended() && mCore.is_running()) {
                 /* RENDERING CODE */
                 const auto begin_time_start = time_point::now();
@@ -99,6 +102,9 @@ namespace wg {
                 const auto end_time_end = time_point::now();
                 GTimeStats.frame_end_time = end_time_end - end_time_start;
             }
+
+            const auto delta_time_end = time_point::now();
+            GTimeStats.delta_time = delta_time_end - delta_time_begin;
         }
 
         return 0;
