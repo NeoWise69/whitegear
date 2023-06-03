@@ -7,7 +7,8 @@
  ******************************************************************************/
 
 #include "free_camera.hpp"
-#include "runtime/user_input.hpp"
+#include <runtime/user_input.hpp>
+#include <core/time.hpp>
 
 namespace wg {
 
@@ -50,7 +51,9 @@ namespace wg {
 
         acceleration = fmin(acceleration, vec3(fly_speed));
 
-        mPosition += acceleration;
+        const scalar delta_time = GTimeStats.delta_time.get(time_point::milliseconds);
+
+        mPosition += (acceleration * delta_time);
 
         { // camera rotation
             const auto ms = input::get().ms_get_position();
