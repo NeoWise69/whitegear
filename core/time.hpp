@@ -49,8 +49,9 @@ namespace wg {
         time_point frame_end_time;
 
         time_point world_tick_time;
+        time_point delta_time;
     };
-    inline static frame_time_stats GTimeStats;
+    inline frame_time_stats GTimeStats;
 }
 
 #endif //WHITEGEAR_TIME_HPP
