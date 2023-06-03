@@ -13,9 +13,9 @@
 #if WG_WINDOWS
 
 namespace wg {
-    dx_graphics::dx_graphics(window *p_wnd) {
-        mViewport = &p_wnd->get_viewport();
-        HWND hWnd = glfwGetWin32Window(p_wnd->get());
+    dx_graphics::dx_graphics(GLFWwindow* p_window_handle, window_viewport* p_window_viewport) {
+        mViewport = p_window_viewport;
+        HWND hWnd = glfwGetWin32Window(p_window_handle);
 
         DXGI_SWAP_CHAIN_DESC swap_chain_desc = {};
         swap_chain_desc.BufferDesc.Width = mViewport->get_width();
@@ -27,7 +27,7 @@ namespace wg {
         swap_chain_desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
         swap_chain_desc.BufferCount = 1;
         swap_chain_desc.OutputWindow = hWnd;
-        swap_chain_desc.Windowed = !p_wnd->is_fullscreen();
+        swap_chain_desc.Windowed = !p_window_viewport->is_fullscreen();
         swap_chain_desc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 
         UINT flags = {};

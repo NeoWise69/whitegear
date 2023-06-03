@@ -24,7 +24,8 @@ namespace wg {
         ImGui::Text("There are will be a viewporT!");
     }
 
-    rendering_engine_directx::rendering_engine_directx(const rendering_engine_create_info &info) : mWindow(info.p_window), mGraphics(info.p_window) {
+    rendering_engine_directx::rendering_engine_directx(const rendering_engine_create_info &info)
+        : mWindow(info.p_window), mGraphics(info.p_window->get(), &info.p_window->get_viewport()) {
         if (GEnableImGui) {
             init_imgui();
         }
