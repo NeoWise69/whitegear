@@ -45,6 +45,12 @@ namespace wg {
         inline constexpr explicit vec(scalar _x) : x(_x), y(_x) {}
         inline constexpr vec(scalar _x, scalar _y) : x(_x), y(_y) {}
 
+        static const vec zero;
+        static const vec one;
+        static const vec two;
+        static const vec right;
+        static const vec up;
+
         inline scalar& operator[](int i) { return (&x)[i]; }
         inline const scalar& operator[](int i) const { return (&x)[i]; }
 
@@ -107,6 +113,12 @@ namespace wg {
             };
         };
     };
+
+    inline const vec<2> vec<2>::zero    = vec<2>(0);
+    inline const vec<2> vec<2>::one     = vec<2>(1);
+    inline const vec<2> vec<2>::two     = vec<2>(2);
+    inline const vec<2> vec<2>::right   = vec<2>(1, 0);
+    inline const vec<2> vec<2>::up      = vec<2>(0, 1);
 }
 
 #endif //WHITEGEAR_VEC2_HPP

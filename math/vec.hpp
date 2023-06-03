@@ -17,64 +17,64 @@
 namespace wg {
 
     namespace details {
-        template<template<size_t N> class vec, size_t N>
+        template<template<uint N> class vec, uint N>
         struct caller1 {};
-        template<template<size_t N> class vec, size_t N>
+        template<template<uint N> class vec, uint N>
         struct caller2 {};
-        template<template<size_t N> class vec, size_t N>
+        template<template<uint N> class vec, uint N>
         struct caller3 {};
 
-        template<template<size_t N> class vec>
+        template<template<uint N> class vec>
         struct caller1<vec, 2> {
             static inline vec<2> call(scalar(*Fn)(scalar x), const vec<2>& v) {
                 return { Fn(v.x), Fn(v.y) };
             }
         };
-        template<template<size_t N> class vec>
+        template<template<uint N> class vec>
         struct caller1<vec, 3> {
             static inline vec<3> call(scalar(*Fn)(scalar x), const vec<3>& v) {
                 return { Fn(v.x), Fn(v.y), Fn(v.z) };
             }
         };
-        template<template<size_t N> class vec>
+        template<template<uint N> class vec>
         struct caller1<vec, 4> {
             static inline vec<4> call(scalar(*Fn)(scalar x), const vec<4>& v) {
                 return { Fn(v.x), Fn(v.y), Fn(v.z), Fn(v.w) };
             }
         };
 
-        template<template<size_t N> class vec>
+        template<template<uint N> class vec>
         struct caller2<vec, 2> {
             static inline vec<2> call(scalar(*Fn)(scalar x, scalar y), const vec<2>& a, const vec<2>& b) {
                 return { Fn(a.x, b.x), Fn(a.y, b.y) };
             }
         };
-        template<template<size_t N> class vec>
+        template<template<uint N> class vec>
         struct caller2<vec, 3> {
             static inline vec<3> call(scalar(*Fn)(scalar x, scalar y), const vec<3>& a, const vec<3>& b) {
                 return { Fn(a.x, b.x), Fn(a.y, b.y), Fn(a.z, b.z) };
             }
         };
-        template<template<size_t N> class vec>
+        template<template<uint N> class vec>
         struct caller2<vec, 4> {
             static inline vec<4> call(scalar(*Fn)(scalar x, scalar y), const vec<4>& a, const vec<4>& b) {
                 return { Fn(a.x, b.x), Fn(a.y, b.y), Fn(a.z, b.z), Fn(a.w, b.w) };
             }
         };
 
-        template<template<size_t N> class vec>
+        template<template<uint N> class vec>
         struct caller3<vec, 2> {
             static inline vec<2> call(scalar(*Fn)(scalar x, scalar y, scalar z), const vec<2>& a, const vec<2>& b, const vec<2>& c) {
                 return { Fn(a.x, b.x, c.x), Fn(a.y, b.y, c.y) };
             }
         };
-        template<template<size_t N> class vec>
+        template<template<uint N> class vec>
         struct caller3<vec, 3> {
             static inline vec<3> call(scalar(*Fn)(scalar x, scalar y, scalar z), const vec<3>& a, const vec<3>& b, const vec<3>& c) {
                 return { Fn(a.x, b.x, c.x), Fn(a.y, b.y, c.y), Fn(a.z, b.z, c.z) };
             }
         };
-        template<template<size_t N> class vec>
+        template<template<uint N> class vec>
         struct caller3<vec, 4> {
             static inline vec<4> call(scalar(*Fn)(scalar x, scalar y, scalar z), const vec<4>& a, const vec<4>& b, const vec<4>& c) {
                 return { Fn(a.x, b.x, c.x), Fn(a.y, b.y, c.y), Fn(a.z, b.z, c.z), Fn(a.w, b.w, c.w) };
@@ -461,23 +461,28 @@ namespace wg {
     /**
      * Calculate the length of a vector.
      */
-    template<size_t N>
+    template<uint N>
     inline scalar length(const vec<N>& v) { return sqrt(dot(v, v)); }
     /**
      * Calculate the distance between two points.
      */
-    template<size_t N>
+    template<uint N>
     inline scalar distance(const vec<N>& a, const vec<N>& b) { return length(b - a); }
     /**
      * Return the inverse of the square root of the vector.
      */
-    template<size_t N>
+    template<uint N>
     inline vec<N> rsqrt(const vec<N>& x) { return details::caller1<vec, N>::call(wg::rsqrt, x); }
     /**
      * Calculate the normalize product of two vectors.
      */
-    template<size_t N>
+    template<uint N>
     inline vec<N> normalize(const vec<N>& x) { return x * rsqrt(dot(x, x)); }
+    /**
+     * Checks if vector is zero, and doesn't require any computation.
+     */
+    template<uint N>
+    inline bool is_zero(const vec<N>& x) { return x == vec<N>::zero; }
 }
 
 #endif //WHITEGEAR_VEC_HPP

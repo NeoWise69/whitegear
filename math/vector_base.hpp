@@ -19,12 +19,12 @@ namespace wg {
      * access to vector's data as contiguous array(even if it is simd type).
      * @tparam N
      */
-    template<size_t N>
+    template<uint N>
     struct contiguous_data {
         scalar data[N] = {};
 
         inline scalar& operator[](int i) { return data[i]; }
-        inline constexpr size_t size() const { return N; }
+        inline constexpr uint size() const { return N; }
     };
 
     template<>
@@ -34,12 +34,12 @@ namespace wg {
         inline operator __m128() const { return data; }
         inline contiguous_data(__m128 d) : data(d) {}
         inline contiguous_data() = default;
-        inline constexpr size_t size() const { return 4; }
+        inline constexpr uint size() const { return 4; }
     };
     /**
      * Forward vector type declarations.
      */
-     template<size_t N> struct vec;
+     template<uint N> struct vec;
 
      using vec2 = vec<2u>;
      using vec3 = vec<3u>;

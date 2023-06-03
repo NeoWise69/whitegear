@@ -58,6 +58,13 @@ namespace wg {
         inline constexpr vec(const vec<2>& _xy, scalar _z) : x(_xy.x), y(_xy.y), z(_z) {}
         inline constexpr vec(scalar _x, const vec<2>& _yz) : x(_x), y(_yz.x), z(_yz.y) {}
 
+        static const vec zero;
+        static const vec one;
+        static const vec two;
+        static const vec right;
+        static const vec up;
+        static const vec forward;
+
         inline scalar& operator[](int i) { return (&x)[i]; }
         inline const scalar& operator[](int i) const { return (&x)[i]; }
 
@@ -127,6 +134,12 @@ namespace wg {
             };
         };
     };
+    inline const vec<3> vec<3>::zero    = vec<3>(0);
+    inline const vec<3> vec<3>::one     = vec<3>(1);
+    inline const vec<3> vec<3>::two     = vec<3>(2);
+    inline const vec<3> vec<3>::right   = vec<3>(1, 0, 0);
+    inline const vec<3> vec<3>::up      = vec<3>(0, 1, 0);
+    inline const vec<3> vec<3>::forward = vec<3>(0, 0, -1);
 }
 
 #endif //WHITEGEAR_VEC3_HPP

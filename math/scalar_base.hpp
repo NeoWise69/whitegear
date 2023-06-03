@@ -132,6 +132,11 @@ namespace wg {
     inline scalar degrees(scalar rad) {
         return rad * scalar(57.295779513082320876798154814105);
     }
+    /**
+     * Checks if type is zero, and doesn't require any computation.
+     */
+    template<class T>
+    inline bool is_zero(const T& x) { return x == T(0); }
 }
 
 #endif //WHITEGEAR_SCALAR_BASE_HPP

@@ -26,9 +26,9 @@ namespace wg {
         static scalar perlin2d(scalar x, scalar y);
         static scalar perlin3d(scalar x, scalar y, scalar z);
 
-        scalar fractal1d(size_t numOctaves, scalar x) const;
-        scalar fractal2d(size_t numOctaves, scalar x, scalar y) const;
-        scalar fractal3d(size_t numOctaves, scalar x, scalar y, scalar z) const;
+        scalar fractal1d(uint numOctaves, scalar x) const;
+        scalar fractal2d(uint numOctaves, scalar x, scalar y) const;
+        scalar fractal3d(uint numOctaves, scalar x, scalar y, scalar z) const;
     private:
         scalar mFrequency;
         scalar mAmplitude;

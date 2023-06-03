@@ -278,7 +278,7 @@ namespace wg {
         return 32.0f*(n0 + n1 + n2 + n3);
     }
 
-    scalar noise::fractal1d(size_t numOctaves, scalar x) const {
+    scalar noise::fractal1d(uint numOctaves, scalar x) const {
         scalar output = 0.f;
         scalar denom  = 0.f;
         scalar frequency = mFrequency;
@@ -295,7 +295,7 @@ namespace wg {
         return (output / denom);
     }
 
-    scalar noise::fractal2d(size_t numOctaves, scalar x, scalar y) const {
+    scalar noise::fractal2d(uint numOctaves, scalar x, scalar y) const {
         scalar output = 0.f;
         scalar denom  = 0.f;
         scalar frequency = mFrequency;
@@ -312,7 +312,7 @@ namespace wg {
         return (output / denom);
     }
 
-    scalar noise::fractal3d(size_t numOctaves, scalar x, scalar y, scalar z) const {
+    scalar noise::fractal3d(uint numOctaves, scalar x, scalar y, scalar z) const {
         scalar output = 0.f;
         scalar denom  = 0.f;
         scalar frequency = mFrequency;

@@ -45,6 +45,13 @@ namespace wg {
         inline vec(scalar _x, scalar _y, const vec<2>& _zw) : data(_mm_set_ps(_zw.y, _zw.x, _y, _x)) {}
         inline vec(scalar _x, const vec<3>& _yzw) : data(_mm_set_ps(_yzw.z, _yzw.y, _yzw.x, _x)) {}
 
+        static const vec zero;
+        static const vec one;
+        static const vec two;
+        static const vec right;
+        static const vec up;
+        static const vec forward;
+
         inline scalar& operator[](int i) { return (&x)[i]; }
         inline const scalar& operator[](int i) const { return (&x)[i]; }
 
@@ -184,6 +191,12 @@ namespace wg {
             };
         };
     };
+    inline const vec<4> vec<4>::zero    = vec<4>(0);
+    inline const vec<4> vec<4>::one     = vec<4>(1);
+    inline const vec<4> vec<4>::two     = vec<4>(2);
+    inline const vec<4> vec<4>::right   = vec<4>(1, 0, 0, 1);
+    inline const vec<4> vec<4>::up      = vec<4>(0, 1, 0, 1);
+    inline const vec<4> vec<4>::forward = vec<4>(0, 0, -1, 1);
 }
 
 #endif //WHITEGEAR_VEC4_HPP
