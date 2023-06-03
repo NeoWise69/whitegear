@@ -22,18 +22,7 @@
 #include <dxgi1_6.h>
 #include <wrl.h>
 #include <functional>
-
 #include <DXErr.h>
-
-template<class ComObject>
-inline void D3DSafeRelease(ComObject& o) {
-    if (o) {
-        o->Release();
-        o = nullptr;
-    }
-}
-
-#define D3DCALL(fn) { const auto hr = fn; if (FAILED(hr)) { DXTRACE_ERR_MSGBOX(("Failed to call " #fn), hr); } }
 
 namespace wrl = Microsoft::WRL;
 

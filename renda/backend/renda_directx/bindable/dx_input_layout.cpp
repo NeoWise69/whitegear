@@ -6,7 +6,7 @@
  * report this source code leak and delete all copies of source code from all your machines.
  ******************************************************************************/
 
-#include "dx_bindable_input_layout.hpp"
+#include "dx_input_layout.hpp"
 
 #if WG_WINDOWS
 

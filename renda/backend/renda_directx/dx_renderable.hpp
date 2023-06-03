@@ -16,7 +16,7 @@
 #if WG_WINDOWS
 
 namespace wg {
-    class dx_bindable;
+    class dx_bindable_base;
     class dx_bindable_index_buffer;
 
     class dx_renderable {
@@ -26,8 +26,8 @@ namespace wg {
         inline virtual ~dx_renderable() = default;
 
         void render(dx_graphics& gfx) noexcept;
-        void add_bind(unique_ptr<dx_bindable> bind) noexcept;
-        static void add_static_bind(unique_ptr<dx_bindable> bind) noexcept;
+        void add_bind(unique_ptr<dx_bindable_base> bind) noexcept;
+        static void add_static_bind(unique_ptr<dx_bindable_base> bind) noexcept;
         void add_index_buffer(unique_ptr<dx_bindable_index_buffer> index_buffer) noexcept;
         void add_static_index_buffer(unique_ptr<dx_bindable_index_buffer> index_buffer) noexcept;
         inline u64 get_num_vertices() const { return mNumVertices; }
@@ -39,8 +39,8 @@ namespace wg {
         inline bool is_transform_ptr_provided() const { return mTransformPtr != nullptr; }
     private:
         const dx_bindable_index_buffer* mIndexBuffer = nullptr;
-        bounded_array<unique_ptr<dx_bindable>, 16> mBinds = {};
-        inline static bounded_array<unique_ptr<dx_bindable>, 16> mStaticBinds = {};
+        bounded_array<unique_ptr<dx_bindable_base>, 16> mBinds = {};
+        inline static bounded_array<unique_ptr<dx_bindable_base>, 16> mStaticBinds = {};
         const mat4* mTransformPtr = nullptr;
 
     protected:

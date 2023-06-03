@@ -12,10 +12,11 @@
 
 namespace wg {
 
-    mat4 free_camera::get_view_matrix() const {
-        return look_at(mPosition,
+    const mat4& free_camera::get_view_matrix() const {
+        mViewMatrix = look_at(mPosition,
                        mPosition + mFront,
                        mUp);
+        return mViewMatrix;
     }
 
     void free_camera::set_position(const vec3 &pos) {

@@ -15,7 +15,7 @@
 #include "dx_graphics.hpp"
 #include "dx_info_manager.hpp"
 #include "dx_renderable.hpp"
-#include "dx_bindable_per_frame_constant_buffer.hpp"
+#include "renda/backend/renda_directx/bindable/dx_per_frame_constant_buffer.hpp"
 #include "core/time.hpp"
 
 #if WG_WINDOWS
@@ -43,7 +43,8 @@ namespace wg {
 
         dx_info_manager mInfoManager;
         dx_graphics mGraphics;
-        window* mWindow;
+        GLFWwindow* mWindowP;
+        viewport* mViewport;
 
         time_point mFrameStartTime = 0;
 

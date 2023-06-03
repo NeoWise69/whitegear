@@ -7,13 +7,13 @@
  ******************************************************************************/
 
 #include "dx_common_mesh_cube.hpp"
-#include "dx_bindable_vertex_buffer.hpp"
-#include "dx_bindable_index_buffer.hpp"
-#include "dx_bindable_vertex_shader.hpp"
-#include "dx_bindable_pixel_shader.hpp"
-#include "dx_bindable_input_layout.hpp"
-#include "dx_bindable_geometry_topology.hpp"
-#include "dx_bindable_per_renderable_constant_buffer.hpp"
+#include "renda/backend/renda_directx/bindable/dx_vertex_buffer.hpp"
+#include "renda/backend/renda_directx/bindable/dx_index_buffer.hpp"
+#include "renda/backend/renda_directx/bindable/dx_vertex_shader.hpp"
+#include "renda/backend/renda_directx/bindable/dx_pixel_shader.hpp"
+#include "renda/backend/renda_directx/bindable/dx_input_layout.hpp"
+#include "renda/backend/renda_directx/bindable/dx_geometry_topology.hpp"
+#include "renda/backend/renda_directx/bindable/dx_per_renderable_constant_buffer.hpp"
 
 #if WG_WINDOWS
 

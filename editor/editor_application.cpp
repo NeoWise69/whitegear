@@ -38,8 +38,8 @@ namespace wg {
 
         {
             window_create_info wnd_info = {};
-            wnd_info.w = 1280;
-            wnd_info.h = 720;
+            wnd_info.w = 1600;
+            wnd_info.h = 900;
             wnd_info.title = "ed";
             wnd_info.fullscreen = false;
 

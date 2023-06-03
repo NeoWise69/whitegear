@@ -6,13 +6,18 @@
  * report this source code leak and delete all copies of source code from all your machines.
  ******************************************************************************/
 
-#include "dx_bindable_geometry_topology.hpp"
+#include "dx_per_frame_constant_buffer.hpp"
 
 #if WG_WINDOWS
 
 namespace wg {
-    void dx_bindable_geometry_topology::bind(dx_graphics &gfx) const noexcept {
-        gfx.ia()->set_primitive_topology(mTopo);
+    void dx_bindable_per_frame_constant_buffer::bind(wg::dx_graphics &gfx) const noexcept {
+        frame_data_t frame_data = {};
+        frame_data.projection_matrix = gfx.get_viewport().get_projection_matrix();
+        frame_data.view_matrix = gfx.get_view_matrix();
+
+        mVCBFrameData.update(gfx, frame_data);
+        mVCBFrameData.bind(gfx, 1);
     }
 }
 

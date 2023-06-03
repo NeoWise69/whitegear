@@ -6,18 +6,19 @@
  * report this source code leak and delete all copies of source code from all your machines.
  ******************************************************************************/
 
-#include "dx_bindable_per_frame_constant_buffer.hpp"
+#include "dx_vertex_shader.hpp"
 
 #if WG_WINDOWS
 
 namespace wg {
-    void dx_bindable_per_frame_constant_buffer::bind(wg::dx_graphics &gfx) const noexcept {
-        frame_data_t frame_data = {};
-        frame_data.projection_matrix = gfx.get_viewport().get_projection_matrix();
-        frame_data.view_matrix = gfx.get_view_matrix();
-
-        mVCBFrameData.update(gfx, frame_data);
-        mVCBFrameData.bind(gfx, 1);
+    dx_bindable_vertex_shader::dx_bindable_vertex_shader(dx_graphics &gfx, const string &filename) {
+        WCHAR fname[MAX_PATH] = {};
+        string::u8_to_u16(filename, fname, MAX_PATH);
+        ret_t(D3DReadFileToBlob(fname, &mBytecode));
+        gfx.create_vertex_shader(mBytecode, mVertexShader);
+    }
+    void dx_bindable_vertex_shader::bind(dx_graphics &gfx) const noexcept {
+        gfx.vs()->bind(mVertexShader);
     }
 }
 

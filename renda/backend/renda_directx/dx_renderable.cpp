@@ -7,7 +7,7 @@
  ******************************************************************************/
 
 #include "dx_renderable.hpp"
-#include "dx_bindable_index_buffer.hpp"
+#include "renda/backend/renda_directx/bindable/dx_index_buffer.hpp"
 #include "scene/components/transform.hpp"
 
 #if WG_WINDOWS
@@ -23,7 +23,7 @@ namespace wg {
         gfx.draw_indices(mIndexBuffer->get_count());
     }
 
-    void dx_renderable::add_bind(unique_ptr<dx_bindable> bind) noexcept {
+    void dx_renderable::add_bind(unique_ptr<dx_bindable_base> bind) noexcept {
         mBinds.emplace_back(std::move(bind));
     }
 
@@ -37,7 +37,7 @@ namespace wg {
         return u64(mIndexBuffer->get_count());
     }
 
-    void dx_renderable::add_static_bind(unique_ptr<dx_bindable> bind) noexcept {
+    void dx_renderable::add_static_bind(unique_ptr<dx_bindable_base> bind) noexcept {
         mStaticBinds.emplace_back(std::move(bind));
     }
 

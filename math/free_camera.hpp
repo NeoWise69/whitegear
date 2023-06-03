@@ -18,7 +18,7 @@ namespace wg {
         inline ~free_camera() = default;
         inline free_camera(const vec3& start_pos) : mPosition(start_pos) {}
 
-        mat4 get_view_matrix() const;
+        const mat4& get_view_matrix() const;
 
         void set_position(const vec3& pos);
         void set_fly_speed(scalar s);
@@ -27,6 +27,7 @@ namespace wg {
         void update();
 
     private:
+        mutable mat4 mViewMatrix = {};
         vec3 mPosition = {};
         vec3 mFront = {0, 0, -1};
         vec3 mUp = {0, 1, 0};

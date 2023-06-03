@@ -10,6 +10,7 @@
 #define WHITEGEAR_DX_GRAPHICS_HPP
 
 #include "minimal.hpp"
+#include "dx_render_target_buffer.hpp"
 #include <math/free_camera.hpp>
 #include <graphics/window.hpp>
 
@@ -86,42 +87,54 @@ namespace wg {
         void map_resource(const wrl::ComPtr<ID3D11Resource>& resource, D3D11_MAP type, D3D11_MAPPED_SUBRESOURCE* p_mr) const;
         void unmap_resource(const wrl::ComPtr<ID3D11Resource>& resource) const;
 
-        inline mat4 get_view_matrix() const { return mGlobalCamera.get_view_matrix(); }
+        inline const mat4& get_view_matrix() const { return mGlobalCamera.get_view_matrix(); }
         inline viewport& get_viewport() const { return *mViewport; }
         inline viewport& get_viewport() { return *mViewport; }
 
         inline auto get_device() const {
-            return device;
+            return mDevice;
         }
         inline auto get_swapchain() const {
-            return swapchain;
+            return mSwapchain;
+        }
+        inline auto get_render_target_buffer() const {
+            return mRenderTargetBuffer.get();
         }
         inline auto get_context() const {
-            return context;
+            return mDeviceContext;
         }
+
+        inline void set_viewport(viewport* p_viewport) {
+            mViewport = p_viewport;
+        }
+
+        void begin_render_to_texture_buffer();
+        void end_render_to_texture_buffer();
+
         inline auto* ia() const {
-            return mIAStage.get();
+            return mInputAssemblyStage.get();
         }
         inline auto* vs() const {
-            return mVSStage.get();
+            return mVertexShaderStage.get();
         }
         inline auto* ps() const {
-            return mPSStage.get();
+            return mPixelShaderStage.get();
         }
         inline auto* rs() const {
-            return mRSStage.get();
+            return mRasterStage.get();
         }
     private:
-        wrl::ComPtr<ID3D11Device> device = nullptr;
-        wrl::ComPtr<IDXGISwapChain> swapchain = nullptr;
-        wrl::ComPtr<ID3D11DeviceContext> context = nullptr;
-        wrl::ComPtr<ID3D11RenderTargetView> rtv = nullptr;
-        wrl::ComPtr<ID3D11DepthStencilView> dsv = nullptr;
+        wrl::ComPtr<ID3D11Device> mDevice = nullptr;
+        wrl::ComPtr<IDXGISwapChain> mSwapchain = nullptr;
+        wrl::ComPtr<ID3D11DeviceContext> mDeviceContext = nullptr;
+        wrl::ComPtr<ID3D11RenderTargetView> mBackBufferRenderTargetView = nullptr;
+        wrl::ComPtr<ID3D11DepthStencilView> mDepthStencilView = nullptr;
 
-        unique_ptr<input_assembly_stage> mIAStage;
-        unique_ptr<vertex_shader_stage> mVSStage;
-        unique_ptr<pixel_shader_stage> mPSStage;
-        unique_ptr<rasterizer_stage> mRSStage;
+        unique_ptr<input_assembly_stage> mInputAssemblyStage = nullptr;
+        unique_ptr<vertex_shader_stage> mVertexShaderStage = nullptr;
+        unique_ptr<pixel_shader_stage> mPixelShaderStage = nullptr;
+        unique_ptr<rasterizer_stage> mRasterStage = nullptr;
+        unique_ptr<dx_render_target_buffer> mRenderTargetBuffer = nullptr;
 
         free_camera mGlobalCamera = {{0, 0, 3}};
         viewport* mViewport = nullptr;

@@ -6,7 +6,7 @@
  * report this source code leak and delete all copies of source code from all your machines.
  ******************************************************************************/
 
-#include "dx_bindable_pixel_shader.hpp"
+#include "dx_pixel_shader.hpp"
 
 #if WG_WINDOWS
 

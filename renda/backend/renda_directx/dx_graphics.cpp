@@ -13,6 +13,9 @@
 #if WG_WINDOWS
 
 namespace wg {
+    viewport* GEditorViewport = nullptr;
+    bool GViewportResized = true;
+
     dx_graphics::dx_graphics(GLFWwindow* p_window_handle, window_viewport* p_window_viewport) {
         mViewport = p_window_viewport;
         HWND hWnd = glfwGetWin32Window(p_window_handle);
@@ -44,18 +47,18 @@ namespace wg {
                 0,
                 D3D11_SDK_VERSION,
                 &swap_chain_desc,
-                swapchain.GetAddressOf(),
-                device.GetAddressOf(),
+                mSwapchain.GetAddressOf(),
+                mDevice.GetAddressOf(),
                 nullptr,
-                context.GetAddressOf()
+                mDeviceContext.GetAddressOf()
         ));
 
         wrl::ComPtr<ID3D11Resource> back_buffer = {};
-        ret_t(swapchain->GetBuffer(0, IID_PPV_ARGS(back_buffer.GetAddressOf())));
-        ret_t(device->CreateRenderTargetView(
+        ret_t(mSwapchain->GetBuffer(0, IID_PPV_ARGS(back_buffer.GetAddressOf())));
+        ret_t(mDevice->CreateRenderTargetView(
                 back_buffer.Get(),
                 nullptr,
-                rtv.GetAddressOf()
+                mBackBufferRenderTargetView.GetAddressOf()
                 ));
 
         D3D11_DEPTH_STENCIL_DESC dsd = {};
@@ -63,8 +66,8 @@ namespace wg {
         dsd.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
         dsd.DepthFunc = D3D11_COMPARISON_LESS;
         wrl::ComPtr<ID3D11DepthStencilState> dss = nullptr;
-        ret_t(device->CreateDepthStencilState(&dsd, &dss));
-        context->OMSetDepthStencilState(dss.Get(), 1u);
+        ret_t(mDevice->CreateDepthStencilState(&dsd, &dss));
+        mDeviceContext->OMSetDepthStencilState(dss.Get(), 1u);
 
         wrl::ComPtr<ID3D11Texture2D> depth_texture = nullptr;
         D3D11_TEXTURE2D_DESC t2dd = {};
@@ -76,30 +79,32 @@ namespace wg {
         t2dd.SampleDesc.Count = 1u;
         t2dd.Usage = D3D11_USAGE_DEFAULT;
         t2dd.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-        ret_t(device->CreateTexture2D(&t2dd, nullptr, &depth_texture));
+        ret_t(mDevice->CreateTexture2D(&t2dd, nullptr, &depth_texture));
 
         D3D11_DEPTH_STENCIL_VIEW_DESC dsv_desc = {};
         dsv_desc.Format = DXGI_FORMAT_D32_FLOAT;
         dsv_desc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-        ret_t(device->CreateDepthStencilView(depth_texture.Get(), &dsv_desc, &dsv));
+        ret_t(mDevice->CreateDepthStencilView(depth_texture.Get(), &dsv_desc, &mDepthStencilView));
 
-        context->OMSetRenderTargets(1, rtv.GetAddressOf(), dsv.Get());
+        mDeviceContext->OMSetRenderTargets(1, mBackBufferRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
 
-        mIAStage = make_unique<input_assembly_stage>(context);
-        mVSStage = make_unique<vertex_shader_stage>(context);
-        mPSStage = make_unique<pixel_shader_stage>(context);
-        mRSStage = make_unique<rasterizer_stage>(context);
+        mInputAssemblyStage = make_unique<input_assembly_stage>(mDeviceContext);
+        mVertexShaderStage = make_unique<vertex_shader_stage>(mDeviceContext);
+        mPixelShaderStage = make_unique<pixel_shader_stage>(mDeviceContext);
+        mRasterStage = make_unique<rasterizer_stage>(mDeviceContext);
+
+        mRenderTargetBuffer = make_unique<dx_render_target_buffer>(mDevice.Get(), mViewport->get_width(), mViewport->get_height());
     }
 
     dx_graphics::~dx_graphics() {
         // D3DSafeRelease(context);     // I don't need to release these resources because of <wrl.h>
-        // D3DSafeRelease(swapchain);   // I don't need to release these resources because of <wrl.h>
+        // D3DSafeRelease(mSwapchain);   // I don't need to release these resources because of <wrl.h>
         // D3DSafeRelease(device);      // I don't need to release these resources because of <wrl.h>
     }
 
     void dx_graphics::end_frame() {
         static ret_t hr = S_OK;
-        if (hr = swapchain->Present(0u, 0); !hr) {
+        if (hr = mSwapchain->Present(0u, 0); !hr) {
             if (*hr == DXGI_ERROR_DEVICE_REMOVED) {
                 out
                 .error("Failed to end DirectX frame![DXGI_ERROR_DEVICE_REMOVED]")
@@ -108,47 +113,72 @@ namespace wg {
             }
         }
         mGlobalCamera.update();
+        mViewport->update();
+
+        if (GViewportResized) {
+
+            out
+            .trace("Viewport resized: (%dx%d)", mViewport->get_width(), mViewport->get_height())
+            ;
+
+            const auto* rtb = mRenderTargetBuffer.get();
+
+
+            GViewportResized = false;
+        }
+
     }
 
     void dx_graphics::clear_color(const vec3 &color) const noexcept {
         const float col[4] = { float(color.r), float(color.g), float(color.b), 1.0f };
-        context->ClearRenderTargetView(rtv.Get(), col);
-        context->ClearDepthStencilView(dsv.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
+
+        mDeviceContext->ClearRenderTargetView(mRenderTargetBuffer->get_view().Get(), col);
+        mDeviceContext->ClearRenderTargetView(mBackBufferRenderTargetView.Get(), col);
+
+        mDeviceContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
     }
 
     void dx_graphics::draw_vertices(uint num_vertices) const {
-        context->Draw(num_vertices, 0);
+        mDeviceContext->Draw(num_vertices, 0);
     }
 
     void dx_graphics::draw_indices(uint num_indices, uint start_indices_location) const {
-        context->DrawIndexed(num_indices, start_indices_location, 0);
+        mDeviceContext->DrawIndexed(num_indices, start_indices_location, 0);
     }
 
     void dx_graphics::create_buffer(const D3D11_BUFFER_DESC &desc, ID3D11Buffer **pp_buffer, const D3D11_SUBRESOURCE_DATA* initial_data) const {
-        ret_t(device->CreateBuffer(&desc, initial_data, pp_buffer));
+        ret_t(mDevice->CreateBuffer(&desc, initial_data, pp_buffer));
     }
 
     void dx_graphics::create_vertex_shader(const wrl::ComPtr<ID3DBlob> &blob, wrl::ComPtr<ID3D11VertexShader> &VS) const {
-        ret_t(device->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &VS));
+        ret_t(mDevice->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &VS));
     }
 
     void dx_graphics::create_pixel_shader(const wrl::ComPtr<ID3DBlob> &blob, wrl::ComPtr<ID3D11PixelShader> &PS) const {
-        ret_t(device->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &PS));
+        ret_t(mDevice->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &PS));
     }
 
     void dx_graphics::create_input_layout(const D3D11_INPUT_ELEMENT_DESC *p_elements, uint num_elements,
                                           const wrl::ComPtr<ID3DBlob> &code,
                                           wrl::ComPtr<ID3D11InputLayout> &il) const {
-        ret_t(device->CreateInputLayout(p_elements, num_elements, code->GetBufferPointer(), code->GetBufferSize(), &il));
+        ret_t(mDevice->CreateInputLayout(p_elements, num_elements, code->GetBufferPointer(), code->GetBufferSize(), &il));
     }
 
     void dx_graphics::map_resource(const wrl::ComPtr<ID3D11Resource> &resource, D3D11_MAP type,
                                    D3D11_MAPPED_SUBRESOURCE *p_mr) const {
-        ret_t(context->Map(resource.Get(), 0u, type, 0u, p_mr));
+        ret_t(mDeviceContext->Map(resource.Get(), 0u, type, 0u, p_mr));
     }
 
     void dx_graphics::unmap_resource(const wrl::ComPtr<ID3D11Resource> &resource) const {
-        context->Unmap(resource.Get(), 0u);
+        mDeviceContext->Unmap(resource.Get(), 0u);
+    }
+
+    void dx_graphics::begin_render_to_texture_buffer() {
+        mDeviceContext->OMSetRenderTargets(1, mRenderTargetBuffer->get_view().GetAddressOf(), mDepthStencilView.Get());
+    }
+
+    void dx_graphics::end_render_to_texture_buffer() {
+        mDeviceContext->OMSetRenderTargets(1, mBackBufferRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
     }
 
     /**

@@ -59,70 +59,84 @@ namespace wg {
             ImGuiIO &io = ImGui::GetIO();
             ImGuiStyle &style = ImGui::GetStyle();
             float minWinSizeX = style.WindowMinSize.x;
-            style.WindowMinSize.x = 370.0f;
+            style.WindowMinSize.x = 64.0f;
             if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable) {
                 ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
                 ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
             }
 
-            style.WindowMinSize.x = minWinSizeX;
+            style.WindowMinSize.x = 64;
 
             if (ImGui::BeginMenuBar()) {
-                if (ImGui::BeginMenu("File")) {
-                    if (ImGui::MenuItem("Open Project...", "Ctrl+O")) {
-                        out
-                                .info("Open project...");
-                    }
+                if (ImGui::BeginMenu("More..")) {
 
-                    ImGui::Separator();
-
-                    if (ImGui::MenuItem("New Scene", "Ctrl+N")) {
-                        out
-                                .info("New scene");
-                    }
-
-                    if (ImGui::MenuItem("Save Scene", "Ctrl+S")) {
-                        out
-                                .info("Save scene");
-                    }
-
-                    if (ImGui::MenuItem("Save Scene As...", "Ctrl+Shift+S")) {
-                        out
-                                .info("Save scene as..");
-                    }
-
-                    ImGui::Separator();
-
-                    if (ImGui::MenuItem("Exit")) {
+                    if (ImGui::MenuItem("Exit", "Esc")) {
                         get_core()->exit();
                     }
 
                     ImGui::EndMenu();
                 }
-
-                if (ImGui::BeginMenu("Script")) {
-                    if (ImGui::MenuItem("Reload assembly", "Ctrl+R")) {
-                        out
-                                .info("Reloading assembly...");
-                    }
-
-                    ImGui::EndMenu();
-                }
-
                 ImGui::EndMenuBar();
             }
 
             { // Main viewport
                 if (ImGui::Begin("Game")) {
-
                     imgui_draw_viewport();
-
                 }
                 ImGui::End();
             }
 
+            tools_ui();
+            status_bar_ui();
+            world_outline_ui();
+            inspector_ui();
+            console_ui();
+            log_ui();
+
             ImGui::End();
         } // GEnableImGui
         return 0;
+    }
+
+    void world_editor_module::tools_ui() {
+        if (ImGui::Begin("::TOOLS::")) {
+
+        }
+        ImGui::End();
+    }
+
+    void world_editor_module::status_bar_ui() {
+        if (ImGui::Begin("::STATUS::BAR::")) {
+
+        }
+        ImGui::End();
+    }
+
+    void world_editor_module::world_outline_ui() {
+        if (ImGui::Begin("world tree")) {
+
+        }
+        ImGui::End();
+    }
+
+    void world_editor_module::inspector_ui() {
+        if (ImGui::Begin("inspector")) {
+
+        }
+        ImGui::End();
+    }
+
+    void world_editor_module::console_ui() {
+        if (ImGui::Begin("console")) {
+
+        }
+        ImGui::End();
+    }
+
+    void world_editor_module::log_ui() {
+        if (ImGui::Begin("log")) {
+
+        }
+        ImGui::End();
     }
 }

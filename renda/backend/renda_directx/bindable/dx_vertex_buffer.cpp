@@ -6,23 +6,15 @@
  * report this source code leak and delete all copies of source code from all your machines.
  ******************************************************************************/
 
-#ifndef WHITEGEAR_DX_BINDABLE_PIXEL_SHADER_HPP
-#define WHITEGEAR_DX_BINDABLE_PIXEL_SHADER_HPP
-
-#include "dx_bindable.hpp"
+#include "dx_vertex_buffer.hpp"
 
 #if WG_WINDOWS
 
 namespace wg {
-    class dx_bindable_pixel_shader : public dx_bindable {
-    public:
-        dx_bindable_pixel_shader(dx_graphics& gfx, const string& filename);
-        void bind(dx_graphics& gfx) const noexcept override;
-    private:
-        wrl::ComPtr<ID3D11PixelShader> mPixelShader = nullptr;
-    };
+    void dx_bindable_vertex_buffer::bind(dx_graphics &gfx) const noexcept {
+        const uint offset = 0u;
+        gfx.ia()->set_vertex_buffers(1, mVertexBuffer.GetAddressOf(), &mStride, &offset);
+    }
 }
 
 #endif
-
-#endif //WHITEGEAR_DX_BINDABLE_PIXEL_SHADER_HPP

@@ -6,16 +6,16 @@
  * report this source code leak and delete all copies of source code from all your machines.
  ******************************************************************************/
 
-#ifndef WHITEGEAR_DX_BINDABLE_CONSTANT_BUFFER_BASE_HPP
-#define WHITEGEAR_DX_BINDABLE_CONSTANT_BUFFER_BASE_HPP
+#ifndef WHITEGEAR_DX_CONSTANT_BUFFER_BASE_HPP
+#define WHITEGEAR_DX_CONSTANT_BUFFER_BASE_HPP
 
-#include "dx_bindable.hpp"
+#include "dx_bindable_base.hpp"
 
 #if WG_WINDOWS
 
 namespace wg {
     template<class CB>
-    class dx_bindable_constant_buffer_base : public dx_bindable {
+    class dx_bindable_constant_buffer_base : public dx_bindable_base {
     public:
         inline dx_bindable_constant_buffer_base(dx_graphics& gfx) {
             D3D11_BUFFER_DESC cbd;
@@ -80,4 +80,4 @@ namespace wg {
 
 #endif
 
-#endif //WHITEGEAR_DX_BINDABLE_CONSTANT_BUFFER_BASE_HPP
+#endif //WHITEGEAR_DX_CONSTANT_BUFFER_BASE_HPP

@@ -47,6 +47,7 @@ namespace wg {
     class window_viewport : public viewport {
     public:
         using viewport::viewport;
+
         inline window_viewport(uint w, uint h, bool b_is_fullscreen) : viewport(w, h), mIsFullscreen(b_is_fullscreen)
         {}
 

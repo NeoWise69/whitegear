@@ -6,15 +6,15 @@
  * report this source code leak and delete all copies of source code from all your machines.
  ******************************************************************************/
 
-#ifndef WHITEGEAR_DX_BINDABLE_INPUT_LAYOUT_HPP
-#define WHITEGEAR_DX_BINDABLE_INPUT_LAYOUT_HPP
+#ifndef WHITEGEAR_DX_INPUT_LAYOUT_HPP
+#define WHITEGEAR_DX_INPUT_LAYOUT_HPP
 
-#include "dx_bindable.hpp"
+#include "dx_bindable_base.hpp"
 
 #if WG_WINDOWS
 
 namespace wg {
-    class dx_bindable_input_layout : public dx_bindable {
+    class dx_bindable_input_layout : public dx_bindable_base {
     public:
         dx_bindable_input_layout(dx_graphics& gfx, const bounded_array<D3D11_INPUT_ELEMENT_DESC, 16>& layout, ID3DBlob* p_bytecode);
         void bind(dx_graphics& gfx) const noexcept override;
@@ -25,4 +25,4 @@ namespace wg {
 
 #endif
 
-#endif //WHITEGEAR_DX_BINDABLE_INPUT_LAYOUT_HPP
+#endif //WHITEGEAR_DX_INPUT_LAYOUT_HPP

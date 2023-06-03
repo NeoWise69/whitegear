@@ -6,15 +6,15 @@
  * report this source code leak and delete all copies of source code from all your machines.
  ******************************************************************************/
 
-#ifndef WHITEGEAR_DX_BINDABLE_GEOMETRY_TOPOLOGY_HPP
-#define WHITEGEAR_DX_BINDABLE_GEOMETRY_TOPOLOGY_HPP
+#ifndef WHITEGEAR_DX_GEOMETRY_TOPOLOGY_HPP
+#define WHITEGEAR_DX_GEOMETRY_TOPOLOGY_HPP
 
-#include "dx_bindable.hpp"
+#include "dx_bindable_base.hpp"
 
 #if WG_WINDOWS
 
 namespace wg {
-    class dx_bindable_geometry_topology : public dx_bindable {
+    class dx_bindable_geometry_topology : public dx_bindable_base {
     public:
         inline dx_bindable_geometry_topology(dx_graphics& gfx, D3D11_PRIMITIVE_TOPOLOGY topo) : mTopo(topo) {}
         void bind(dx_graphics& gfx) const noexcept override;
@@ -25,4 +25,4 @@ namespace wg {
 
 #endif
 
-#endif //WHITEGEAR_DX_BINDABLE_GEOMETRY_TOPOLOGY_HPP
+#endif //WHITEGEAR_DX_GEOMETRY_TOPOLOGY_HPP

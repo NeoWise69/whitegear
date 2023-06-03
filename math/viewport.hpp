@@ -149,6 +149,11 @@ namespace wg {
          * Recalculate matrix and aspect ratio, if required.
          */
         void update();
+        /**
+         * Simple utility method for access to base viewport
+         * without headache.
+         */
+        inline viewport* to_base() { return this; }
     private:
         uint mWidth = {};
         uint mHeight = {};

@@ -25,7 +25,7 @@ namespace wg {
      * Component type is a simple index value pointing
      * towards data storage.
      */
-    typedef u8 component_type_t;
+    typedef u64 component_type_t;
     /**
      * Type for component identifying.
      */

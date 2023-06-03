@@ -6,15 +6,15 @@
  * report this source code leak and delete all copies of source code from all your machines.
  ******************************************************************************/
 
-#ifndef WHITEGEAR_DX_BINDABLE_HPP
-#define WHITEGEAR_DX_BINDABLE_HPP
+#ifndef WHITEGEAR_DX_BINDABLE_BASE_HPP
+#define WHITEGEAR_DX_BINDABLE_BASE_HPP
 
 /**
  * DX_BINDABLE is an every graphics object that
  * is required to be bound before draw call.
  */
 
-#include "dx_graphics.hpp"
+#include "renda/backend/renda_directx/dx_graphics.hpp"
 
 #if WG_WINDOWS
 
@@ -22,9 +22,9 @@ namespace wg {
     /**
      * Simple base class for every 'bindable' directX resource.
      */
-    class dx_bindable {
+    class dx_bindable_base {
     public:
-        virtual ~dx_bindable() = default;
+        virtual ~dx_bindable_base() = default;
         /**
          * Direct call to D3D for binding.
          */
@@ -34,4 +34,4 @@ namespace wg {
 
 #endif
 
-#endif //WHITEGEAR_DX_BINDABLE_HPP
+#endif //WHITEGEAR_DX_BINDABLE_BASE_HPP

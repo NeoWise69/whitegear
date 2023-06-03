@@ -6,16 +6,16 @@
  * report this source code leak and delete all copies of source code from all your machines.
  ******************************************************************************/
 
-#ifndef WHITEGEAR_DX_BINDABLE_INDEX_BUFFER_HPP
-#define WHITEGEAR_DX_BINDABLE_INDEX_BUFFER_HPP
+#ifndef WHITEGEAR_DX_INDEX_BUFFER_HPP
+#define WHITEGEAR_DX_INDEX_BUFFER_HPP
 
-#include "dx_bindable.hpp"
-#include <math/geometry_buffer.hpp>
+#include "dx_bindable_base.hpp"
+#include "math/geometry_buffer.hpp"
 
 #if WG_WINDOWS
 
 namespace wg {
-    class dx_bindable_index_buffer : public dx_bindable {
+    class dx_bindable_index_buffer : public dx_bindable_base {
     public:
         template<uint VertexType>
         inline dx_bindable_index_buffer(dx_graphics& gfx, const geometry_buffer<VertexType>* p_buffer) : mCount(p_buffer->get_num_indices()) {
@@ -40,4 +40,4 @@ namespace wg {
 
 #endif
 
-#endif //WHITEGEAR_DX_BINDABLE_INDEX_BUFFER_HPP
+#endif //WHITEGEAR_DX_INDEX_BUFFER_HPP

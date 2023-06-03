@@ -6,16 +6,16 @@
  * report this source code leak and delete all copies of source code from all your machines.
  ******************************************************************************/
 
-#ifndef WHITEGEAR_DX_BINDABLE_VERTEX_BUFFER_HPP
-#define WHITEGEAR_DX_BINDABLE_VERTEX_BUFFER_HPP
+#ifndef WHITEGEAR_DX_VERTEX_BUFFER_HPP
+#define WHITEGEAR_DX_VERTEX_BUFFER_HPP
 
-#include "dx_bindable.hpp"
-#include <math/geometry_buffer.hpp>
+#include "dx_bindable_base.hpp"
+#include "math/geometry_buffer.hpp"
 
 #if WG_WINDOWS
 
 namespace wg {
-    class dx_bindable_vertex_buffer : public dx_bindable {
+    class dx_bindable_vertex_buffer : public dx_bindable_base {
     public:
         inline ~dx_bindable_vertex_buffer() override = default;
 
@@ -46,4 +46,4 @@ namespace wg {
 
 #endif
 
-#endif //WHITEGEAR_DX_BINDABLE_VERTEX_BUFFER_HPP
+#endif //WHITEGEAR_DX_VERTEX_BUFFER_HPP

@@ -6,27 +6,23 @@
  * report this source code leak and delete all copies of source code from all your machines.
  ******************************************************************************/
 
-#ifndef WHITEGEAR_DX_BINDABLE_PER_FRAME_CONSTANT_BUFFER_HPP
-#define WHITEGEAR_DX_BINDABLE_PER_FRAME_CONSTANT_BUFFER_HPP
+#ifndef WHITEGEAR_DX_PIXEL_SHADER_HPP
+#define WHITEGEAR_DX_PIXEL_SHADER_HPP
 
-#include "dx_bindable_constant_buffer_base.hpp"
-#include "dx_renderable.hpp"
-#include <math/geometry.hpp>
+#include "dx_bindable_base.hpp"
 
 #if WG_WINDOWS
 
 namespace wg {
-    class dx_bindable_per_frame_constant_buffer : public dx_bindable {
+    class dx_bindable_pixel_shader : public dx_bindable_base {
     public:
-        inline dx_bindable_per_frame_constant_buffer(dx_graphics& gfx)
-                : mVCBFrameData(gfx)
-        {}
+        dx_bindable_pixel_shader(dx_graphics& gfx, const string& filename);
         void bind(dx_graphics& gfx) const noexcept override;
     private:
-        dx_bindable_vertex_constant_buffer<frame_data_t> mVCBFrameData;
+        wrl::ComPtr<ID3D11PixelShader> mPixelShader = nullptr;
     };
 }
 
 #endif
 
-#endif //WHITEGEAR_DX_BINDABLE_PER_FRAME_CONSTANT_BUFFER_HPP
+#endif //WHITEGEAR_DX_PIXEL_SHADER_HPP

@@ -18,17 +18,42 @@
 #include "dx_common_mesh_cube.hpp"
 
 namespace wg {
+    namespace {
+        dx_graphics* GGraphics = nullptr;
+    }
     extern bool GEnableImGui;
+    extern viewport* GEditorViewport;
+    extern bool GViewportResized;
 
     void imgui_draw_viewport() {
-        ImGui::Text("There are will be a viewporT!");
+        static vec2 viewport_size = { ImGui::GetWindowSize().x, ImGui::GetWindowSize().y };
+
+        const auto render_target_buffer = GGraphics->get_render_target_buffer();
+        const auto viewport_srv = render_target_buffer->get_shader_resource_view();
+        const auto viewport_texture = ImTextureID(viewport_srv.Get());
+        vec2 v_size = {float(GEditorViewport->get_width()), float(GEditorViewport->get_height())};
+        ImGui::Image(viewport_texture, {v_size.x, v_size.y});
+
+        const vec2 current_viewport_size = { ImGui::GetWindowSize().x, ImGui::GetWindowSize().y };
+        if (current_viewport_size != viewport_size) {
+            viewport_size = current_viewport_size;
+            GViewportResized = true;
+        }
+
+        if (GViewportResized) {
+            GEditorViewport->set_size(viewport_size.x + 18, viewport_size.y - 35);
+        }
     }
 
     rendering_engine_directx::rendering_engine_directx(const rendering_engine_create_info &info)
-        : mWindow(info.p_window), mGraphics(info.p_window->get(), &info.p_window->get_viewport()) {
+        : mWindowP(info.p_window->get()), mViewport(info.p_window->get_viewport().to_base()), mGraphics(info.p_window->get(), &info.p_window->get_viewport()) {
         if (GEnableImGui) {
             init_imgui();
         }
+
+        GGraphics = &mGraphics;
+        GEditorViewport = mViewport;
+
         mFrameData = make_unique<dx_bindable_per_frame_constant_buffer>(mGraphics);
     }
 
@@ -91,10 +116,15 @@ namespace wg {
     void rendering_engine_directx::on_begin_tick() {
         mFrameStartTime = time_point::now();
 
+        // --> TODO: temporal code!
+        int w, h;
+        glfwGetWindowSize(mWindowP, &w, &h);
+        // --> TODO: temporal code!
+
         D3D11_VIEWPORT vp = {
                   0.0f, 0.0f,
-                  FLOAT(mWindow->get_viewport().get_width()),
-                  FLOAT(mWindow->get_viewport().get_height()),
+                  FLOAT(w),
+                  FLOAT(h),
                   0.0f, 1.0f
         };
         mGraphics.rs()->set_viewports(&vp, 1);
@@ -102,6 +132,9 @@ namespace wg {
         if (GEnableImGui) {
             pre_begin_imgui();
         }
+
+        mGraphics.begin_render_to_texture_buffer();
+
         // clearance
         mGraphics.clear_color({0.2f, 0.2f, 0.2f});
         auto& world_stats = get_parent_world()->stats();
@@ -113,6 +146,9 @@ namespace wg {
     }
 
     void rendering_engine_directx::on_end_tick() {
+
+        mGraphics.end_render_to_texture_buffer();
+
         if (GEnableImGui) {
             end_imgui();
         }
@@ -130,7 +166,7 @@ namespace wg {
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
         //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
         io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
-        io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
+        // io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
         //io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
         //io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
 
@@ -151,7 +187,7 @@ namespace wg {
         }
 
         // Setup Platform/Renderer bindings
-        ImGui_ImplGlfw_InitForOther(mWindow->get(), true);
+        ImGui_ImplGlfw_InitForOther(mWindowP, true);
         ImGui_ImplDX11_Init(mGraphics.get_device().Get(), mGraphics.get_context().Get());
     }
 
@@ -169,8 +205,8 @@ namespace wg {
 
     void rendering_engine_directx::end_imgui() {
         ImGuiIO& io = ImGui::GetIO();
-        io.DisplaySize.x = float(mWindow->get_viewport().get_width());
-        io.DisplaySize.y = float(mWindow->get_viewport().get_height());
+        io.DisplaySize.x = float(mViewport->get_width());
+        io.DisplaySize.y = float(mViewport->get_height());
 
         // Rendering IMGUI
         ImGui::Render();

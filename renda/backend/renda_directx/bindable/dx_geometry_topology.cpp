@@ -6,14 +6,13 @@
  * report this source code leak and delete all copies of source code from all your machines.
  ******************************************************************************/
 
-#include "dx_bindable_vertex_buffer.hpp"
+#include "dx_geometry_topology.hpp"
 
 #if WG_WINDOWS
 
 namespace wg {
-    void dx_bindable_vertex_buffer::bind(dx_graphics &gfx) const noexcept {
-        const uint offset = 0u;
-        gfx.ia()->set_vertex_buffers(1, mVertexBuffer.GetAddressOf(), &mStride, &offset);
+    void dx_bindable_geometry_topology::bind(dx_graphics &gfx) const noexcept {
+        gfx.ia()->set_primitive_topology(mTopo);
     }
 }
 
