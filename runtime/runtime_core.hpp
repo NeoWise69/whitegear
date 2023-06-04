@@ -20,21 +20,24 @@ namespace wg {
 
     class runtime_core {
     public:
-        inline static const auto MAX_MODULES = 32;
-
         int initialize();
         int exit();
 
         int tick(runtime_tick_info* info);
 
         template<class T, class...Args>
-        void add_module(Args&&...args) {
-            mModules.emplace_back(new T(this, std::forward<Args>(args)...));
+        inline void add_module(Args&&...args) {
+            mModules[T::module_id] = new T(this, std::forward<Args>(args)...);
+        }
+
+        template<class T, std::enable_if_t<std::is_base_of_v<runtime_module, T>, i32> = 0>
+        inline T* get_module_by_id(const uint m_id) {
+            return (T*)mModules[m_id];
         }
 
         inline bool is_running() const { return mIsRunning; }
     private:
-        bounded_array<runtime_module*, MAX_MODULES> mModules;
+        hashmap<uint, runtime_module*> mModules = {};
         bool mIsRunning;
     };
 }

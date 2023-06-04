@@ -12,6 +12,11 @@
 #include <core/core.hpp>
 
 namespace wg {
+    uint acquire_runtime_module_id();
+
+#define WG_DECL_RUNTIME_MODULE(id) \
+    inline static const uint module_id = id;
+
     class runtime_core;
     /**
      * Runtime modules is a pieces that running

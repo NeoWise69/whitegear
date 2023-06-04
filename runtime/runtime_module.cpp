@@ -17,4 +17,9 @@ namespace wg {
 #endif
 
     runtime_module::runtime_module(wg::runtime_core *cp) : pCore(cp) {}
+
+    uint acquire_runtime_module_id() {
+        static uint id = 0;
+        return id++;
+    }
 }

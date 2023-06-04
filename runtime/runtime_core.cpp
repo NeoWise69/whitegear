@@ -12,7 +12,7 @@
 namespace wg {
     int runtime_core::initialize() {
 
-        for (auto& mod : mModules) {
+        for (auto& [id, mod] : mModules) {
             if (const auto code = mod->on_init()) {
                 return code;
             }
@@ -24,7 +24,7 @@ namespace wg {
 
     int runtime_core::exit() {
 
-        for (auto& mod : mModules) {
+        for (auto& [id, mod] : mModules) {
             if (const auto code = mod->on_exit()) {
                 return code;
             }
@@ -39,7 +39,7 @@ namespace wg {
 
         const auto start = time_point::now();
 
-        for (auto& mod : mModules) {
+        for (auto& [id, mod] : mModules) {
             if (const auto code = mod->on_tick()) {
                 return code;
             }
