@@ -21,6 +21,7 @@ namespace wg {
         SCENE_MODULE_ERROR_WORLD_UNLOAD_FAILED,
         SCENE_MODULE_ERROR_WORLD_UNINITIALIZE_FAILED,
     };
+    inline const uint scene_module_id = acquire_runtime_module_id();
     class scene_module : public runtime_module {
     public:
         explicit scene_module(runtime_core* cp, rendering_engine* p_renda);
@@ -32,6 +33,8 @@ namespace wg {
         inline world& get_active_world() {
             return mActiveWorld;
         }
+
+        WG_DECL_RUNTIME_MODULE(scene_module_id)
     private:
         world mActiveWorld = {};
         rendering_engine* renda = nullptr;
