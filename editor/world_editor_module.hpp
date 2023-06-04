@@ -11,14 +11,17 @@
 
 #include <runtime/runtime_module.hpp>
 #include <math/viewport.hpp>
+#include <scene/world.hpp>
 
 namespace wg {
+    inline const uint world_editor_module_id = acquire_runtime_module_id();
     class world_editor_module : public runtime_module {
     public:
         inline explicit world_editor_module(runtime_core* cp, viewport* p_viewport) : runtime_module(cp), mWorldViewport(p_viewport) {}
 
         int on_tick() override;
 
+        WG_DECL_RUNTIME_MODULE(world_editor_module_id)
     private:
         void tools_ui();
         void status_bar_ui();
@@ -27,7 +30,10 @@ namespace wg {
         void console_ui();
         void log_ui();
 
+        static void draw_single_entity(entity_t, world_registry*);
+
         viewport* mWorldViewport = {};
+        world* mWorld = {};
     };
 }
 

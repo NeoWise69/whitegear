@@ -7,6 +7,7 @@
  ******************************************************************************/
 
 #include "world_editor_module.hpp"
+#include "scene/scene_module.hpp"
 #include <runtime/runtime_core.hpp>
 
 #include <imgui.h>
@@ -16,6 +17,10 @@ namespace wg {
     void imgui_draw_viewport(viewport* p_viewport);
 
     int world_editor_module::on_tick() {
+        if (!mWorld) {
+            auto *s_module = get_core()->get_module_by_id<scene_module>(scene_module_id);
+            mWorld = &s_module->get_active_world();
+        }
         if (GEnableImGui) {
 
             // Note: Switch this to true to enable dockspace
@@ -114,7 +119,7 @@ namespace wg {
 
     void world_editor_module::world_outline_ui() {
         if (ImGui::Begin("world tree")) {
-
+            mWorld->on_each_entity(world_editor_module::draw_single_entity);
         }
         ImGui::End();
     }
@@ -138,5 +143,9 @@ namespace wg {
 
         }
         ImGui::End();
+    }
+
+    void world_editor_module::draw_single_entity(entity_t e, world_registry* reg) {
+
     }
 }
