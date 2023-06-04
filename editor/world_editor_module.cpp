@@ -8,6 +8,8 @@
 
 #include "world_editor_module.hpp"
 #include "scene/scene_module.hpp"
+#include "runtime/user_input.hpp"
+#include "scene/components/name_id.hpp"
 #include <runtime/runtime_core.hpp>
 
 #include <imgui.h>
@@ -17,9 +19,9 @@ namespace wg {
     void imgui_draw_viewport(viewport* p_viewport);
 
     int world_editor_module::on_tick() {
-        if (!mWorld) {
+        if (!mWorldControls.is_ready()) {
             auto *s_module = get_core()->get_module_by_id<scene_module>(scene_module_id);
-            mWorld = &s_module->get_active_world();
+            mWorldControls = &s_module->get_active_world();
         }
         if (GEnableImGui) {
 
@@ -119,14 +121,27 @@ namespace wg {
 
     void world_editor_module::world_outline_ui() {
         if (ImGui::Begin("world tree")) {
-            mWorld->on_each_entity(world_editor_module::draw_single_entity);
+            mWorldControls.on_each_entity([&](entity_t e, world_registry* reg){ draw_single_entity(e, reg); });
+            if (input::get().ms_is_pressed(KEY_MOUSE_LEFT) && ImGui::IsWindowHovered()) {
+                mSelectedEntity = {};
+            }
+            if (ImGui::BeginPopupContextWindow(nullptr, 1)) {
+
+                if (ImGui::MenuItem("create empty")) {
+                    mWorldControls.create_entity("empty entity");
+                }
+
+                ImGui::EndPopup();
+            }
         }
         ImGui::End();
     }
 
     void world_editor_module::inspector_ui() {
         if (ImGui::Begin("inspector")) {
-
+            if (mSelectedEntity) {
+                draw_entity_components(mSelectedEntity);
+            }
         }
         ImGui::End();
     }
@@ -146,6 +161,48 @@ namespace wg {
     }
 
     void world_editor_module::draw_single_entity(entity_t e, world_registry* reg) {
+        auto& name_id = reg->get_component<component_name_id>(e).name;
+        ImGuiTreeNodeFlags flags = ((mSelectedEntity == e) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
+        flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
+        bool opened = ImGui::TreeNodeEx((void*)e, flags, "%s", name_id.c_str());
+        if (ImGui::IsItemClicked()) {
+            mSelectedEntity = e;
+        }
 
+        bool entityDeleted = false;
+        if (ImGui::BeginPopupContextItem())
+        {
+            if (ImGui::MenuItem("delete"))
+                entityDeleted = true;
+
+            ImGui::EndPopup();
+        }
+
+        if (opened)
+        {
+            ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+            bool opened = ImGui::TreeNodeEx((void*)9817239, flags, "%s", name_id.c_str());
+            if (opened)
+                ImGui::TreePop();
+            ImGui::TreePop();
+        }
+
+        if (entityDeleted)
+        {
+            mWorldControls.destroy_entity(e);
+            if (mSelectedEntity == e)
+                mSelectedEntity = {};
+        }
+    }
+
+    void world_editor_module::draw_entity_components(entity_t e) {
+        if (mWorldControls.has_component<component_name_id>(e)) {
+            auto& name = mWorldControls.get_component<component_name_id>(e).name;
+            char buf[256]{};
+            strncpy(buf, name.c_str(), min(name.size(), 256));
+            if (ImGui::InputText("##name_id", buf, sizeof(buf))) {
+                name = buf;
+            }
+        }
     }
 }

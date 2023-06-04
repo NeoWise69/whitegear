@@ -21,6 +21,8 @@ namespace wg {
 
         int on_tick() override;
 
+        inline void set_selected_entity(entity_t e) { mSelectedEntity = e; }
+
         WG_DECL_RUNTIME_MODULE(world_editor_module_id)
     private:
         void tools_ui();
@@ -30,10 +32,12 @@ namespace wg {
         void console_ui();
         void log_ui();
 
-        static void draw_single_entity(entity_t, world_registry*);
+        void draw_single_entity(entity_t, world_registry*);
+        void draw_entity_components(entity_t);
 
         viewport* mWorldViewport = {};
-        world* mWorld = {};
+        entity_t mSelectedEntity = {};
+        world::controls mWorldControls = {};
     };
 }
 
