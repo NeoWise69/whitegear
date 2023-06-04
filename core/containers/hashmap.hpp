@@ -175,22 +175,10 @@ namespace wg {
             return p_node ? p_node->pair.second : _insert_node(key, value_type(), false)->pair.second;
         }
 
-        inline value_type* operator[](const key_type& key) const {
-            if (!mPtrs) {
-                return nullptr;
-            }
-            const auto key_hash = _make_hash(key);
-            auto* p_node = _find_node(key, key_hash);
-            return p_node ? &p_node->pair.second : nullptr;
-        }
-
         inline const value_type& at(const key_type& key) const {
-            if (!mPtrs) {
-                return _insert_node(key, value_type(), false)->pair.second;
-            }
             const auto key_hash = _make_hash(key);
             auto* p_node = _find_node(key, key_hash);
-            return p_node ? p_node->pair.second : _insert_node(key, value_type(), false)->pair.second;
+            return p_node->pair.second;
         }
 
         inline value_type& at(const key_type& key) {
