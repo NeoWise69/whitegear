@@ -49,7 +49,6 @@ namespace wg {
          * Create editor viewport based on window's one. (Copy)
          */
         auto* ep_viewport = new viewport(mWindow.get_viewport());
-        ep_viewport->set_size(320, 240);
         {
             rendering_engine::create_info info = {};
             info.p_app_name = "wg_ed";
