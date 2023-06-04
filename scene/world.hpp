@@ -10,6 +10,7 @@
 #define WHITEGEAR_WORLD_HPP
 
 #include <scene/world_registry.hpp>
+#include <functional>
 
 namespace wg {
     class rendering_engine;
@@ -61,10 +62,16 @@ namespace wg {
         inline world_statistics& stats() { return mStats; }
         inline const world_statistics& stats() const { return mStats; }
 
+        inline void on_each_entity(const std::function<void(entity_t, world_registry*)>& fn) {
+            for (uint i = 0; i < pEntities->size(); ++i)
+                fn(pEntities->at(i), &registry);
+        }
+
     private:
         world_statistics mStats = {};
         rendering_engine* renda = nullptr;
         world_registry registry = {};
+        bounded_array<entity_t, MAX_ENTITIES>* pEntities = nullptr;
 
         shared_ptr<rendering_system> renderingSystem = nullptr;
         shared_ptr<common_mesh_rendering_system> commonMeshRenderingSystem = nullptr;

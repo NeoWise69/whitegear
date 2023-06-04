@@ -47,6 +47,8 @@ namespace wg {
             registry.assign_scene_system_footprint<common_mesh_rendering_system>(fp);
         }
 
+        pEntities = new bounded_array<entity_t, MAX_ENTITIES>();
+
         return true;
     }
 
@@ -72,6 +74,7 @@ namespace wg {
                 create_info.mesh = rendering_engine::common_mesh_create_info::COMMON_MESH_CUBE;
 
                 renda->create_common_mesh(&create_info);
+                pEntities->emplace_back(e);
             }
         }
 
