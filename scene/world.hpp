@@ -52,6 +52,47 @@ namespace wg {
             world_registry* registry = nullptr;
         };
 
+        class controls {
+        public:
+            inline controls() = default;
+
+            inline ~controls() = default;
+
+            inline controls(world *p_world)
+                    : pRegistry(&p_world->registry), entities(&p_world->entities) {}
+
+            inline void on_each_entity(const std::function<void(entity_t, world_registry *)> &fn) {
+                for (auto& [e, _] : *entities)
+                    fn(e, pRegistry);
+            }
+
+            entity_t create_entity(const char *name_id);
+            void destroy_entity(entity_t e);
+
+            template<class T>
+            inline bool has_component(entity_t e) const {
+                return pRegistry->has_component<T>(e);
+            }
+
+            template<class T>
+            inline T& get_component(entity_t e) {
+                return pRegistry->get_component<T>(e);
+            }
+
+            template<class T>
+            inline const T& get_component(entity_t e) const {
+                return pRegistry->get_component<T>(e);
+            }
+
+            inline bool is_ready() const {
+                return pRegistry && entities;
+            }
+
+        private:
+            world_registry *pRegistry = nullptr;
+            hashmap<entity_t, bool> *entities = nullptr;
+        };
+
         bool initialize(rendering_engine* p_renda);
         bool load();
         bool unload();
@@ -62,16 +103,11 @@ namespace wg {
         inline world_statistics& stats() { return mStats; }
         inline const world_statistics& stats() const { return mStats; }
 
-        inline void on_each_entity(const std::function<void(entity_t, world_registry*)>& fn) {
-            for (uint i = 0; i < pEntities->size(); ++i)
-                fn(pEntities->at(i), &registry);
-        }
-
     private:
         world_statistics mStats = {};
         rendering_engine* renda = nullptr;
         world_registry registry = {};
-        bounded_array<entity_t, MAX_ENTITIES>* pEntities = nullptr;
+        hashmap<entity_t, bool> entities = {};
 
         shared_ptr<rendering_system> renderingSystem = nullptr;
         shared_ptr<common_mesh_rendering_system> commonMeshRenderingSystem = nullptr;

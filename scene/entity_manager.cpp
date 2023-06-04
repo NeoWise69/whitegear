@@ -12,7 +12,7 @@
 namespace wg {
 
     entity_manager::entity_manager() : mEntitiesInFlight(), mFootprints(), mAvailableEntities() {
-        for (auto i = MAX_ENTITIES - MAX_ENTITIES; i < MAX_ENTITIES; ++i)
+        for (auto i = MAX_ENTITIES - MAX_ENTITIES + 1; i < MAX_ENTITIES + 1; ++i)
             mAvailableEntities.push(i);
     }
 

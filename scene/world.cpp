@@ -12,6 +12,7 @@
 
 // components
 #include <scene/components/transform.hpp>
+#include <scene/components/name_id.hpp>
 #include <scene/components/common_geometry.hpp>
 #include "core/time.hpp"
 
@@ -22,6 +23,7 @@ namespace wg {
 
         registry.register_component<component_transform>();
         registry.register_component<component_common_geometry>();
+        registry.register_component<component_name_id>();
 
         commonMeshRenderingSystem = registry.register_scene_system<common_mesh_rendering_system>(&registry);
         renderingSystem = registry.register_scene_system<rendering_system>(&registry);
@@ -47,8 +49,6 @@ namespace wg {
             registry.assign_scene_system_footprint<common_mesh_rendering_system>(fp);
         }
 
-        pEntities = new bounded_array<entity_t, MAX_ENTITIES>();
-
         return true;
     }
 
@@ -60,6 +60,9 @@ namespace wg {
         for (uint x = 0; x < 32; ++x) {
             for (uint y = 0; y < 32; ++y) {
                 const entity_t e = registry.entity_create();
+                registry.add_component(e, component_name_id{
+                    "entity"
+                });
                 registry.add_component(e, component_transform{
                         vec3(scalar(x * 4), scalar(0), scalar(y * 4)),
                         vec3(0),
@@ -74,7 +77,7 @@ namespace wg {
                 create_info.mesh = rendering_engine::common_mesh_create_info::COMMON_MESH_CUBE;
 
                 renda->create_common_mesh(&create_info);
-                pEntities->emplace_back(e);
+                entities[e] = true;
             }
         }
 

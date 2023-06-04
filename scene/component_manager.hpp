@@ -54,6 +54,11 @@ namespace wg {
             return get_component_array<T>()->get_data(entt);
         }
 
+        template<class T>
+        inline bool has_component(entity_t entt) const {
+            return get_component_array<T>()->has_data(entt);
+        }
+
         inline void on_entity_destroyed(entity_t entt) {
             for (const auto&[name, component] : mComponentArrays) {
                 component->on_entity_destroyed(entt);
@@ -69,6 +74,11 @@ namespace wg {
         inline shared_ptr<component_array<T>> get_component_array() {
             assert(mComponentTypes.find(T::COMPONENT_ID) != mComponentTypes.end() && "Component not registered before use.");
             return static_pointer_cast<component_array<T>>(mComponentArrays[T::COMPONENT_ID]);
+        }
+        template<class T>
+        inline shared_ptr<component_array<T>> get_component_array() const {
+            assert(mComponentTypes.find(T::COMPONENT_ID) != mComponentTypes.end() && "Component not registered before use.");
+            return static_pointer_cast<component_array<T>>(mComponentArrays.at(T::COMPONENT_ID));
         }
     };
 }

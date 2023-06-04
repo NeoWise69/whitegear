@@ -64,6 +64,10 @@ namespace wg {
             return mComponentArray[mToIndex.at(entt)];
         }
 
+        inline bool has_data(entity_t entt) const {
+            return mToIndex.contains(entt);
+        }
+
         inline void on_entity_destroyed(entity_t entt) override {
             if (mToIndex.find(entt) != mToIndex.end()) {
                 remove_data(entt);

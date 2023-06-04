@@ -54,6 +54,11 @@ namespace wg {
         }
 
         template<class T>
+        inline bool has_component(entity_t entt) const {
+            return mComponentManager->has_component<T>(entt);
+        }
+
+        template<class T>
         inline component_type_t get_component_type() {
             return mComponentManager->get_component_type<T>();
         }
