@@ -48,8 +48,8 @@ namespace wg {
 
     }
 
-    void rendering_engine_vulkan::draw_mesh(const rendering_engine::mesh_render_data *p_data) {
-
+    bool rendering_engine_vulkan::draw_mesh(const mesh_render_data *p_data) {
+        return true;
     }
 
     frustum_view rendering_engine_vulkan::get_frustum() const {

@@ -9,7 +9,7 @@
 #include "imgui_tweaks.hpp"
 
 namespace ImGui {
-    void DrawControlVec3(const char *p_label, wg::scalar *p_values, float reset_value, float column_width) {
+    bool DrawControlVec3(const char *p_label, wg::scalar *p_values, float reset_value, float column_width) {
         ImGuiIO& io = ImGui::GetIO();
         auto boldFont = io.Fonts->Fonts[0];
 
@@ -36,7 +36,7 @@ namespace ImGui {
         ImGui::PopStyleColor(3);
 
         ImGui::SameLine();
-        ImGui::DragFloat("##X", &p_values[0], 0.1f, 0.0f, 0.0f, "%.2f");
+        const bool x = ImGui::DragFloat("##X", &p_values[0], 0.1f, 0.0f, 0.0f, "%.2f");
         ImGui::PopItemWidth();
         ImGui::SameLine();
 
@@ -50,7 +50,7 @@ namespace ImGui {
         ImGui::PopStyleColor(3);
 
         ImGui::SameLine();
-        ImGui::DragFloat("##Y", &p_values[1], 0.1f, 0.0f, 0.0f, "%.2f");
+        const bool y = ImGui::DragFloat("##Y", &p_values[1], 0.1f, 0.0f, 0.0f, "%.2f");
         ImGui::PopItemWidth();
         ImGui::SameLine();
 
@@ -64,7 +64,7 @@ namespace ImGui {
         ImGui::PopStyleColor(3);
 
         ImGui::SameLine();
-        ImGui::DragFloat("##Z", &p_values[2], 0.1f, 0.0f, 0.0f, "%.2f");
+        const bool z = ImGui::DragFloat("##Z", &p_values[2], 0.1f, 0.0f, 0.0f, "%.2f");
         ImGui::PopItemWidth();
 
         ImGui::PopStyleVar();
@@ -72,5 +72,7 @@ namespace ImGui {
         ImGui::Columns(1);
 
         ImGui::PopID();
+
+        return x || y || z;
     }
 }

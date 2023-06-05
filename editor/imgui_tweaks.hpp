@@ -10,21 +10,21 @@
 #define WHITEGEAR_IMGUI_TWEAKS_HPP
 
 #include <math/vec.hpp>
-#include <scene/world_registry.hpp>
+#include <scene/world.hpp>
 
 #include <imgui_internal.h>
 #include <imgui.h>
 
 namespace ImGui {
-    void DrawControlVec3(const char* p_label, wg::scalar* p_values, float reset_value = 0.0f, float column_width = 100.0f);
+    bool DrawControlVec3(const char* p_label, wg::scalar* p_values, float reset_value = 0.0f, float column_width = 100.0f);
 
     template<typename T, typename UIFunction>
-    inline void DrawComponent(const char* p_name, wg::entity_t entity, wg::world_registry* p_reg, UIFunction uiFunction)
+    inline void DrawComponent(const char* p_name, wg::entity_t entity, wg::world::controls* p_cont, UIFunction uiFunction)
     {
         const ImGuiTreeNodeFlags treeNodeFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding;
-        if (p_reg->has_component<T>(entity))
+        if (p_cont->has_component<T>(entity))
         {
-            auto& component = p_reg->get_component<T>(entity);
+            auto& component = p_cont->get_component<T>(entity);
             ImVec2 contentRegionAvailable = ImGui::GetContentRegionAvail();
 
             ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2{ 4, 4 });
@@ -53,7 +53,7 @@ namespace ImGui {
             }
 
             if (removeComponent)
-                p_reg->remove_component<T>(entity);
+                p_cont->remove_component<T>(entity);
         }
     }}
 

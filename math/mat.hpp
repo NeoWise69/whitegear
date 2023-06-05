@@ -180,6 +180,9 @@ namespace wg {
         r[3] = m[3];
         return r;
     }
+    inline vec3 get_scale(const mat4& m) {
+        return { m[0][0], m[1][1], m[2][2] };
+    }
     inline mat4 look_at(const vec3& eye, const vec3& center, const vec3& up) {
         const auto f(normalize(center - eye));
         const auto s(normalize(cross(f, up)));

@@ -71,20 +71,31 @@ namespace wg {
         }
     }
 
-    void rendering_engine_directx::draw_mesh(const rendering_engine::mesh_render_data *p_data) {
+    bool rendering_engine_directx::draw_mesh(const mesh_render_data *p_data) {
         if (!mRenderables.contains(p_data->entity)) {
             out
             .error("failed to render object[eid=%d]! there are no such entity in loaded list!", p_data->entity)
             ;
-            return;
+            return false;
         }
         else {
             auto& world_stats = get_parent_world()->stats();
 
-            const auto& renderable = mRenderables[p_data->entity];
+            auto& renderable = mRenderables[p_data->entity];
 
             const auto f = get_frustum();
-            if (f.is_in_view(renderable->get_bounding(*p_data->p_position))) {
+            auto& bounding = renderable->get_bounding(*p_data->p_position);
+            if (*p_data->p_regenerate_bound) {
+
+                out
+                .trace("bound regenerated!")
+                ;
+
+                bounding.accept_scale(get_scale(*p_data->p_transform));
+                *p_data->p_regenerate_bound = false;
+            }
+
+            if (f.is_in_view(bounding)) {
                 if (!renderable->is_transform_ptr_provided()) {
                     renderable->set_transform_matrix_ptr(p_data->p_transform);
                 }
@@ -94,6 +105,7 @@ namespace wg {
                 world_stats.indices_per_frame += renderable->get_num_indices();
                 ++world_stats.draw_calls;
             }
+            return true;
         }
     }
 

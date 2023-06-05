@@ -34,8 +34,9 @@ namespace wg {
             entity_t entity;
             scalar view_aspect;
             scalar delta_time;
+            bool* p_regenerate_bound;
         };
-        virtual void draw_mesh(const mesh_render_data* p_data) = 0;
+        virtual bool draw_mesh(const mesh_render_data* p_data) = 0;
         struct mesh_load_data {
             string_view filepath;
             entity_t entity;

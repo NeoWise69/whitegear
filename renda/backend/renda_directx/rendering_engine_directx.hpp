@@ -28,7 +28,7 @@ namespace wg {
 
         inline rendering_engine_directx(const rendering_engine_directx&) = delete;
 
-        void draw_mesh(const mesh_render_data *p_data) override;
+        bool draw_mesh(const mesh_render_data *p_data) override;
         void load_mesh(const mesh_load_data *load_data) override;
         void create_common_mesh(const common_mesh_create_info* create_data) override;
         void unload_mesh(entity_t entity_id) override;

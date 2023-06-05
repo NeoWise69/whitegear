@@ -80,6 +80,21 @@ namespace wg {
             }
 
             template<class T>
+            inline void remove_component(entity_t e) {
+                pRegistry->remove_component<T>(e);
+            }
+
+            template<class T>
+            inline void add_component(entity_t e) {
+                pRegistry->add_component<T>(e, {});
+            }
+
+            template<class T>
+            inline void add_component(entity_t e, T c) {
+                pRegistry->add_component(e, c);
+            }
+
+            template<class T>
             inline const T& get_component(entity_t e) const {
                 return pRegistry->get_component<T>(e);
             }

@@ -488,6 +488,12 @@ namespace wg {
      */
     template<uint N>
     inline bool is_zero(const vec<N>& x) { return x == vec<N>::zero; }
+
+    template<uint N>
+    inline vec<N> degrees(const vec<N>& x) { return details::caller1<vec, N>::call(wg::degrees, x); }
+
+    template<uint N>
+    inline vec<N> radians(const vec<N>& x) { return details::caller1<vec, N>::call(wg::radians, x); }
 }
 
 #endif //WHITEGEAR_VEC_HPP

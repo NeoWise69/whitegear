@@ -31,6 +31,7 @@ namespace wg {
 
             static box generate_bounding(const mesh_vertex_t* vertices, u64 num_vertices);
             void set_position(const vec3& position);
+            void accept_scale(const vec3& r_scale);
         };
     }
     /**

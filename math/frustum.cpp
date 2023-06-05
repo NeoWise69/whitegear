@@ -148,4 +148,8 @@ namespace wg {
     void geometry::box::set_position(const vec3 &position) {
         center_position = position;
     }
+
+    void geometry::box::accept_scale(const vec3 &r_scale) {
+        size *= r_scale;
+    }
 }

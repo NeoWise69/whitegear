@@ -33,6 +33,7 @@ namespace wg {
         inline u64 get_num_vertices() const { return mNumVertices; }
         u64 get_num_indices() const;
         inline auto get_bounding(const vec3& pos) const { mBoundingCube.set_position(pos); return mBoundingCube; }
+        inline auto& get_bounding(const vec3& pos) { mBoundingCube.set_position(pos); return mBoundingCube; }
         void set_index_from_static();
         inline auto get_transform_matrix() const { return *mTransformPtr; }
         inline void set_transform_matrix_ptr(const mat4* p_transform) { mTransformPtr = p_transform; }

@@ -19,7 +19,7 @@ namespace wg {
             // get transform
             auto& transform_component = registry->get_component<component_transform>(e);
             transform_component.update();
-            //const auto common_geometry_component = registry->get_component<component_common_geometry>(e);
+            const auto common_geometry_component = registry->get_component<component_common_geometry>(e);
             // get some rendering stuff
 
             rendering_engine::mesh_render_data render_data = {};
@@ -27,8 +27,18 @@ namespace wg {
             render_data.entity = e;
             render_data.delta_time = data.delta_time;
             render_data.p_position = &transform_component.world_position;
+            render_data.p_regenerate_bound = &transform_component.scale_changed;
 
-            renda->draw_mesh(&render_data);
+            if (!renda->draw_mesh(&render_data)) {
+                // load mesh
+
+                rendering_engine::common_mesh_create_info ci = {};
+                ci.entity = e;
+                ci.mesh = (rendering_engine::common_mesh_create_info::type_t)(common_geometry_component.type);
+                ci.p_registry = registry;
+                renda->create_common_mesh(&ci);
+                renda->draw_mesh(&render_data);
+            }
         }
         return true;
     }
