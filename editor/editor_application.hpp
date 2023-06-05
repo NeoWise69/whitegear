@@ -9,27 +9,16 @@
 #ifndef WHITEGEAR_EDITOR_APPLICATION_HPP
 #define WHITEGEAR_EDITOR_APPLICATION_HPP
 
-#include <core/core.hpp>
-#include <runtime/runtime_core.hpp>
-#include <graphics/window.hpp>
-#include <renda/rendering_engine.hpp>
+#include <runtime/runtime_application.hpp>
 
 namespace wg {
-    class editor_application {
+    class editor_application : public runtime_application {
     public:
-        editor_application();
-        ~editor_application();
+        inline editor_application() = default;
+        inline ~editor_application() = default;
 
-        int pre_init();
-        int init();
-        void request_exit();
-
-        int run();
-
-    private:
-        runtime_core mCore;
-        window mWindow;
-        rendering_engine* mRenda;
+        int pre_init() override;
+        int init() override;
     };
 }
 

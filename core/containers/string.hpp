@@ -77,6 +77,10 @@ namespace wg {
         static string upper(const char* c);
         static string upper(const char* c, u64 len);
 
+        static char* copy(char* dst, const char* src, uint len);
+        static char* copy(char* dst, const string_view& src);
+        static char* copy(char* dst, const string& src);
+
         static void u8_to_u16(const string& str8, wchar_t* p_buffer, uint count);
         // !misc
 

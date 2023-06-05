@@ -25,6 +25,8 @@ int main() {
 
 #if WG_BUILD_EDITOR
     static wg::editor_application app;
+#else
+    static wg::runtime_application app;
 #endif
 
     struct application_exit_guard {

@@ -73,7 +73,7 @@ namespace wg {
         {
             memset(ppChildren, 0, sizeof(ppChildren));
             const auto nm = wg::string_view(name);
-            mNameLen = u8(min(nm.size(), 255));
+            mNameLen = u8(min(nm.size(), 255u));
             for (int i = 0; i < MAX_NAME && i < mNameLen; ++i)
                 mName[i] = nm[i];
             mName[mNameLen] = 0;

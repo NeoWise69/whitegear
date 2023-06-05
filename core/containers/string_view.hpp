@@ -38,8 +38,8 @@ namespace wg {
         inline virtual ~string_view_base() = default;
         inline constexpr string_view_base() : mPtr(nullptr), mSize(0) {}
         inline constexpr string_view_base(const_pointer_type ptr, size_type size) : mPtr(ptr), mSize(size) {}
-        inline constexpr string_view_base(pointer_type ptr) : mPtr(ptr), mSize(strlen(ptr)) {}
-        inline constexpr string_view_base(const_pointer_type ptr) : mPtr(ptr), mSize(strlen(ptr)) {}
+        inline constexpr string_view_base(pointer_type ptr) : mPtr(ptr), mSize(uint(strlen(ptr))) {}
+        inline constexpr string_view_base(const_pointer_type ptr) : mPtr(ptr), mSize(uint(strlen(ptr))) {}
         inline constexpr string_view_base(const std::initializer_list<Char>& list) : mPtr(list.begin()), mSize(list.size()) {}
         template<class It>
         inline constexpr string_view_base(It first, It last) : mPtr(first), mSize(last - first) {}

@@ -576,6 +576,23 @@ namespace wg {
 
     string::string(const string_view &sv) : string(sv.c_str(), sv.size()) {}
 
+    char *string::copy(char *dst, const char *src, uint len) {
+#if WG_WINDOWS
+        strncpy_s(dst, len, src, len);
+        return dst;
+#elif WG_UNIX
+        return strncpy(dst, src, len);
+#endif
+    }
+
+    char *string::copy(char *dst, const string_view &src) {
+        return string::copy(dst, src.c_str(), uint(src.size()));
+    }
+
+    char *string::copy(char *dst, const string &src) {
+        return string::copy(dst, src.c_str(), uint(src.size()));
+    }
+
     bool operator==(const string& a, const string& b) {
         if (a.size() != b.size()) return false;
         return !strncmp(a.c_str(), b.c_str(), min(a.size(), b.size()));

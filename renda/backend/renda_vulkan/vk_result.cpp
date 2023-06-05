@@ -199,7 +199,7 @@ namespace wg {
         const uint index = get_vk_result_index(vk_result);
         const auto& desc = vk_result_description_table[index];
         const uint len = min(count, desc.length);
-        strncpy(buffer, desc.text, len);
+        string::copy(buffer, desc.text, len);
         return len;
     }
 }
