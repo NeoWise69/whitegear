@@ -39,13 +39,13 @@ namespace wg {
         }
         {   /* setup rendering_system components model */
             footprint fp;
-            fp.set(registry.get_component_type<component_transform>());
+            fp.set(i32(registry.get_component_type<component_transform>()));
             registry.assign_scene_system_footprint<rendering_system>(fp);
         }
         {   /* setup common_mesh_rendering_system components model */
             footprint fp;
-            fp.set(registry.get_component_type<component_transform>());
-            fp.set(registry.get_component_type<component_common_geometry>());
+            fp.set(i32(registry.get_component_type<component_transform>()));
+            fp.set(i32(registry.get_component_type<component_common_geometry>()));
             registry.assign_scene_system_footprint<common_mesh_rendering_system>(fp);
         }
 

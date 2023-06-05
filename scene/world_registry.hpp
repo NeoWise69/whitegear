@@ -29,7 +29,7 @@ namespace wg {
         inline void add_component(entity_t entt, const T& component) {
             mComponentManager->add_component<T>(entt, component);
             auto f = mEntityManager->get_footprint(entt);
-            f.set(mComponentManager->get_component_type<T>(), true);
+            f.set(i32(mComponentManager->get_component_type<T>()), true);
             mEntityManager->assign_footprint(entt, f);
             mSceneSystemManager->on_entity_footprint_changed(entt, f);
         }
@@ -38,7 +38,7 @@ namespace wg {
         inline void remove_component(entity_t entt) {
             mComponentManager->remove_component<T>(entt);
             auto f = mEntityManager->get_footprint(entt);
-            f.set(mComponentManager->get_component_type<T>(), false);
+            f.set(i32(mComponentManager->get_component_type<T>()), false);
             mEntityManager->assign_footprint(entt, f);
             mSceneSystemManager->on_entity_footprint_changed(entt, f);
         }

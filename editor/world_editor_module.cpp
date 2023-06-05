@@ -202,7 +202,7 @@ namespace wg {
         if (mWorldControls.has_component<component_name_id>(e)) {
             auto& name = mWorldControls.get_component<component_name_id>(e).name;
             char buf[256]{};
-            strncpy(buf, name.c_str(), min(name.size(), 256));
+            string::copy(buf, name);
             if (ImGui::InputText("##name_id", buf, sizeof(buf))) {
                 name = buf;
             }
