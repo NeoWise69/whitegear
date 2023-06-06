@@ -64,7 +64,7 @@ namespace wg {
         }
 
         template<class T, class...Args>
-        inline shared_ptr<T> register_scene_system(Args&&...args) {
+        inline ref_ptr<T> register_scene_system(Args&&...args) {
             return mSceneSystemManager->register_system<T>(std::forward<Args>(args)...);
         }
 
@@ -74,9 +74,9 @@ namespace wg {
         }
 
     private:
-        unique_ptr<component_manager> mComponentManager = make_unique<component_manager>();
-        unique_ptr<entity_manager> mEntityManager = make_unique<entity_manager>();
-        unique_ptr<scene_system_manager> mSceneSystemManager = make_unique<scene_system_manager>();
+        scoped_ptr<component_manager> mComponentManager = make_scoped<component_manager>();
+        scoped_ptr<entity_manager> mEntityManager = make_scoped<entity_manager>();
+        scoped_ptr<scene_system_manager> mSceneSystemManager = make_scoped<scene_system_manager>();
     };
 }
 

@@ -11,9 +11,9 @@
 
 #include <scene/entity.hpp>
 #include <scene/component.hpp>
-#include <core/containers/set.hpp>
 #include <core/smart_ptr.hpp>
 #include <core/containers/hashmap.hpp>
+#include <core/containers/hashset.hpp>
 
 /**
  * Macro used for system declaration,
@@ -24,9 +24,12 @@
     inline static const scene_system_id SCENE_SYSTEM_ID = get_available_id();
 
 namespace wg {
-    class scene_system {
+    class scene_system : public ref_counted {
     public:
-        set<entity_t> entities = {};
+        inline scene_system() : entities()
+        {}
+
+        hashset<entity_t> entities;
     };
 
     typedef u64 scene_system_id;
@@ -38,10 +41,10 @@ namespace wg {
         inline ~scene_system_manager() = default;
 
         template<class T, class...Args>
-        inline shared_ptr<T> register_system(Args&&...args) {
+        inline ref_ptr<T> register_system(Args&&...args) {
             assert(mSystems.find(T::SCENE_SYSTEM_ID) == mSystems.end() && "Registering system more than once!");
 
-            auto s = make_shared<T>(std::forward<Args>(args)...);
+            auto s = make_ref<T>(std::forward<Args>(args)...);
             mSystems.insert(T::SCENE_SYSTEM_ID, s);
             return s;
         }
@@ -58,7 +61,7 @@ namespace wg {
 
     private:
         hashmap<scene_system_id, footprint> mFootprints;
-        hashmap<scene_system_id, shared_ptr<scene_system>> mSystems;
+        hashmap<scene_system_id, ref_ptr<scene_system>> mSystems;
     };
 
 }

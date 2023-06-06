@@ -11,6 +11,7 @@
 
 #include <core/typedefs.hpp>
 #include "string_view.hpp"
+#include "core/ref_counted.hpp"
 
 namespace wg {
     struct string_impl;
@@ -114,6 +115,13 @@ namespace wg {
     string stringify(float v);
     string stringify(double v);
 
+    /**
+     * Special string class variant for ref_counted pointers.
+     */
+    class rc_string : public ref_counted, public string {
+    public:
+        using string::string;
+    };
 }
 
 #endif //WHITEGEAR_STRING_HPP

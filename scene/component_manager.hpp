@@ -24,7 +24,7 @@ namespace wg {
         inline void register_component() {
             assert(mComponentTypes.find(T::COMPONENT_ID) == mComponentTypes.end() && "Registering component type more than once.");
             mComponentTypes.insert(T::COMPONENT_ID, mNextComponentType);
-            mComponentArrays.insert(T::COMPONENT_ID, make_shared<component_array<T>>());
+            mComponentArrays.insert(T::COMPONENT_ID, make_ref<component_array<T>>());
             ++mNextComponentType;
         }
 
@@ -60,23 +60,23 @@ namespace wg {
         }
 
         inline void on_entity_destroyed(entity_t entt) {
-            for (const auto&[name, component] : mComponentArrays) {
+            for (auto&[name, component] : mComponentArrays) {
                 component->on_entity_destroyed(entt);
             }
         }
 
     private:
         hashmap<component_id, component_type_t> mComponentTypes;
-        hashmap<component_id, shared_ptr<component_array_base>> mComponentArrays;
+        hashmap<component_id, ref_ptr<component_array_base>> mComponentArrays;
         component_type_t mNextComponentType;
 
         template<class T>
-        inline shared_ptr<component_array<T>> get_component_array() {
+        inline ref_ptr<component_array<T>> get_component_array() {
             assert(mComponentTypes.find(T::COMPONENT_ID) != mComponentTypes.end() && "Component not registered before use.");
             return static_pointer_cast<component_array<T>>(mComponentArrays[T::COMPONENT_ID]);
         }
         template<class T>
-        inline shared_ptr<component_array<T>> get_component_array() const {
+        inline ref_ptr<component_array<T>> get_component_array() const {
             assert(mComponentTypes.find(T::COMPONENT_ID) != mComponentTypes.end() && "Component not registered before use.");
             return static_pointer_cast<component_array<T>>(mComponentArrays.at(T::COMPONENT_ID));
         }

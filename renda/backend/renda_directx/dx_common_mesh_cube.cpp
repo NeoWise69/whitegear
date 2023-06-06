@@ -29,28 +29,28 @@ namespace wg {
             mBoundingCube = geometry::box::generate_bounding(cube_geometry.get_vertices(),
                                                              cube_geometry.get_num_vertices());
 
-            add_static_bind(make_unique<dx_bindable_vertex_buffer>(gfx, &cube_geometry));
-            auto vs = make_unique<dx_bindable_vertex_shader>(gfx, cv_create_info.filename_vs.c_str());
+            add_static_bind(make_scoped<dx_bindable_vertex_buffer>(gfx, &cube_geometry));
+            auto vs = make_scoped<dx_bindable_vertex_shader>(gfx, cv_create_info.filename_vs.c_str());
             auto bytecode = vs->get_bytecode();
             add_static_bind(std::move(vs));
 
-            add_static_bind(make_unique<dx_bindable_pixel_shader>(gfx, cv_create_info.filename_ps.c_str()));
-            add_static_index_buffer(make_unique<dx_bindable_index_buffer>(gfx, &cube_geometry));
+            add_static_bind(make_scoped<dx_bindable_pixel_shader>(gfx, cv_create_info.filename_ps.c_str()));
+            add_static_index_buffer(make_scoped<dx_bindable_index_buffer>(gfx, &cube_geometry));
 
             const bounded_array<D3D11_INPUT_ELEMENT_DESC, 2> ied = {
                     {"POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0,  D3D11_INPUT_PER_VERTEX_DATA, 0},
                     {"COLOR",    0, DXGI_FORMAT_R8G8B8A8_UNORM,     0, 16, D3D11_INPUT_PER_VERTEX_DATA, 0},
             };
 
-            add_static_bind(make_unique<dx_bindable_input_layout>(gfx, ied, bytecode));
-            add_static_bind(make_unique<dx_bindable_geometry_topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+            add_static_bind(make_scoped<dx_bindable_input_layout>(gfx, ied, bytecode));
+            add_static_bind(make_scoped<dx_bindable_geometry_topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 
             SCommonMeshInitialized = true;
         }
         else {
             set_index_from_static();
         }
-        add_bind(make_unique<dx_bindable_per_renderable_constant_buffer>(gfx, *this));
+        add_bind(make_scoped<dx_bindable_per_renderable_constant_buffer>(gfx, *this));
     }
 }
 

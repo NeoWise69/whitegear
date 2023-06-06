@@ -59,7 +59,7 @@ namespace wg::resource {
                 buffer.append('\0', max(pair_info.name_size, pair_info.text_size));
             f.read(buffer.data(), pair_info.name_size);
             auto& text = mCache[buffer.c_str()];
-            text = make_handle<string>();
+            text = make_handle<rc_string>();
             text->append('\0', pair_info.text_size);
             f.read(text->data(), pair_info.text_size);
         }

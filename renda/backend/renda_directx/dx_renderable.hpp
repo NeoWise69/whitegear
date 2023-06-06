@@ -19,17 +19,17 @@ namespace wg {
     class dx_bindable_base;
     class dx_bindable_index_buffer;
 
-    class dx_renderable {
+    class dx_renderable : public ref_counted {
     public:
         inline dx_renderable() = default;
         inline dx_renderable(const dx_renderable&) = delete;
         inline virtual ~dx_renderable() = default;
 
         void render(dx_graphics& gfx) noexcept;
-        void add_bind(unique_ptr<dx_bindable_base> bind) noexcept;
-        static void add_static_bind(unique_ptr<dx_bindable_base> bind) noexcept;
-        void add_index_buffer(unique_ptr<dx_bindable_index_buffer> index_buffer) noexcept;
-        void add_static_index_buffer(unique_ptr<dx_bindable_index_buffer> index_buffer) noexcept;
+        void add_bind(scoped_ptr<dx_bindable_base> bind) noexcept;
+        static void add_static_bind(scoped_ptr<dx_bindable_base> bind) noexcept;
+        void add_index_buffer(scoped_ptr<dx_bindable_index_buffer> index_buffer) noexcept;
+        void add_static_index_buffer(scoped_ptr<dx_bindable_index_buffer> index_buffer) noexcept;
         inline u64 get_num_vertices() const { return mNumVertices; }
         u64 get_num_indices() const;
         inline auto get_bounding(const vec3& pos) const { mBoundingCube.set_position(pos); return mBoundingCube; }
@@ -40,8 +40,8 @@ namespace wg {
         inline bool is_transform_ptr_provided() const { return mTransformPtr != nullptr; }
     private:
         const dx_bindable_index_buffer* mIndexBuffer = nullptr;
-        bounded_array<unique_ptr<dx_bindable_base>, 16> mBinds = {};
-        inline static bounded_array<unique_ptr<dx_bindable_base>, 16> mStaticBinds = {};
+        bounded_array<scoped_ptr<dx_bindable_base>, 16> mBinds = {};
+        inline static bounded_array<scoped_ptr<dx_bindable_base>, 16> mStaticBinds = {};
         const mat4* mTransformPtr = nullptr;
 
     protected:

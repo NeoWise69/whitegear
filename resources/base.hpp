@@ -50,11 +50,11 @@ namespace wg::resource {
     bool operator!=(const name_t& a, const name_t& b);
 
     template<class T>
-    using handle = shared_ptr<T>;
+    using handle = ref_ptr<T>;
 
     template<class T, class...Args>
     inline constexpr handle<T> make_handle(Args&&...args) {
-        return make_shared<T>(std::forward<Args>(args)...);
+        return make_ref<T>(std::forward<Args>(args)...);
     }
 
     template<class T>

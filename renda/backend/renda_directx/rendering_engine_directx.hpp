@@ -43,8 +43,8 @@ namespace wg {
 
         time_point mFrameStartTime = 0;
 
-        hashmap<entity_t, shared_ptr<dx_renderable>> mRenderables;
-        unique_ptr<dx_bindable_per_frame_constant_buffer> mFrameData;
+        hashmap<entity_t, ref_ptr<dx_renderable>> mRenderables;
+        scoped_ptr<dx_bindable_per_frame_constant_buffer> mFrameData;
     };
 }
 

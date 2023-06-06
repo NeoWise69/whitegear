@@ -130,11 +130,11 @@ namespace wg {
         wrl::ComPtr<ID3D11RenderTargetView> mBackBufferRenderTargetView = nullptr;
         wrl::ComPtr<ID3D11DepthStencilView> mDepthStencilView = nullptr;
 
-        unique_ptr<input_assembly_stage> mInputAssemblyStage = nullptr;
-        unique_ptr<vertex_shader_stage> mVertexShaderStage = nullptr;
-        unique_ptr<pixel_shader_stage> mPixelShaderStage = nullptr;
-        unique_ptr<rasterizer_stage> mRasterStage = nullptr;
-        unique_ptr<dx_render_target_buffer> mRenderTargetBuffer = nullptr;
+        scoped_ptr<input_assembly_stage> mInputAssemblyStage = nullptr;
+        scoped_ptr<vertex_shader_stage> mVertexShaderStage = nullptr;
+        scoped_ptr<pixel_shader_stage> mPixelShaderStage = nullptr;
+        scoped_ptr<rasterizer_stage> mRasterStage = nullptr;
+        scoped_ptr<dx_render_target_buffer> mRenderTargetBuffer = nullptr;
 
         free_camera mGlobalCamera = {{0, 0, 3}};
         viewport* mViewport = nullptr;

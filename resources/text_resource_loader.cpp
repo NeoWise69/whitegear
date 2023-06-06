@@ -9,7 +9,7 @@
 #include "text_resource.hpp"
 
 namespace wg::resource {
-    handle<string> text_loader::load(const wg::resource::name_t &name_id, wg::string_view &&sv) const {
-        return make_handle<string>(sv);
+    handle<rc_string> text_loader::load(const wg::resource::name_t &name_id, wg::string_view &&sv) const {
+        return make_handle<rc_string>(sv);
     }
 }

@@ -23,11 +23,11 @@ namespace wg {
         gfx.draw_indices(mIndexBuffer->get_count());
     }
 
-    void dx_renderable::add_bind(unique_ptr<dx_bindable_base> bind) noexcept {
+    void dx_renderable::add_bind(scoped_ptr<dx_bindable_base> bind) noexcept {
         mBinds.emplace_back(std::move(bind));
     }
 
-    void dx_renderable::add_index_buffer(unique_ptr<dx_bindable_index_buffer> index_buffer) noexcept {
+    void dx_renderable::add_index_buffer(scoped_ptr<dx_bindable_index_buffer> index_buffer) noexcept {
         assert(!mIndexBuffer && "Attempting to add index buffer a second time");
         mIndexBuffer = index_buffer.get();
         mBinds.emplace_back(std::move(index_buffer));
@@ -37,11 +37,11 @@ namespace wg {
         return u64(mIndexBuffer->get_count());
     }
 
-    void dx_renderable::add_static_bind(unique_ptr<dx_bindable_base> bind) noexcept {
+    void dx_renderable::add_static_bind(scoped_ptr<dx_bindable_base> bind) noexcept {
         mStaticBinds.emplace_back(std::move(bind));
     }
 
-    void dx_renderable::add_static_index_buffer(unique_ptr<dx_bindable_index_buffer> index_buffer) noexcept {
+    void dx_renderable::add_static_index_buffer(scoped_ptr<dx_bindable_index_buffer> index_buffer) noexcept {
         assert(!mIndexBuffer && "Attempting to add index buffer a second time");
         mIndexBuffer = index_buffer.get();
         mStaticBinds.emplace_back(std::move(index_buffer));

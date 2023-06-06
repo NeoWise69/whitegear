@@ -10,9 +10,9 @@
 #define WHITEGEAR_EXPERIMENTAL_HASHMAP_HPP
 
 #include "hash_base.hpp"
+#include <core/utils.hpp>
 
 #include <initializer_list>
-#include <utility> // std::pair (TEMPORARY)
 
 namespace wg {
     template<class K, class V>
@@ -127,7 +127,7 @@ namespace wg {
             }
         }; // !iterator
 
-        typedef std::pair<key_value, value_type> pair_type;
+        typedef pair<key_value, value_type> pair_type;
 
         // definition down below
         inline hashmap() {

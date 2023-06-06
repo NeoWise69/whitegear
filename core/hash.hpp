@@ -14,6 +14,8 @@
 #include <core/containers/string_view.hpp>
 #include <core/containers/array_view.hpp>
 #include <core/containers/bounded_array.hpp>
+#include <core/smart_ptr.hpp>
+#include <core/utils.hpp>
 
 namespace wg {
     /**
@@ -234,6 +236,22 @@ namespace wg {
         for (uint i = 0; i < v.size(); ++i)
             ret += fnv::hash<sizeof(T)>()(v[i]);
         return ret;
+    }
+    template<class T>
+    inline auto make_hash(scoped_ptr<T>&& sp) {
+        return (u64)sp.get() / sizeof(T);
+    }
+    template<class T>
+    inline auto make_hash(const ref_ptr<T>& rp) {
+        return (u64)rp.get() / sizeof(T);
+    }
+    template<class T>
+    inline auto make_hash(const weak_ptr<T>& rp) {
+        return (u64)rp.get() / sizeof(T);
+    }
+    template<class F, class S>
+    inline auto make_hash(const pair<F, S>& p) {
+        return (make_hash(p.first) & 0xffff) | (make_hash(p.second) << 16);
     }
 }
 

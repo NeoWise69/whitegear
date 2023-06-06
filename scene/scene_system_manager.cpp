@@ -10,13 +10,13 @@
 
 namespace wg {
     void scene_system_manager::on_entity_destroyed(entity_t entt) {
-        for (const auto&[system_id, system] : mSystems) {
+        for (auto&[system_id, system] : mSystems) {
             system->entities.erase(entt);
         }
     }
 
     void scene_system_manager::on_entity_footprint_changed(entity_t entt, const footprint &f) {
-        for (const auto&[system_id, system] : mSystems) {
+        for (auto&[system_id, system] : mSystems) {
             const auto& system_footprint = mFootprints[system_id];
 
             if ((f & system_footprint) == system_footprint) {

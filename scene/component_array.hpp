@@ -12,11 +12,12 @@
 #include <scene/component.hpp>
 #include <scene/entity.hpp>
 #include <core/containers/hashmap.hpp>
+#include <core/ref_counted.hpp>
 
 namespace wg {
-    class component_array_base {
+    class component_array_base : public ref_counted {
     public:
-        virtual ~component_array_base() = default;
+        ~component_array_base() override = default;
         virtual void on_entity_destroyed(entity_t) = 0;
     };
     template<class T>

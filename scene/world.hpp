@@ -124,8 +124,8 @@ namespace wg {
         world_registry registry = {};
         hashmap<entity_t, bool> entities = {};
 
-        shared_ptr<rendering_system> renderingSystem = nullptr;
-        shared_ptr<common_mesh_rendering_system> commonMeshRenderingSystem = nullptr;
+        ref_ptr<rendering_system> renderingSystem = nullptr;
+        ref_ptr<common_mesh_rendering_system> commonMeshRenderingSystem = nullptr;
     };
 }
 

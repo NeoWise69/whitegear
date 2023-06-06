@@ -25,7 +25,7 @@ namespace wg {
     rendering_engine_directx::rendering_engine_directx(const rendering_engine::create_info &info)
         : mWindowP(info.p_window->get()), mViewport(info.p_viewport), mGraphics(info.p_window->get(), info.p_viewport) {
         GGraphics = &mGraphics;
-        mFrameData = make_unique<dx_bindable_per_frame_constant_buffer>(mGraphics);
+        mFrameData = make_scoped<dx_bindable_per_frame_constant_buffer>(mGraphics);
     }
 
     rendering_engine_directx::~rendering_engine_directx() = default;
@@ -83,7 +83,7 @@ namespace wg {
             dx_common_mesh_cube::create_info config = {};
             config.filename_vs = WG_SHADER_PREFIX_PATH"compiled/vs_basic.cso";
             config.filename_ps = WG_SHADER_PREFIX_PATH"compiled/ps_basic.cso";
-            renderable = make_shared<dx_common_mesh_cube>(mGraphics, config);
+            renderable = make_ref<dx_common_mesh_cube>(mGraphics, config);
         }
     }
 

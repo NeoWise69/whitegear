@@ -91,12 +91,12 @@ namespace wg {
 
         mDeviceContext->OMSetRenderTargets(1, mBackBufferRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
 
-        mInputAssemblyStage = make_unique<input_assembly_stage>(mDeviceContext);
-        mVertexShaderStage = make_unique<vertex_shader_stage>(mDeviceContext);
-        mPixelShaderStage = make_unique<pixel_shader_stage>(mDeviceContext);
-        mRasterStage = make_unique<rasterizer_stage>(mDeviceContext);
+        mInputAssemblyStage = make_scoped<input_assembly_stage>(mDeviceContext);
+        mVertexShaderStage = make_scoped<vertex_shader_stage>(mDeviceContext);
+        mPixelShaderStage = make_scoped<pixel_shader_stage>(mDeviceContext);
+        mRasterStage = make_scoped<rasterizer_stage>(mDeviceContext);
 
-        mRenderTargetBuffer = make_unique<dx_render_target_buffer>(mDevice.Get(), mViewport->get_width(), mViewport->get_height());
+        mRenderTargetBuffer = make_scoped<dx_render_target_buffer>(mDevice.Get(), mViewport->get_width(), mViewport->get_height());
     }
 
     dx_graphics::~dx_graphics() {
@@ -124,7 +124,7 @@ namespace wg {
             out
             .trace("Viewport resized: (%dx%d)", mViewport->get_width(), mViewport->get_height())
             ;
-            mRenderTargetBuffer = std::make_unique<dx_render_target_buffer>(mDevice.Get(), mViewport->get_width(), mViewport->get_height());
+            mRenderTargetBuffer = make_scoped<dx_render_target_buffer>(mDevice.Get(), mViewport->get_width(), mViewport->get_height());
         }
 
         mGlobalCamera.update();

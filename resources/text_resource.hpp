@@ -12,15 +12,15 @@
 #include <resources/cache.hpp>
 
 namespace wg::resource {
-    class text_cache : public cache<string> {
+    class text_cache : public cache<rc_string> {
     public:
         bool save_to_file(const string_view& filename) const override;
         bool load_from_file(const string_view& filename) override;
     };
 
-    class text_loader : public loader<string, string_view> {
+    class text_loader : public loader<rc_string, string_view> {
     public:
-        handle<string> load(const name_t& name_id, string_view&& sv) const override;
+        handle<rc_string> load(const name_t& name_id, string_view&& sv) const override;
     };
 
     text_cache& get_text_cache(name_t&& name = "global");
