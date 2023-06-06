@@ -35,12 +35,6 @@ namespace wg {
         void draw_single_entity(entity_t, world_registry*);
         void draw_entity_components(entity_t);
 
-        template<class T>
-        void draw_add_component(const char* p_name);
-
-        template<class T, class ExFunction>
-        void draw_add_component_ex(const char* p_name, ExFunction fn);
-
         viewport* mWorldViewport = {};
         entity_t mSelectedEntity = {};
         world::controls mWorldControls = {};

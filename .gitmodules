@@ -4,10 +4,6 @@
 [submodule "deps/yaml-cpp"]
 	path = deps/yaml-cpp
 	url = https://github.com/jbeder/yaml-cpp.git
-[submodule "deps/imgui/imgui-repo"]
-	path = deps/imgui/imgui-repo
-	url = https://github.com/ocornut/imgui.git
-	branch = docking
 [submodule "deps/DXErr"]
 	path = deps/DXErr
 	url = https://github.com/NeoWise69/dxerr-multibyte.git

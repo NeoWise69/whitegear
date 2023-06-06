@@ -52,7 +52,7 @@ namespace wg {
 
         acceleration = fmin(acceleration, vec3(fly_speed));
 
-        const scalar delta_time = GTimeStats.delta_time.get(time_point::milliseconds);
+        const scalar delta_time = scalar(GTimeStats.delta_time.get(time_point::milliseconds));
 
         mPosition += (acceleration * delta_time);
 

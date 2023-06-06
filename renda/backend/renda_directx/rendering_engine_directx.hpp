@@ -36,11 +36,6 @@ namespace wg {
         void on_end_tick() override;
         frustum_view get_frustum() const override;
     private:
-        void init_imgui();
-        void pre_begin_imgui();
-        void end_imgui();
-        void shutdown_imgui();
-
         dx_info_manager mInfoManager;
         dx_graphics mGraphics;
         GLFWwindow* mWindowP;

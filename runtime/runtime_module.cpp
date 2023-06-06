@@ -11,9 +11,9 @@
 namespace wg {
 
 #if WG_BUILD_EDITOR
-    bool GEnableImGui = true;
+    // bool GEnableImGui = true;
 #else
-    bool GEnableImGui = false;
+    // bool GEnableImGui = false;
 #endif
 
     runtime_module::runtime_module(wg::runtime_core *cp) : pCore(cp) {}

@@ -176,15 +176,11 @@ namespace wg {
     }
 
     void dx_graphics::begin_render_to_texture_buffer() {
-#if WG_BUILD_EDITOR
         mDeviceContext->OMSetRenderTargets(1, mRenderTargetBuffer->get_view().GetAddressOf(), mDepthStencilView.Get());
-#endif
     }
 
     void dx_graphics::end_render_to_texture_buffer() {
-#if WG_BUILD_EDITOR
         mDeviceContext->OMSetRenderTargets(1, mBackBufferRenderTargetView.GetAddressOf(), mDepthStencilView.Get());
-#endif
     }
 
     /**
