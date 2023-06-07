@@ -18,87 +18,87 @@ namespace wg {
 
     class string {
     public:
-        virtual ~string();
-        string();
+        virtual ~string() noexcept;
+        string() noexcept;
 
         string(const string&);
         string(string&&) noexcept;
         string& operator=(const string&);
         string& operator=(string&&) noexcept;
 
-        string(const char* s);
-        string& operator=(const char* s);
-        string(const char* s, u64 len);
-        string(const string_view& sv);
+        string(const char* s) noexcept;
+        string& operator=(const char* s) noexcept;
+        string(const char* s, u64 len) noexcept;
+        string(const string_view& sv) noexcept;
 
         // access/write
-        string& append(const char* s);
-        string& append(const char* s, u64 len);
-        string& append(const char c, u64 len = 1);
-        string& append(const string& o);
-        string& append(string&& o);
+        string& append(const char* s) noexcept;
+        string& append(const char* s, u64 len) noexcept;
+        string& append(const char c, u64 len = 1) noexcept;
+        string& append(const string& o) noexcept;
+        string& append(string&& o) noexcept;
 
-        string& operator+=(const char* s);
-        string& operator+=(const char c);
-        string& operator+=(const string& o);
-        string& operator+=(string&& o);
+        string& operator+=(const char* s) noexcept;
+        string& operator+=(const char c) noexcept;
+        string& operator+=(const string& o) noexcept;
+        string& operator+=(string&& o) noexcept;
 
         const char& operator[](i64 i) const;
         char& operator[](i64 i);
         // !access/write
 
         // getters
-        const u64 size() const;
-        const u64 capacity() const;
-        bool empty() const;
-        const char* c_str() const;
-        char* data() const;
+        const u64 size() const noexcept;
+        const u64 capacity() const noexcept;
+        bool empty() const noexcept;
+        const char* c_str() const noexcept;
+        char* data() const noexcept;
         // !getters
 
         // iterator operators
-        char* begin();
-        const char* begin() const;
-        char* end();
-        const char* end() const;
+        char* begin() noexcept;
+        const char* begin() const noexcept;
+        char* end() noexcept;
+        const char* end() const noexcept;
         // !iterator operators
 
         // misc
-        static u64 length(const char* s);
-        static u64 length(const string& s);
+        static u64 length(const char* s) noexcept;
+        static u64 length(const string& s) noexcept;
 
-        static bool compare(const char* a, const char* b);
-        bool compare(const char* s) const;
-        bool compare(const char* s, u64 len) const;
-        bool compare(const string& s) const;
+        static bool compare(const char* a, const char* b) noexcept;
+        bool compare(const char* s) const noexcept;
+        bool compare(const char* s, u64 len) const noexcept;
+        bool compare(const string& s) const noexcept;
 
-        static char lower(const char c);
-        static char upper(const char c);
-        static string lower(const char* c);
-        static string lower(const char* c, u64 len);
-        static string upper(const char* c);
-        static string upper(const char* c, u64 len);
+        static char lower(const char c) noexcept;
+        static char upper(const char c) noexcept;
+        static string lower(const char* c) noexcept;
+        static string lower(const char* c, u64 len) noexcept;
+        static string upper(const char* c) noexcept;
+        static string upper(const char* c, u64 len) noexcept;
 
         static char* copy(char* dst, const char* src, uint len);
         static char* copy(char* dst, const string_view& src);
         static char* copy(char* dst, const string& src);
 
-        static void u8_to_u16(const string& str8, wchar_t* p_buffer, uint count);
+        static void u8_to_u16(const string& str8, wchar_t* p_buffer, uint count) noexcept;
         // !misc
 
     private:
         string clone() const;
-        char* get_ptr();
-        char* get_ptr() const;
-        u64 get_size() const;
-        u64 get_alloc_size(u64 minimal) const;
+        char* get_ptr() noexcept;
+        char* get_ptr() const noexcept;
+        u64 get_size() const noexcept;
+        u64 get_alloc_size(u64 minimal) const noexcept;
 
         explicit string(string_impl*);
 
         string_impl* mImpl;
     };
 
-    bool operator==(const string& a, const string& b);
-    bool operator!=(const string& a, const string& b);
+    bool operator==(const string& a, const string& b) noexcept;
+    bool operator!=(const string& a, const string& b) noexcept;
 
     string operator+(const string& a, const string& b);
     string operator+(const string& a, const char& b);

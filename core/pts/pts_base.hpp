@@ -30,13 +30,13 @@ namespace wg {
      */
     class pts_entry {
     public:
-        inline pts_entry() : mIsDirectory(), mName(), mNameLen(), mIsCompressed(),
+        inline pts_entry() noexcept : mIsDirectory(), mName(), mNameLen(), mIsCompressed(),
                             mMetaSize(), mMetaData(), mStartPos(), mBlobSize(),
                             pParent(), ppChildren(), mNumChildren()
         {}
         inline virtual ~pts_entry() noexcept {}
 
-        inline pts_entry(const pts_entry& o) {
+        inline pts_entry(const pts_entry& o) noexcept {
             mIsDirectory = o.mIsDirectory;
             mNameLen = o.mNameLen;
             mIsCompressed = o.mIsCompressed;
@@ -67,7 +67,7 @@ namespace wg {
             // !copy children
         }
 
-        inline pts_entry(bool is_dir, const char* name, uint start, uint size) :
+        inline pts_entry(bool is_dir, const char* name, uint start, uint size) noexcept :
             mIsDirectory(is_dir), mIsCompressed(), mMetaSize(), mMetaData(), mStartPos(start), mBlobSize(size),
             mNumChildren(), pParent(), ppChildren()
         {
@@ -83,7 +83,7 @@ namespace wg {
          * This method releases resources for all children, and deletes itself.
          * (NO EFFECTS TO BLOB)
          */
-        inline void release() {
+        inline void release() noexcept {
             /**
              * Firstly-first, recursive go down till last child, and release it
              * with 'down->top' model.
@@ -97,7 +97,7 @@ namespace wg {
             *this = {};
         }
 
-        inline void rename(const string_view& name) {
+        inline void rename(const string_view& name) noexcept {
             memcpy(mName, name.c_str(), min(name.size(), MAX_NAME));
         }
 
@@ -108,7 +108,7 @@ namespace wg {
          * PTS structure that can't grow.
          * @return pointer to created child inside this entry, otherwise NULL.
          */
-        inline pts_entry* add_child(const pts_entry& child) {
+        inline pts_entry* add_child(const pts_entry& child) noexcept {
             if (((mNumChildren + 1) >= MAX_CHILDREN) && !child.mIsDirectory) return nullptr;
 
             const auto id = mNumChildren++;
@@ -120,29 +120,29 @@ namespace wg {
         /**
          * Address of data inside associated blob object.
          */
-        inline uint get_address() const { return mStartPos; }
+        inline uint get_address() const noexcept { return mStartPos; }
         /**
          * Size(in bytes) of data which is pointed by entry.
          */
-        inline uint get_size() const { return mBlobSize; }
-        inline uint get_children_count() const { return mNumChildren; }
-        inline uint get_meta_size() const { return mMetaSize; }
+        inline uint get_size() const noexcept { return mBlobSize; }
+        inline uint get_children_count() const noexcept { return mNumChildren; }
+        inline uint get_meta_size() const noexcept { return mMetaSize; }
 
-        inline string_view get_name() const { return { mName, mNameLen }; }
+        inline string_view get_name() const noexcept { return { mName, mNameLen }; }
 
-        inline pts_entry* get_child(uint i) const { return ppChildren[i]; }
-        inline pts_entry* get_parent() const { return pParent; }
+        inline pts_entry* get_child(uint i) const noexcept { return ppChildren[i]; }
+        inline pts_entry* get_parent() const noexcept { return pParent; }
 
-        inline bool is_root() const { return pParent == nullptr; }
-        inline bool is_dir() const { return mIsDirectory; }
-        inline bool is_compressed() const { return mIsCompressed; }
+        inline bool is_root() const noexcept { return pParent == nullptr; }
+        inline bool is_dir() const noexcept { return mIsDirectory; }
+        inline bool is_compressed() const noexcept { return mIsCompressed; }
 
-        inline char* get_meta_data() const {
+        inline char* get_meta_data() const noexcept {
             return mMetaData;
         }
 
         template<class T>
-        inline void set_meta(T obj) {
+        inline void set_meta(T obj) noexcept {
             mMetaSize = sizeof(obj);
             mMetaData = new char[mMetaSize]{};
             memcpy(mMetaData, &obj, sizeof(obj));
@@ -151,7 +151,7 @@ namespace wg {
         /**
          * Search for a child with name, and returns its pointer, otherwise nullptr.
          */
-        inline pts_entry* find_child(const char* name) {
+        inline pts_entry* find_child(const char* name) noexcept {
             for (uint i = 0; i < MAX_CHILDREN && i < mNumChildren; ++i) {
                 if (ppChildren[i] && ppChildren[i]->get_name() == name)
                     return ppChildren[i];
@@ -176,7 +176,7 @@ namespace wg {
         friend void read_entry(class file* fp, pts_entry* e);
     };
 
-    inline pts_entry* pts_entry_create_dir(const char* name) {
+    inline pts_entry* pts_entry_create_dir(const char* name) noexcept {
         return new pts_entry(true, name, 0, 0);
     }
 }

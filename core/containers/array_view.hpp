@@ -29,33 +29,33 @@ namespace wg {
         inline array_view& operator=(array_view&&) noexcept = default;
 
         inline virtual ~array_view() = default;
-        inline constexpr array_view() : mPtr(nullptr), mSize(0) {}
-        inline constexpr array_view(pointer_type ptr, size_type size) : mPtr(ptr), mSize(size) {}
-        inline constexpr array_view(const std::initializer_list<T>& list) : mPtr(list.begin()), mSize(list.size()) {}
+        inline constexpr array_view() noexcept : mPtr(nullptr), mSize(0) {}
+        inline constexpr array_view(pointer_type ptr, size_type size) noexcept : mPtr(ptr), mSize(size) {}
+        inline constexpr array_view(const std::initializer_list<T>& list) noexcept : mPtr(list.begin()), mSize(list.size()) {}
         template<class It>
-        inline constexpr array_view(It first, It last) : mPtr(first), mSize(last - first) {}
+        inline constexpr array_view(It first, It last) noexcept : mPtr(first), mSize(last - first) {}
         template<>
-        inline constexpr array_view(pointer_type first, pointer_type last) : mPtr(first), mSize(last - first) {}
+        inline constexpr array_view(pointer_type first, pointer_type last) noexcept : mPtr(first), mSize(last - first) {}
 
-        inline constexpr size_type size() const { return mSize; }
-        inline constexpr pointer_type data() const { return mPtr; }
-        inline constexpr bool empty() const { return mSize == 0 && !mPtr; }
+        inline constexpr size_type size() const noexcept { return mSize; }
+        inline constexpr pointer_type data() const noexcept { return mPtr; }
+        inline constexpr bool empty() const noexcept { return mSize == 0 && !mPtr; }
 
         inline constexpr reference_type operator[](int i) { return *(mPtr + i); }
         inline constexpr const_reference_type operator[](int i) const { return *(mPtr + i); }
 
-        inline constexpr pointer_type begin() { return pointer_type(mPtr); }
-        inline constexpr pointer_type end() { return pointer_type(mPtr + mSize); }
-        inline constexpr const_pointer_type begin() const { return pointer_type(mPtr); }
-        inline constexpr const_pointer_type end() const { return pointer_type(mPtr + mSize); }
-        inline constexpr const_pointer_type cbegin() const { return pointer_type(mPtr); }
-        inline constexpr const_pointer_type cend() const { return pointer_type(mPtr + mSize); }
+        inline constexpr pointer_type begin() noexcept { return pointer_type(mPtr); }
+        inline constexpr pointer_type end() noexcept { return pointer_type(mPtr + mSize); }
+        inline constexpr const_pointer_type begin() const noexcept { return pointer_type(mPtr); }
+        inline constexpr const_pointer_type end() const noexcept { return pointer_type(mPtr + mSize); }
+        inline constexpr const_pointer_type cbegin() const noexcept { return pointer_type(mPtr); }
+        inline constexpr const_pointer_type cend() const noexcept { return pointer_type(mPtr + mSize); }
     private:
         const_pointer_type mPtr;
         size_type mSize;
     };
     template<class T>
-    inline bool operator==(const array_view<T>& a, const array_view<T>& b) {
+    inline bool operator==(const array_view<T>& a, const array_view<T>& b) noexcept {
         if (a.size() != b.size()) return false;
         for (uint i = 0; i < a.size(); ++i) {
             if (a[i] != b[i])
@@ -64,7 +64,7 @@ namespace wg {
         return true;
     }
     template<class T>
-    inline bool operator!=(const array_view<T>& a, const array_view<T>& b) {
+    inline bool operator!=(const array_view<T>& a, const array_view<T>& b) noexcept {
         return !(a == b);
     }
 }

@@ -20,7 +20,8 @@ int main() {
 
     if (!wg::is_support(wg::HW_SSE)) {
         wg::out
-        .panic("failed to execute wg_app, current machine CPU is not support SSE instructions.");
+        .error("failed to execute wg_app, current machine CPU is not support SSE instructions.")
+        .dead_end();
     }
 
 #if WG_BUILD_EDITOR

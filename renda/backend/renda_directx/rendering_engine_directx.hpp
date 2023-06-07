@@ -15,7 +15,6 @@
 #include "dx_graphics.hpp"
 #include "dx_info_manager.hpp"
 #include "dx_renderable.hpp"
-#include "renda/backend/renda_directx/bindable/dx_per_frame_constant_buffer.hpp"
 #include "core/time.hpp"
 
 #if WG_WINDOWS
@@ -44,7 +43,7 @@ namespace wg {
         time_point mFrameStartTime = 0;
 
         hashmap<entity_t, ref_ptr<dx_renderable>> mRenderables;
-        scoped_ptr<dx_bindable_per_frame_constant_buffer> mFrameData;
+        scoped_ptr<dx_bindable_base> mFrameData;
     };
 }
 

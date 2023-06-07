@@ -31,7 +31,6 @@ namespace wg {
 
             if (!renda->draw_mesh(&render_data)) {
                 // load mesh
-
                 rendering_engine::common_mesh_create_info ci = {};
                 ci.entity = e;
                 ci.mesh = (rendering_engine::common_mesh_create_info::type_t)(common_geometry_component.type);

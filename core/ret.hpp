@@ -19,22 +19,22 @@ namespace wg {
     template<class T>
     class ret_t {
     public:
-        inline ret_t(T v) : mValue(v), mReceived(false) {}
-        inline ret_t() = default;
-        inline ~ret_t() {}
+        inline ret_t(T v) noexcept : mValue(v), mReceived(false) {}
+        inline ret_t() noexcept = default;
+        inline ~ret_t() noexcept {}
 
-        inline ret_t(const ret_t& o) : mValue(o.mValue), mReceived(true) {}
+        inline ret_t(const ret_t& o) noexcept : mValue(o.mValue), mReceived(true) {}
         inline ret_t(ret_t&& o) noexcept : mValue(o.mValue), mReceived(true) {}
-        inline ret_t& operator=(const ret_t& o) { mValue = o.mValue; mReceived = true; return *this; }
+        inline ret_t& operator=(const ret_t& o) noexcept { mValue = o.mValue; mReceived = true; return *this; }
         inline ret_t& operator=(ret_t&& o) noexcept { mValue = o.mValue; mReceived = true; return *this; }
 
-        inline string get_error_name() const { return {}; }
-        inline string get_error_desc() const { return {}; }
+        inline string get_error_name() const noexcept { return {}; }
+        inline string get_error_desc() const noexcept { return {}; }
 
-        inline bool is_ok() const { return false; }
-        inline operator bool() const { return is_ok(); }
-        inline auto operator*() const { return mValue; }
-        inline operator T() const { return mValue; }
+        inline bool is_ok() const noexcept { return false; }
+        inline operator bool() const noexcept { return is_ok(); }
+        inline auto operator*() const noexcept { return mValue; }
+        inline operator T() const noexcept { return mValue; }
     private:
         T mValue = {};
         mutable bool mReceived = false;

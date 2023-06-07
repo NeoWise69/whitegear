@@ -160,7 +160,7 @@ namespace wg {
                 L'~',
         };
 
-        wchar_t char_to_wchar_t(const char ch) {
+        wchar_t char_to_wchar_t(const char ch) noexcept {
             if (ch >=  'a' && ch <= 'z') {
                 const auto i = ch - 'a';
                 return wchar_characters_letters_table[i];
@@ -209,8 +209,8 @@ namespace wg {
             } small = {};
         } data;
 
-        inline string_impl() = default;
-        inline string_impl(const string_impl& o) {
+        inline string_impl() noexcept = default;
+        inline string_impl(const string_impl& o) noexcept {
             is_static = o.is_static;
             if (is_static) {
                 memcpy(data.small.ptr, o.data.small.ptr, 24);
@@ -223,7 +223,7 @@ namespace wg {
                 memcpy(b.ptr, o.data.large.ptr, b.size);
             }
         }
-        inline string_impl(const char* s, u64 len) {
+        inline string_impl(const char* s, u64 len) noexcept {
             if (len > 24) {
                 auto& b = data.large;
                 if (len > b.cap) {
@@ -243,7 +243,7 @@ namespace wg {
         }
 };
 
-    string::~string() {
+    string::~string() noexcept {
         --mImpl->use_count;
         if (mImpl->use_count == 0) {
             if (!mImpl->is_static) {
@@ -261,7 +261,7 @@ namespace wg {
         ++mImpl->use_count;
     }
 
-    string::string() : mImpl(new string_impl()) {}
+    string::string() noexcept : mImpl(new string_impl()) {}
 
     string &string::operator=(const string &o) {
         mImpl = o.mImpl;
@@ -292,11 +292,13 @@ namespace wg {
 
     string::string(string_impl * impl) : mImpl(impl) {}
 
-    string::string(const char *s) : mImpl(new string_impl(s, strlen(s))) {}
+    string::string(const char *s) noexcept : mImpl(new string_impl(s, strlen(s))) {}
 
-    string::string(const char *s, u64 len) : mImpl(new string_impl(s, len)) {}
+    string::string(const char *s, u64 len) noexcept : mImpl(new string_impl(s, len)) {}
 
-    string &string::operator=(const char *s) {
+    string::string(const string_view &sv) noexcept : string(sv.c_str(), sv.size()) {}
+
+    string &string::operator=(const char *s) noexcept {
         const auto len = strlen(s);
         if (mImpl) {
             if (mImpl->use_count > 1) {
@@ -339,14 +341,14 @@ namespace wg {
         return *this;
     }
 
-    char *string::get_ptr() {
+    char *string::get_ptr() noexcept {
         if (mImpl && mImpl->is_static) {
             return (char*)mImpl->data.small.ptr;
         }
         return mImpl->data.large.ptr;
     }
 
-    char *string::get_ptr() const {
+    char *string::get_ptr() const noexcept {
         if (mImpl && mImpl->is_static) {
             return mImpl->data.small.ptr;
         }
@@ -354,39 +356,39 @@ namespace wg {
     }
 
 // TODO: update this to be more efficient!
-    u64 string::get_size() const {
+    u64 string::get_size() const noexcept {
         return mImpl->is_static ? strlen(mImpl->data.small.ptr) : mImpl->data.large.size;
     }
 
-    const u64 string::size() const {
+    const u64 string::size() const noexcept {
         return get_size();
     }
 
-    const char *string::c_str() const {
+    const char *string::c_str() const noexcept {
         return get_ptr();
     }
 
-    char *string::data() const {
+    char *string::data() const noexcept {
         return get_ptr();
     }
 
-    char *string::begin() {
+    char *string::begin() noexcept {
         return get_ptr();
     }
 
-    const char *string::begin() const {
+    const char *string::begin() const noexcept {
         return get_ptr();
     }
 
-    char *string::end() {
+    char *string::end() noexcept {
         return get_ptr() + get_size();
     }
 
-    const char *string::end() const {
+    const char *string::end() const noexcept {
         return get_ptr() + get_size();
     }
 
-    string& string::append(const char c, u64 len) {
+    string& string::append(const char c, u64 len) noexcept {
         if (mImpl->use_count > 1) {
             *this = clone();
         }
@@ -425,19 +427,19 @@ namespace wg {
         return *this;
     }
 
-    bool string::empty() const {
+    bool string::empty() const noexcept {
         return !(mImpl && get_ptr() && get_size());
     }
 
-    const u64 string::capacity() const {
+    const u64 string::capacity() const noexcept {
         return mImpl->is_static ? 24 : mImpl->data.large.cap;
     }
 
-    u64 string::get_alloc_size(u64 minimal) const {
+    u64 string::get_alloc_size(u64 minimal) const noexcept {
         return u64(float(minimal) * 1.6f);
     }
 
-    string& string::append(const char *s, u64 len) {
+    string& string::append(const char *s, u64 len) noexcept {
         if (mImpl->use_count > 1) {
             *this = clone();
         }
@@ -476,105 +478,104 @@ namespace wg {
         return *this;
     }
 
-    string& string::append(const char *s) {
+    string& string::append(const char *s) noexcept {
         append(s, strlen(s));
         return *this;
     }
 
-    string& string::append(const string &o) {
+    string& string::append(const string &o) noexcept {
         append(o.c_str(), o.size());
         return *this;
     }
 
-    string& string::append(string &&o) {
+    string& string::append(string &&o) noexcept {
         append(o.c_str(), o.size());
         return *this;
     }
 
-    string &string::operator+=(const char *s) {
+    string &string::operator+=(const char *s) noexcept {
         return append(s);
     }
 
-    string &string::operator+=(const char c) {
+    string &string::operator+=(const char c) noexcept {
         return append(c);
     }
 
-    string &string::operator+=(const string &o) {
+    string &string::operator+=(const string &o) noexcept {
         return append(o);
     }
 
-    string &string::operator+=(string &&o) {
+    string &string::operator+=(string &&o) noexcept {
         return append(std::move(o));
     }
 
-    bool string::compare(const char *s) const {
+    bool string::compare(const char *s) const noexcept {
         if (!s) return false;
         const auto len = string::length(s);
         if (size() != len) return false;
         return !strncmp(c_str(), s, len);
     }
 
-    u64 string::length(const char *s) {
+    u64 string::length(const char *s) noexcept {
+        if (!s) return 0;
         return strlen(s);
     }
 
-    u64 string::length(const string &s) {
+    u64 string::length(const string &s) noexcept {
         return s.size();
     }
 
-    bool string::compare(const char *s, u64 len) const {
+    bool string::compare(const char *s, u64 len) const noexcept {
         if (size() != len) return false;
         if (!s || len == 0) return false;
         return string::compare(c_str(), s);
     }
 
-    bool string::compare(const string &s) const {
+    bool string::compare(const string &s) const noexcept {
         return compare(s.c_str(), s.size());
     }
 
-    bool string::compare(const char *a, const char *b) {
+    bool string::compare(const char *a, const char *b) noexcept {
         return !strcmp(a, b);
     }
 
-    char string::lower(const char c) {
+    char string::lower(const char c) noexcept {
         return lower_table[c];
     }
 
-    char string::upper(const char c) {
+    char string::upper(const char c) noexcept {
         return upper_table[c];
     }
 
-    string string::lower(const char *c) {
+    string string::lower(const char *c) noexcept {
         string s(c);
         for (auto& ch : s) ch = lower_table[ch];
         return s;
     }
 
-    string string::lower(const char *c, u64 len) {
+    string string::lower(const char *c, u64 len) noexcept {
         string s(c, len);
         for (auto& ch : s) ch = lower_table[ch];
         return s;
     }
 
-    string string::upper(const char *c) {
+    string string::upper(const char *c) noexcept {
         string s(c);
         for (auto& ch : s) ch = upper_table[ch];
         return s;
     }
 
-    string string::upper(const char *c, u64 len) {
+    string string::upper(const char *c, u64 len) noexcept {
         string s(c, len);
         for (auto& ch : s) ch = upper_table[ch];
         return s;
     }
 
-    void string::u8_to_u16(const string &str8, wchar_t *p_buffer, uint count) {
+    void string::u8_to_u16(const string &str8, wchar_t *p_buffer, uint count) noexcept {
         if (!p_buffer || !count) return;
         for (uint i = 0; i < str8.size() && i < count; ++i)
             p_buffer[i] = char_to_wchar_t(str8[i]);
     }
-
-    string::string(const string_view &sv) : string(sv.c_str(), sv.size()) {}
 
     char *string::copy(char *dst, const char *src, uint len) {
 #if WG_WINDOWS
@@ -593,11 +594,11 @@ namespace wg {
         return string::copy(dst, src.c_str(), uint(src.size()));
     }
 
-    bool operator==(const string& a, const string& b) {
+    bool operator==(const string& a, const string& b) noexcept {
         if (a.size() != b.size()) return false;
         return !strncmp(a.c_str(), b.c_str(), min(a.size(), b.size()));
     }
-    bool operator!=(const string& a, const string& b) {
+    bool operator!=(const string& a, const string& b) noexcept {
         return !(a == b);
     }
 

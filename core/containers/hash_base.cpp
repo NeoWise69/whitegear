@@ -9,31 +9,31 @@
 #include "hash_base.hpp"
 
 namespace wg {
-    void hash_iterator_base::next_node() {
+    void hash_iterator_base::next_node() noexcept {
         if (mPtr)
             mPtr = mPtr->mNext;
     }
-    void hash_iterator_base::prev_node() {
+    void hash_iterator_base::prev_node() noexcept {
         if (mPtr)
             mPtr = mPtr->mPrev;
     }
-    bool operator==(const hash_iterator_base &a, const hash_iterator_base &b) {
+    bool operator==(const hash_iterator_base &a, const hash_iterator_base &b) noexcept {
         return a.mPtr == b.mPtr;
     }
-    bool operator!=(const hash_iterator_base &a, const hash_iterator_base &b) {
+    bool operator!=(const hash_iterator_base &a, const hash_iterator_base &b) noexcept {
         return a.mPtr != b.mPtr;
     }
 
-    uint hash_base::size() const {
+    uint hash_base::size() const noexcept {
         return mPtrs ? ((uint*)(mPtrs))[0] : 0u;
     }
-    uint hash_base::get_num_buckets() const {
+    uint hash_base::get_num_buckets() const noexcept {
         return mPtrs ? ((uint*)(mPtrs))[1] : 0u;
     }
-    bool hash_base::empty() const {
+    bool hash_base::empty() const noexcept {
         return size() == 0;
     }
-    void hash_base::_allocate_buckets(uint size, uint num_buckets) {
+    void hash_base::_allocate_buckets(uint size, uint num_buckets) noexcept {
         delete[] mPtrs;
 
         auto** ptrs = new hash_node_base*[num_buckets + 2];
@@ -44,7 +44,7 @@ namespace wg {
 
         _reset_ptrs();
     }
-    void hash_base::_reset_ptrs() {
+    void hash_base::_reset_ptrs() noexcept {
         if (!mPtrs) return;
 
         const auto num_buckets = get_num_buckets();

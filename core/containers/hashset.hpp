@@ -18,123 +18,123 @@ namespace wg {
     class hashset : public hash_base {
     public:
         struct node : hash_node_base {
-            inline node() = default;
-            inline node(const Key& k) : key(k)
+            inline node() noexcept = default;
+            inline node(const Key& k) noexcept : key(k)
             {}
-            inline auto next() const {
+            inline auto next() const noexcept {
                 return (node*)mNext;
             }
-            inline auto prev() const {
+            inline auto prev() const noexcept {
                 return (node*)mPrev;
             }
-            inline auto down() const {
+            inline auto down() const noexcept {
                 return (node*)mDown;
             }
 
             Key key;
         };
         struct iterator : hash_iterator_base {
-            inline iterator() = default;
-            inline iterator(node* p) : hash_iterator_base(p)
+            inline iterator() noexcept = default;
+            inline iterator(node* p) noexcept : hash_iterator_base(p)
             {}
-            inline iterator& operator ++() {
+            inline iterator& operator ++() noexcept {
                 next_node();
                 return *this;
             }
-            inline iterator operator ++(int) {
+            inline iterator operator ++(int) noexcept {
                 iterator it = *this;
                 next_node();
                 return it;
             }
-            inline iterator& operator --() {
+            inline iterator& operator --() noexcept {
                 prev_node();
                 return *this;
             }
-            inline iterator operator --(int) {
+            inline iterator operator --(int) noexcept {
                 iterator it = *this;
                 prev_node();
                 return it;
             }
-            inline Key* operator->() const {
+            inline Key* operator->() const noexcept {
                 return &((node*)mPtr)->key;
             }
-            inline Key& operator*() const {
+            inline Key& operator*() const noexcept {
                 return ((node*)mPtr)->key;
             }
         };
         struct const_iterator : hash_iterator_base {
-            inline const_iterator() = default;
-            inline const_iterator(node* p) : hash_iterator_base(p)
+            inline const_iterator() noexcept = default;
+            inline const_iterator(node* p) noexcept : hash_iterator_base(p)
             {}
-            inline const_iterator(const const_iterator& it) : hash_iterator_base(it.mPtr)
+            inline const_iterator(const const_iterator& it) noexcept : hash_iterator_base(it.mPtr)
             {}
-            inline const_iterator& operator=(const const_iterator& it) {
+            inline const_iterator& operator=(const const_iterator& it) noexcept {
                 mPtr = it.mPtr;
                 return *this;
             }
-            inline const_iterator& operator ++() {
+            inline const_iterator& operator ++() noexcept {
                 next_node();
                 return *this;
             }
-            inline const_iterator operator ++(int) {
+            inline const_iterator operator ++(int) noexcept {
                 const_iterator it = *this;
                 next_node();
                 return it;
             }
-            inline const_iterator& operator --() {
+            inline const_iterator& operator --() noexcept {
                 prev_node();
                 return *this;
             }
-            inline const_iterator operator --(int) {
+            inline const_iterator operator --(int) noexcept {
                 const_iterator it = *this;
                 prev_node();
                 return it;
             }
-            inline Key* operator->() const {
+            inline Key* operator->() const noexcept {
                 return &((node*)mPtr)->key;
             }
-            inline Key& operator*() const {
+            inline Key& operator*() const noexcept {
                 return ((node*)mPtr)->key;
             }
         };
 
-        inline hashset() {
+        inline hashset() noexcept {
             mAllocator = allocator_create(uint(sizeof(node)));
             mHead = mTail = _alloc_node();
         }
-        inline hashset(const hashset& hs) {
+        inline hashset(const hashset& hs) noexcept {
             mAllocator = allocator_create(uint(sizeof(node)), hs.size() + 1);
             mHead = mTail = _alloc_node();
             *this = hs;
         }
-        inline hashset(const std::initializer_list<Key>& list) {
+        inline hashset(const std::initializer_list<Key>& list) noexcept {
             for (const auto& e : list) {
                 insert(*e);
             }
         }
-        inline ~hashset() {
+        inline ~hashset() noexcept {
             clear();
             _free_node(_tail());
             allocator_destroy(mAllocator);
             delete[] mPtrs;
         }
-        inline hashset& operator=(const hashset& hs) {
+        inline hashset& operator=(const hashset& hs) noexcept {
             if (&hs != this) {
                 clear();
                 insert(hs);
             }
             return *this;
         }
-        inline hashset& operator+=(const Key& key) {
+        inline hashset& operator+=(const Key& key) noexcept {
             insert(key);
             return *this;
         }
-        inline hashset& operator+=(const hashset& hs) {
+        inline hashset& operator+=(const hashset& hs) noexcept {
             insert(hs);
             return *this;
         }
 
-        inline iterator insert(const Key& key) {
+        inline iterator insert(const Key& key) noexcept {
             if (!mPtrs) {
                 _allocate_buckets(size(), MIN_BUCKETS);
                 _rehash();
@@ -152,22 +152,22 @@ namespace wg {
             }
             return iterator(p_new_node);
         }
-        inline iterator insert(const Key& key, bool& is_exists) {
+        inline iterator insert(const Key& key, bool& is_exists) noexcept {
             const auto old_size = size();
             iterator it = insert(key);
             is_exists = (size() == old_size);
             return it;
         }
-        inline void insert(const hashset& hs) {
+        inline void insert(const hashset& hs) noexcept {
             const_iterator it = hs.begin();
             const_iterator e = hs.end();
             while (it != e)
                 insert(*it++);
         }
-        inline iterator insert(const const_iterator& it) {
+        inline iterator insert(const const_iterator& it) noexcept {
             return iterator(insert(*it));
         }
-        inline bool erase(const Key& key) {
+        inline bool erase(const Key& key) noexcept {
             if (mPtrs) {
 
                 const auto key_hash = _make_hash(key);
@@ -187,7 +187,7 @@ namespace wg {
             }
             return false;
         }
-        inline iterator erase(const iterator& it) {
+        inline iterator erase(const iterator& it) noexcept {
             if (mPtrs && it.mPtr) {
                 node* p_node = (node*)(it.mPtr);
                 node* p_next = p_node->next();
@@ -213,7 +213,7 @@ namespace wg {
             }
             return end();
         }
-        inline void clear() {
+        inline void clear() noexcept {
             _reset_ptrs();
             if (size()) {
                 for (iterator it = begin(); it != end(); ++it) {
@@ -225,7 +225,7 @@ namespace wg {
             }
         }
 
-        inline const_iterator find(const Key& key) const {
+        inline const_iterator find(const Key& key) const noexcept {
             if (mPtrs) {
                 const auto key_hash = _make_hash(key);
                 node* p_node = _find_node(key, key_hash);
@@ -234,7 +234,7 @@ namespace wg {
             }
             return end();
         }
-        inline iterator find(const Key& key) {
+        inline iterator find(const Key& key) noexcept {
             if (mPtrs) {
                 const auto key_hash = _make_hash(key);
                 node* p_node = _find_node(key, key_hash);
@@ -243,7 +243,7 @@ namespace wg {
             }
             return end();
         }
-        inline bool contains(const Key& key) const {
+        inline bool contains(const Key& key) const noexcept {
             if (mPtrs) {
                 const auto key_hash = _make_hash(key);
                 return _find_node(key, key_hash) != nullptr;
@@ -251,35 +251,35 @@ namespace wg {
             return false;
         }
 
-        inline auto begin() { return iterator(_head()); }
-        inline auto begin() const { return const_iterator(_head()); }
-        inline auto end() { return iterator(_tail()); }
-        inline auto end() const { return const_iterator(_tail()); }
-        inline const Key& front() const { return *begin(); }
-        inline const Key& back() const { return *(--end()); }
+        inline auto begin() noexcept { return iterator(_head()); }
+        inline auto begin() const noexcept { return const_iterator(_head()); }
+        inline auto end() noexcept { return iterator(_tail()); }
+        inline auto end() const noexcept { return const_iterator(_tail()); }
+        inline const Key& front() const noexcept { return *begin(); }
+        inline const Key& back() const noexcept { return *(--end()); }
         using hash_base::size;
     private:
-        inline node* _head() const {
+        inline node* _head() const noexcept {
             return (node*)(mHead);
         }
-        inline node* _tail() const {
+        inline node* _tail() const noexcept {
             return (node*)(mTail);
         }
-        inline node* _alloc_node() {
+        inline node* _alloc_node() noexcept {
             auto* p_new_node = (node*)(allocator_alloc(mAllocator));
             new(p_new_node) node();
             return p_new_node;
         }
-        inline node* _alloc_node(const Key& key) {
+        inline node* _alloc_node(const Key& key) noexcept {
             auto* p_new_node = (node*)(allocator_alloc(mAllocator));
             new(p_new_node) node(key);
             return p_new_node;
         }
-        inline void _free_node(node* p_node) {
+        inline void _free_node(node* p_node) noexcept {
             (p_node)->~node();
             allocator_free(mAllocator, p_node);
         }
-        inline void _rehash() {
+        inline void _rehash() noexcept {
             for (iterator it = begin(); it != end(); ++it) {
                 auto* p_node = (node*)(it.mPtr);
                 const auto key_hash = _make_hash(*it);
@@ -287,7 +287,7 @@ namespace wg {
                 _get_ptrs()[key_hash] = p_node;
             }
         }
-        inline node* _find_node(const Key& key, u64 key_hash) const {
+        inline node* _find_node(const Key& key, u64 key_hash) const noexcept {
             auto* p_node = (node*)(_get_ptrs()[key_hash]);
             while (p_node) {
                 if (p_node->key == key) {
@@ -297,7 +297,7 @@ namespace wg {
             }
             return nullptr;
         }
-        inline node* _find_node(const Key& key, u64 key_hash, node*& prev) const {
+        inline node* _find_node(const Key& key, u64 key_hash, node*& prev) const noexcept {
             prev = nullptr;
             auto* p_node = (node*)(_get_ptrs()[key_hash]);
             while (p_node) {
@@ -309,7 +309,7 @@ namespace wg {
             }
             return nullptr;
         }
-        inline node* _insert_node(node* dst, const Key& key) {
+        inline node* _insert_node(node* dst, const Key& key) noexcept {
             if (dst) {
                 node* p_new_node = _alloc_node(key);
                 node* prev = dst->prev();
@@ -325,7 +325,7 @@ namespace wg {
             }
             return nullptr;
         }
-        inline node* _erase_node(node* p_node) {
+        inline node* _erase_node(node* p_node) noexcept {
             if (!p_node || p_node == _tail())
                 return _tail();
 
@@ -340,16 +340,16 @@ namespace wg {
             _set_size(size() - 1);
             return next;
         }
-        inline u64 _make_hash(const Key& key) const {
+        inline u64 _make_hash(const Key& key) const noexcept {
             return make_hash(key) & (get_num_buckets() - 1);
         }
     };
     template<class K>
-    inline bool operator==(const hashset<K>& a, const hashset<K>& b) {
+    inline bool operator==(const hashset<K>& a, const hashset<K>& b) noexcept {
 
     }
     template<class K>
-    inline bool operator!=(const hashset<K>& a, const hashset<K>& b) {
+    inline bool operator!=(const hashset<K>& a, const hashset<K>& b) noexcept {
 
     }
 }

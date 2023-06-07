@@ -22,13 +22,13 @@ namespace wg {
 
     class logger {
     public:
-        logger& log(log_level, const char* fmt, ...);
-        logger& trace(const char* fmt, ...);
-        logger& info(const char* fmt, ...);
-        logger& warning(const char* fmt, ...);
-        logger& error(const char* fmt, ...);
-        logger& panic(const char* fmt, ...);
-        logger& dead_end();
+        logger& log(log_level, const char* fmt, ...) noexcept;
+        logger& trace(const char* fmt, ...) noexcept;
+        logger& info(const char* fmt, ...) noexcept;
+        logger& warning(const char* fmt, ...) noexcept;
+        logger& error(const char* fmt, ...) noexcept;
+        logger& panic(const char* fmt, ...) noexcept;
+        logger& dead_end() noexcept;
     };
 
     static logger out;

@@ -16,7 +16,7 @@
 
 namespace wg {
     template<>
-    inline ret_t<VkResult>::~ret_t() {
+    inline ret_t<VkResult>::~ret_t() noexcept {
         if (!mReceived && FAILED(mValue)) {
             const char* error_name = VKGetErrorName(mValue);
             char buffer[VK_RESULT_MAX_BUFFER];
@@ -30,17 +30,17 @@ namespace wg {
     }
 
     template<>
-    inline bool ret_t<VkResult>::is_ok() const {
+    inline bool ret_t<VkResult>::is_ok() const noexcept {
         return SUCCESS(mValue);
     }
 
     template<>
-    inline string ret_t<VkResult>::get_error_name() const {
+    inline string ret_t<VkResult>::get_error_name() const noexcept {
         return VKGetErrorName(mValue);
     }
 
     template<>
-    inline string ret_t<VkResult>::get_error_desc() const {
+    inline string ret_t<VkResult>::get_error_desc() const noexcept {
         char buffer[VK_RESULT_MAX_BUFFER];
         char* pbuffer = buffer;
         const uint len = VKGetErrorDescription(mValue, &pbuffer, VK_RESULT_MAX_BUFFER);

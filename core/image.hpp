@@ -40,23 +40,23 @@ namespace wg {
         static image_ref load_from_file(const char* p_filename);
         static image_ref load_from_memory(const void* p_image_data, uint image_size);
 
-        inline uint get_width() const {
+        inline uint get_width() const  noexcept{
             return mWidth;
         }
-        inline uint get_height() const {
+        inline uint get_height() const  noexcept{
             return mHeight;
         }
-        inline channels_t get_channels() const {
+        inline channels_t get_channels() const  noexcept{
             return mChannels;
         }
-        uint get_num_channels() const;
-        inline void* get_data() const {
+        uint get_num_channels() const noexcept;
+        inline void* get_data() const  noexcept{
             return mData;
         }
-        inline u8* get_data_u8() const {
+        inline u8* get_data_u8() const  noexcept{
             return (u8*)mData;
         }
-        inline float* get_data_f32() const {
+        inline float* get_data_f32() const  noexcept{
             return (float*)mData;
         }
 
@@ -64,7 +64,7 @@ namespace wg {
             return ((uint*)mData)[x + y * mWidth];
         }
     private:
-        inline image(void *const p_data, uint width, uint height, channels_t channels)
+        inline image(void *const p_data, uint width, uint height, channels_t channels) noexcept
             : mData(p_data), mWidth(width), mHeight(height), mChannels(channels) {}
 
         void* mData = nullptr;

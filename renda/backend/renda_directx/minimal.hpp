@@ -28,24 +28,24 @@ namespace wrl = Microsoft::WRL;
 
 namespace wg {
     template<>
-    inline ret_t<HRESULT>::~ret_t() {
+    inline ret_t<HRESULT>::~ret_t() noexcept {
         if (!mReceived && FAILED(mValue)) {
             DXTRACE_ERR_MSGBOX("D3DCall Failed!", mValue);
         }
     }
 
     template<>
-    inline bool ret_t<HRESULT>::is_ok() const {
+    inline bool ret_t<HRESULT>::is_ok() const noexcept {
         return !FAILED(mValue);
     }
 
     template<>
-    inline string ret_t<HRESULT>::get_error_name() const {
+    inline string ret_t<HRESULT>::get_error_name() const noexcept {
         return DXGetErrorString(mValue);
     }
 
     template<>
-    inline string ret_t<HRESULT>::get_error_desc() const {
+    inline string ret_t<HRESULT>::get_error_desc() const noexcept {
         TCHAR buf[256];
         DXGetErrorDescription(mValue, buf, 256);
         return buf;

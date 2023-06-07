@@ -18,7 +18,7 @@ namespace wg {
      * Node base class.
      */
     struct hash_node_base {
-        inline hash_node_base() = default;
+        inline hash_node_base() noexcept = default;
         /**
          * Next node in a bucket.
          */
@@ -31,65 +31,65 @@ namespace wg {
      * Node iterator class base.
      */
     struct hash_iterator_base {
-        inline hash_iterator_base() = default;
+        inline hash_iterator_base() noexcept = default;
         /**
          * Explicit load constructor.
          */
-        inline explicit hash_iterator_base(hash_node_base* p) : mPtr(p)
+        inline explicit hash_iterator_base(hash_node_base* p) noexcept : mPtr(p)
         {}
         /**
          * Go to next node, if exists.
          */
-        void next_node();
+        void next_node() noexcept;
         /**
          * Back to previous node.
          */
-        void prev_node();
+        void prev_node() noexcept;
 
         hash_node_base* mPtr = nullptr;
     };
     /**
      * Test for equality between hash_iterators.
      */
-    bool operator==(const hash_iterator_base& a, const hash_iterator_base& b);
+    bool operator==(const hash_iterator_base& a, const hash_iterator_base& b) noexcept;
     /**
      * Test for equality between hash_iterators.
      */
-    bool operator!=(const hash_iterator_base& a, const hash_iterator_base& b);
+    bool operator!=(const hash_iterator_base& a, const hash_iterator_base& b) noexcept;
 
     class hash_base {
     public:
         inline static constexpr auto MIN_BUCKETS = 8ull;
         inline static constexpr auto MAX_LOAD_FACTOR = 4ull;
 
-        inline hash_base() = default;
+        inline hash_base() noexcept = default;
 
-        uint size() const;
-        uint get_num_buckets() const;
-        bool empty() const;
+        uint size() const noexcept;
+        uint get_num_buckets() const noexcept;
+        bool empty() const noexcept;
     protected:
-        inline void _set_size(uint n) {
+        inline void _set_size(uint n) noexcept {
             if (mPtrs) {
                 ((uint*)(mPtrs))[0] = n;
             }
         }
-        inline hash_node_base** _get_ptrs() const {
+        inline hash_node_base** _get_ptrs() const noexcept {
             return mPtrs ? (hash_node_base**)(mPtrs + 2) : (hash_node_base**)nullptr;
         }
-        void _reset_ptrs();
-        void _allocate_buckets(uint size, uint num_buckets);
+        void _reset_ptrs() noexcept;
+        void _allocate_buckets(uint size, uint num_buckets) noexcept;
 
         hash_node_base* mHead = nullptr;
         hash_node_base* mTail = nullptr;
         hash_node_base** mPtrs = nullptr;
         allocator_block* mAllocator = nullptr;
 
-        friend void wg::swap(hash_base&, hash_base&);
+        friend void wg::swap(hash_base&, hash_base&) noexcept;
     };
 }
 namespace wg {
     template<>
-    inline void swap(hash_base& a, hash_base& b) {
+    inline void swap(hash_base& a, hash_base& b) noexcept {
         swap(a.mHead, b.mHead);
         swap(a.mTail, b.mTail);
         swap(a.mPtrs, b.mPtrs);

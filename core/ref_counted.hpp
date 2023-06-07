@@ -13,7 +13,7 @@
 
 namespace wg {
     struct ref_count {
-        inline ~ref_count() {
+        inline ~ref_count() noexcept {
             refs =
             weak_refs = -1;
         }
@@ -24,14 +24,14 @@ namespace wg {
 
     class ref_counted {
     public:
-        ref_counted();
-        virtual ~ref_counted();
+        ref_counted() noexcept;
+        virtual ~ref_counted() noexcept;
 
-        void inc_ref();
-        void dec_ref();
-        inline i32 get_num_refs() const { return rc->refs; }
-        inline i32 get_num_weaks() const { return rc->weak_refs - 1; }
-        inline ref_count* get_ref_count_ptr() { return rc; }
+        void inc_ref() noexcept;
+        void dec_ref() noexcept;
+        inline i32 get_num_refs() const noexcept { return rc->refs; }
+        inline i32 get_num_weaks() const noexcept { return rc->weak_refs - 1; }
+        inline ref_count* get_ref_count_ptr() noexcept { return rc; }
 
     private:
         ref_counted(const ref_counted&);

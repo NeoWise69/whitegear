@@ -10,10 +10,10 @@
 #include "ref_counted.hpp"
 
 namespace wg {
-    ref_counted::ref_counted() : rc(new ref_count()) {
+    ref_counted::ref_counted() noexcept : rc(new ref_count()) {
         ++(rc->weak_refs);
     }
-    ref_counted::~ref_counted() {
+    ref_counted::~ref_counted() noexcept {
         assert(rc);
         assert(rc->refs == 0);
         assert(rc->weak_refs > 0);
@@ -25,12 +25,12 @@ namespace wg {
         rc = nullptr;
     }
 
-    void ref_counted::inc_ref() {
+    void ref_counted::inc_ref() noexcept {
         assert(rc->refs >= 0);
         ++(rc->refs);
     }
 
-    void ref_counted::dec_ref() {
+    void ref_counted::dec_ref() noexcept {
         assert(rc->refs > 0);
         --(rc->refs);
     }

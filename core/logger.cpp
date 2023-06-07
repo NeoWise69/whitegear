@@ -20,13 +20,14 @@ namespace wg {
 
     namespace {
 
-        inline void localtime_(struct tm* t, time_t* time) {
-
+        inline void localtime_(struct tm* t, time_t* time) noexcept {
+            if (t && time) {
 #ifdef WG_WINDOWS
-            localtime_s(t, time);
+                localtime_s(t, time);
 #elif WG_UNIX
-            localtime_r(time, t);
+                localtime_r(time, t);
 #endif
+            }
         }
 
 #ifdef WG_WINDOWS
@@ -35,7 +36,7 @@ namespace wg {
 #   define fprintf_ fprintf
 #endif
 
-        inline std::string get_date_time() {
+        inline std::string get_date_time() noexcept {
             time_t      now = time(nullptr);
             struct tm   t = {};
             char        buf[80];
@@ -47,7 +48,7 @@ namespace wg {
         static std::mutex sMtx = {};
     }
 
-    logger& logger::log(log_level lvl, const char *fmt, ...) {
+    logger& logger::log(log_level lvl, const char *fmt, ...) noexcept {
 #ifdef WG_BUILD_DEBUG
         std::scoped_lock lock(sMtx);
 
@@ -72,7 +73,7 @@ namespace wg {
         return *this;
     }
 
-    logger& logger::trace(const char *fmt, ...) {
+    logger& logger::trace(const char *fmt, ...) noexcept {
 #ifdef WG_BUILD_DEBUG
         std::scoped_lock lock(sMtx);
 
@@ -88,7 +89,7 @@ namespace wg {
         return *this;
     }
 
-    logger& logger::info(const char *fmt, ...) {
+    logger& logger::info(const char *fmt, ...) noexcept {
 #ifdef WG_BUILD_DEBUG
         std::scoped_lock lock(sMtx);
 
@@ -104,7 +105,7 @@ namespace wg {
         return *this;
     }
 
-    logger& logger::warning(const char *fmt, ...) {
+    logger& logger::warning(const char *fmt, ...) noexcept {
 #ifdef WG_BUILD_DEBUG
         std::scoped_lock lock(sMtx);
 
@@ -120,7 +121,7 @@ namespace wg {
         return *this;
     }
 
-    logger& logger::error(const char *fmt, ...) {
+    logger& logger::error(const char *fmt, ...) noexcept {
 #ifdef WG_BUILD_DEBUG
         std::scoped_lock lock(sMtx);
 
@@ -136,7 +137,7 @@ namespace wg {
         return *this;
     }
 
-    logger& logger::panic(const char *fmt, ...) {
+    logger& logger::panic(const char *fmt, ...) noexcept {
         std::scoped_lock lock(sMtx);
 
         char buf[2048] = {};
@@ -152,7 +153,7 @@ namespace wg {
         return *this;
     }
 
-    logger &logger::dead_end() {
+    logger &logger::dead_end() noexcept {
         return panic("end of program");
     }
 }

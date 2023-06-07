@@ -79,7 +79,7 @@ namespace wg {
         return im;
     }
 
-    uint image::get_num_channels() const {
+    uint image::get_num_channels() const noexcept {
         switch (mChannels) {
             case RGB32_FLOAT:
             case RGB8_UNORM:

@@ -17,7 +17,7 @@ namespace wg {
     template<class Char = char>
     class string_view_base;
 
-    using string_view = string_view_base<>;
+    using string_view = string_view_base<char>;
     using wstring_view = string_view_base<wchar_t>;
 
     template<class Char>
@@ -35,34 +35,34 @@ namespace wg {
         inline string_view_base(string_view_base&&) noexcept = default;
         inline string_view_base& operator=(string_view_base&&) noexcept = default;
 
-        inline virtual ~string_view_base() = default;
-        inline constexpr string_view_base() : mPtr(nullptr), mSize(0) {}
-        inline constexpr string_view_base(const_pointer_type ptr, size_type size) : mPtr(ptr), mSize(size) {}
-        inline constexpr string_view_base(pointer_type ptr) : mPtr(ptr), mSize(uint(strlen(ptr))) {}
-        inline constexpr string_view_base(const_pointer_type ptr) : mPtr(ptr), mSize(uint(strlen(ptr))) {}
-        inline constexpr string_view_base(const std::initializer_list<Char>& list) : mPtr(list.begin()), mSize(list.size()) {}
+        inline virtual ~string_view_base() noexcept = default;
+        inline constexpr string_view_base() noexcept : mPtr(nullptr), mSize(0) {}
+        inline constexpr string_view_base(const_pointer_type ptr, size_type size) noexcept : mPtr(ptr), mSize(size) {}
+        inline constexpr string_view_base(pointer_type ptr) noexcept : mPtr(ptr), mSize(uint(strlen(ptr))) {}
+        inline constexpr string_view_base(const_pointer_type ptr) noexcept : mPtr(ptr), mSize(uint(strlen(ptr))) {}
+        inline constexpr string_view_base(const std::initializer_list<Char>& list) noexcept : mPtr(list.begin()), mSize(list.size()) {}
         template<class It>
-        inline constexpr string_view_base(It first, It last) : mPtr(first), mSize(last - first) {}
+        inline constexpr string_view_base(It first, It last) noexcept : mPtr(first), mSize(last - first) {}
         template<>
-        inline constexpr string_view_base(pointer_type first, pointer_type last) : mPtr(first), mSize(last - first) {}
+        inline constexpr string_view_base(pointer_type first, pointer_type last) noexcept : mPtr(first), mSize(last - first) {}
 
-        inline constexpr size_type size() const { return mSize; }
-        inline constexpr pointer_type data() const { return mPtr; }
-        inline constexpr const_pointer_type c_str() const { return mPtr; }
-        inline constexpr bool empty() const { return mSize == 0 && !mPtr; }
+        inline constexpr size_type size() const noexcept { return mSize; }
+        inline constexpr pointer_type data() const noexcept { return mPtr; }
+        inline constexpr const_pointer_type c_str() const noexcept { return mPtr; }
+        inline constexpr bool empty() const noexcept { return mSize == 0 && !mPtr; }
 
         inline constexpr reference_type operator[](int i) { return *(mPtr + i); }
         inline constexpr const_reference_type operator[](int i) const { return *(mPtr + i); }
 
-        inline constexpr pointer_type begin() { return pointer_type(mPtr); }
-        inline constexpr pointer_type end() { return pointer_type(mPtr + mSize); }
-        inline constexpr const_pointer_type begin() const { return pointer_type(mPtr); }
-        inline constexpr const_pointer_type end() const { return pointer_type(mPtr + mSize); }
-        inline constexpr const_pointer_type cbegin() const { return pointer_type(mPtr); }
-        inline constexpr const_pointer_type cend() const { return pointer_type(mPtr + mSize); }
+        inline constexpr pointer_type begin() noexcept { return pointer_type(mPtr); }
+        inline constexpr pointer_type end() noexcept { return pointer_type(mPtr + mSize); }
+        inline constexpr const_pointer_type begin() const noexcept { return pointer_type(mPtr); }
+        inline constexpr const_pointer_type end() const noexcept { return pointer_type(mPtr + mSize); }
+        inline constexpr const_pointer_type cbegin() const noexcept { return pointer_type(mPtr); }
+        inline constexpr const_pointer_type cend() const noexcept { return pointer_type(mPtr + mSize); }
 
         template<class U>
-        inline static bool compare(const string_view_base<Char>& a, const string_view_base<U>& b) {
+        inline static bool compare(const string_view_base<Char>& a, const string_view_base<U>& b) noexcept {
             if (a.size() != b.size()) return false;
             for (size_t i = 0; i < a.size(); ++i)
                 if (a[i] != Char(b[i]))
@@ -70,42 +70,42 @@ namespace wg {
             return true;
         }
         template<>
-        inline static bool compare(const string_view_base<Char>& a, const string_view_base<Char>& b) {
+        inline static bool compare(const string_view_base<Char>& a, const string_view_base<Char>& b) noexcept {
             if (a.size() != b.size()) return false;
             return !strcmp(a.c_str(), b.c_str());
         }
-        inline bool compare(const string_view_base<Char>& other) const {
+        inline bool compare(const string_view_base<Char>& other) const noexcept {
             return string_view_base<Char>::compare(*this, other);
         }
         template<class U>
-        inline bool compare(const string_view_base<U>& other) const {
+        inline bool compare(const string_view_base<U>& other) const noexcept {
             return string_view_base<Char>::compare(*this, other);
         }
 
-        inline bool operator==(const string_view_base<Char>& other) const {
+        inline bool operator==(const string_view_base<Char>& other) const noexcept {
             return compare(other);
         }
-        inline bool operator!=(const string_view_base<Char>& other) const {
+        inline bool operator!=(const string_view_base<Char>& other) const noexcept {
             return !(*this == other);
         }
-        inline static string_view_base to_lower(const string_view_base<Char>& other) {
+        inline static string_view_base to_lower(const string_view_base<Char>& other) noexcept {
             if (other.empty()) return {};
             string_view_base<Char> r = other;
             for (auto& c : r)
                 c = Char(std::tolower(c));
             return r;
         }
-        inline string_view_base& to_lower() {
+        inline string_view_base& to_lower() noexcept {
             return *this = string_view_base<Char>::to_lower(*this);
         }
-        inline static string_view_base to_upper(const string_view_base<Char>& other) {
+        inline static string_view_base to_upper(const string_view_base<Char>& other) noexcept {
             if (other.empty()) return {};
             string_view_base<Char> r = other;
             for (auto& c : r)
                 c = Char(std::toupper(c));
             return r;
         }
-        inline string_view_base& to_upper() {
+        inline string_view_base& to_upper() noexcept {
             return *this = string_view_base<Char>::to_upper(*this);
         }
     private:

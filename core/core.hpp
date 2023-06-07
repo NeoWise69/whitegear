@@ -22,5 +22,6 @@
 #include "containers/string.hpp"
 #include "containers/bounded_array.hpp"
 #include "containers/hashmap.hpp"
+#include "containers/hashset.hpp"
 
 #endif //WHITEGEAR_CORE_HPP

@@ -40,7 +40,7 @@ namespace wg {
         * Otherwise, UB and UR.
         * (undefined behaviour and unexpected results)
         */
-        inline T* get_type_data(uint index) const {
+        inline T* get_type_data(uint index) const noexcept {
             assert(N >= index && "Index out of bounds!");
             return (T*)(mRaw + (sizeof(T) * index));
         }
@@ -51,7 +51,7 @@ namespace wg {
         * [OPTIONAL] Accepts arguments for constructor.
         */
         template<class...Args>
-        inline T* new_type_data(uint index, Args&&...args) const {
+        inline T* new_type_data(uint index, Args&&...args) const noexcept {
             assert(N > index && "Index out of bounds!");
             T* const p = (T*)(mRaw + (sizeof(T) * index));
             new (p) T(std::forward<Args>(args)...);
@@ -60,21 +60,22 @@ namespace wg {
         /**
          * Completely corrupts and clear storage raw memory.
          */
-        inline void clear_storage() {
+        inline void clear_storage() noexcept {
             memset((char*)mRaw, 0, sizeof(T) * N);
         }
         /**
         * Deconstruct non-POD object types by calling destructor,
         * and release POD types just by setting it to ZERO.
         */
-        inline void deconstruct_data_at(uint index) {
+        inline void deconstruct_data_at(uint index) noexcept {
             assert(N > index && "Index out of bounds!");
             T* const p = (T*)(mRaw + (sizeof(T) * index));
-            if constexpr (std::is_pod_v<T>) {
-                *p = T{};
-            }
-            else {
-                p->~T();
+            if (p) {
+                if constexpr (std::is_pod_v<T>) {
+                    *p = T{};
+                } else {
+                    p->~T();
+                }
             }
         }
 
@@ -97,61 +98,61 @@ namespace wg {
         using storage = bounded_array_storage<T, N>;
 
         inline bounded_array() = default;
-        virtual ~bounded_array() {
+        virtual ~bounded_array() noexcept {
             storage::clear_storage();
         }
 
-        inline bounded_array(std::initializer_list<T> list) {
+        inline bounded_array(std::initializer_list<T> list) noexcept {
             for (auto e : list) {
                 emplace_back(e);
             }
         }
 
         template<uint M>
-        inline bounded_array(const bounded_array<T, M>& om) {
+        inline bounded_array(const bounded_array<T, M>& om) noexcept {
             for (uint i = 0; i < om.size() && i < N; ++i) {
                 emplace_back(om[i]);
             }
         }
 
         template<class...Args>
-        inline explicit bounded_array(uint num, Args&&...args) {
+        inline explicit bounded_array(uint num, Args&&...args) noexcept {
             for (uint i = 0; i < num; ++i)
                 emplace_back(std::forward<Args>(args)...);
         }
 
-        inline bounded_array(const bounded_array&) = default;
-        inline bounded_array& operator=(const bounded_array&) = delete;
+        inline bounded_array(const bounded_array&) noexcept = default;
+        inline bounded_array& operator=(const bounded_array&) noexcept = delete;
         inline bounded_array(bounded_array&&) noexcept = delete;
         inline bounded_array& operator=(bounded_array&&) noexcept = delete;
 
-        inline auto begin() { return storage::get_type_data(0); }
-        inline auto end() { return storage::get_type_data(mSize); }
-        inline const auto begin() const { return storage::get_type_data(0); }
-        inline const auto end() const { return storage::get_type_data(mSize); }
-        inline const auto cbegin() const { return storage::get_type_data(0); }
-        inline const auto cend() const { return storage::get_type_data(mSize); }
+        inline auto begin() noexcept { return storage::get_type_data(0); }
+        inline auto end() noexcept { return storage::get_type_data(mSize); }
+        inline const auto begin() const noexcept { return storage::get_type_data(0); }
+        inline const auto end() const noexcept { return storage::get_type_data(mSize); }
+        inline const auto cbegin() const noexcept { return storage::get_type_data(0); }
+        inline const auto cend() const noexcept { return storage::get_type_data(mSize); }
 
         template<class...Args>
-        inline T* emplace_back(Args&&...args) {
+        inline T* emplace_back(Args&&...args) noexcept {
             assert(N > mSize && "Bounded array has a BOUNDS, isn't it? You get out of it!");
             return storage::new_type_data(mSize++, std::forward<Args>(args)...);
         }
 
-        inline void erase_back() {
+        inline void erase_back() noexcept {
             storage::deconstruct_data_at(--mSize);
         }
 
-        inline void pop_back() { erase_back(); }
+        inline void pop_back() noexcept { erase_back(); }
 
-        inline auto size() const { return mSize; }
-        inline constexpr auto capacity() const { return N; }
-        inline bool empty() const { return mSize == 0; }
+        inline auto size() const noexcept { return mSize; }
+        inline constexpr auto capacity() const noexcept { return N; }
+        inline bool empty() const noexcept { return mSize == 0; }
 
-        inline auto data() const { return storage::get_type_data(0); }
+        inline auto data() const noexcept { return storage::get_type_data(0); }
         inline auto& at(uint i) { return *storage::get_type_data(i); }
         inline auto at(uint i) const { return *storage::get_type_data(i); }
-        inline void clear() {
+        inline void clear() noexcept {
             storage::clear_storage();
             mSize = 0;
         }
@@ -164,7 +165,7 @@ namespace wg {
     };
 
     template<class T, uint N1, uint N2>
-    inline bool operator==(const bounded_array<T, N1>& a, const bounded_array<T, N2>& b) {
+    inline bool operator==(const bounded_array<T, N1>& a, const bounded_array<T, N2>& b) noexcept {
         if (a.size() != b.size()) return false;
         for (uint i = 0; i < a.size(); ++i) {
             if (a[i] != b[i])
@@ -173,7 +174,7 @@ namespace wg {
         return true;
     }
     template<class T, uint N1, uint N2>
-    inline bool operator!=(const bounded_array<T, N1>& a, const bounded_array<T, N2>& b) {
+    inline bool operator!=(const bounded_array<T, N1>& a, const bounded_array<T, N2>& b) noexcept {
         return !(a == b);
     }
 }

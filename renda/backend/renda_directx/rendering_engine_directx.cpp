@@ -11,20 +11,11 @@
 #if WG_WINDOWS
 
 #include "dx_common_mesh_cube.hpp"
+#include "bindable/dx_per_frame_constant_buffer.hpp"
 
 namespace wg {
-    namespace {
-        /**
-         * Required for handling editor render target,
-         * with this design.
-         * TODO: revisit editor viewport system.
-         */
-        dx_graphics* GGraphics = nullptr;
-    }
-
     rendering_engine_directx::rendering_engine_directx(const rendering_engine::create_info &info)
         : mWindowP(info.p_window->get()), mViewport(info.p_viewport), mGraphics(info.p_window->get(), info.p_viewport) {
-        GGraphics = &mGraphics;
         mFrameData = make_scoped<dx_bindable_per_frame_constant_buffer>(mGraphics);
     }
 

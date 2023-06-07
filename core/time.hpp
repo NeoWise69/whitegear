@@ -14,9 +14,9 @@
 namespace wg {
     class time_point {
     public:
-        inline time_point() = default;
-        inline ~time_point() = default;
-        inline time_point(double ns) : mTimeInNanoseconds(ns) {}
+        inline time_point() noexcept = default;
+        inline ~time_point() noexcept = default;
+        inline time_point(double ns) noexcept : mTimeInNanoseconds(ns) {}
 
         enum e_resolution : uint {
             nanoseconds,
@@ -25,20 +25,20 @@ namespace wg {
             minutes,
             hours
         };
-        double get(e_resolution resolution) const;
+        double get(e_resolution resolution) const noexcept;
 
-        static time_point now();
+        static time_point now() noexcept;
     private:
         double mTimeInNanoseconds = {};
     };
-    time_point operator+(const time_point& a, const time_point& b);
-    time_point operator-(const time_point& a, const time_point& b);
+    time_point operator+(const time_point& a, const time_point& b) noexcept;
+    time_point operator-(const time_point& a, const time_point& b) noexcept;
 
-    time_point operator""_h(const long double t);
-    time_point operator""_m(const long double t);
-    time_point operator""_s(const long double t);
-    time_point operator""_ms(const long double t);
-    time_point operator""_ns(const long double t);
+    time_point operator""_h(const long double t) noexcept;
+    time_point operator""_m(const long double t) noexcept;
+    time_point operator""_s(const long double t) noexcept;
+    time_point operator""_ms(const long double t) noexcept;
+    time_point operator""_ns(const long double t) noexcept;
 
     struct frame_time_stats {
         // general

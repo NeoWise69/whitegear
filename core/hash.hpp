@@ -33,11 +33,11 @@ namespace wg {
          */
         template<>
         struct hash<sizeof(i8)> {
-            inline auto operator()(i8 v, u64 h = seed) {
+            inline auto operator()(i8 v, u64 h = seed) noexcept {
                 return (v ^ h) * prime;
             }
 
-            inline auto operator()(u8 v, u64 h = seed) {
+            inline auto operator()(u8 v, u64 h = seed) noexcept {
                 return (v ^ h) * prime;
             }
         };
@@ -46,13 +46,13 @@ namespace wg {
          */
         template<>
         struct hash<sizeof(i16)> {
-            inline auto operator()(i16 v, u64 h = seed) {
+            inline auto operator()(i16 v, u64 h = seed) noexcept {
                 const i8 *p = (const i8 *) &v;
                 h = hash<1>()(*p++, h);
                 return hash<1>()(*p, h);
             }
 
-            inline auto operator()(u16 v, u64 h = seed) {
+            inline auto operator()(u16 v, u64 h = seed) noexcept {
                 const u8 *p = (const u8 *) &v;
                 h = hash<1>()(*p++, h);
                 return hash<1>()(*p, h);
@@ -63,7 +63,7 @@ namespace wg {
          */
         template<>
         struct hash<sizeof(i32)> {
-            inline auto operator()(i32 v, u64 h = seed) {
+            inline auto operator()(i32 v, u64 h = seed) noexcept {
                 const i8 *p = (const i8 *) &v;
                 h = hash<1>()(*p++, h);
                 h = hash<1>()(*p++, h);
@@ -71,7 +71,7 @@ namespace wg {
                 return hash<1>()(*p, h);
             }
 
-            inline auto operator()(u32 v, u64 h = seed) {
+            inline auto operator()(u32 v, u64 h = seed) noexcept {
                 const u8 *p = (const u8 *) &v;
                 h = hash<1>()(*p++, h);
                 h = hash<1>()(*p++, h);
@@ -81,7 +81,7 @@ namespace wg {
             /**
              * Special operator for 32bit FP numbers.
              */
-            inline auto operator()(float f, u64 h = seed) {
+            inline auto operator()(float f, u64 h = seed) noexcept {
                 const i8 *p = (const i8 *) &f;
                 h = hash<1>()(*p++, h);
                 h = hash<1>()(*p++, h);
@@ -94,7 +94,7 @@ namespace wg {
          */
         template<>
         struct hash<sizeof(i64)> {
-            inline auto operator()(i64 v, u64 h = seed) {
+            inline auto operator()(i64 v, u64 h = seed) noexcept {
                 const i8 *p = (const i8 *) &v;
                 h = hash<1>()(*p++, h);
                 h = hash<1>()(*p++, h);
@@ -106,7 +106,7 @@ namespace wg {
                 return hash<1>()(*p, h);
             }
 
-            inline auto operator()(u64 v, u64 h = seed) {
+            inline auto operator()(u64 v, u64 h = seed) noexcept {
                 const u8 *p = (const u8 *) &v;
                 h = hash<1>()(*p++, h);
                 h = hash<1>()(*p++, h);
@@ -120,7 +120,7 @@ namespace wg {
             /**
              * Special operator for 64bit FP numbers.
              */
-            inline auto operator()(double v, u64 h = seed) {
+            inline auto operator()(double v, u64 h = seed) noexcept {
                 const i8 *p = (const i8 *) &v;
                 h = hash<1>()(*p++, h);
                 h = hash<1>()(*p++, h);
@@ -134,7 +134,7 @@ namespace wg {
             /**
              * Special operator for string (NULL_TERM) hashing.
              */
-            inline auto operator()(const char *s, u64 h = seed) {
+            inline auto operator()(const char *s, u64 h = seed) noexcept {
                 if (!s) return 0ull;
                 while (*s) {
                     h = hash<1>()(*s++, h);
@@ -144,7 +144,7 @@ namespace wg {
             /**
              * Special operator for sized string hashing.
              */
-            inline auto operator()(const char *s, uint len, u64 h = seed) {
+            inline auto operator()(const char *s, uint len, u64 h = seed) noexcept {
                 if (!s) return 0ull;
                 for (uint i = 0; i < len && s[i] != 0; ++i) {
                     h = hash<1>()(s[i], h);
@@ -155,102 +155,102 @@ namespace wg {
     }
 
     template<class T>
-    inline auto make_hash(T* v) {
+    inline auto make_hash(T* v) noexcept {
         return ((u64)(v) / sizeof(T));
     }
     template<class T>
-    inline auto make_hash(const T* v) {
+    inline auto make_hash(const T* v) noexcept {
         return ((u64)(v) / sizeof(T));
     }
     template<class T>
-    inline auto make_hash(const T& v) {
+    inline auto make_hash(const T& v) noexcept {
         return fnv::hash<sizeof(v)>()(v);
     }
     /* make_hash variants for POD types */
     template<>
-    inline auto make_hash(void* p) {
+    inline auto make_hash(void* p) noexcept {
         return fnv::hash<sizeof(p)>()((u64)p);
     }
     template<>
-    inline auto make_hash(const void* p) {
+    inline auto make_hash(const void* p) noexcept {
         return fnv::hash<sizeof(p)>()((u64)p);
     }
     template<>
-    inline auto make_hash(const i64& v) {
+    inline auto make_hash(const i64& v) noexcept {
         return fnv::hash<sizeof(v)>()(v);
     }
     template<>
-    inline auto make_hash(const u64& v) {
+    inline auto make_hash(const u64& v) noexcept {
         return fnv::hash<sizeof(v)>()(v);
     }
     template<>
-    inline auto make_hash(const i32& v) {
+    inline auto make_hash(const i32& v) noexcept {
         return fnv::hash<sizeof(v)>()(v);
     }
     template<>
-    inline auto make_hash(const u32& v) {
+    inline auto make_hash(const u32& v) noexcept {
         return fnv::hash<sizeof(v)>()(v);
     }
     template<>
-    inline auto make_hash(const i16& v) {
+    inline auto make_hash(const i16& v) noexcept {
         return fnv::hash<sizeof(v)>()(v);
     }
     template<>
-    inline auto make_hash(const u16& v) {
+    inline auto make_hash(const u16& v) noexcept {
         return fnv::hash<sizeof(v)>()(v);
     }
     template<>
-    inline auto make_hash(const i8& v) {
+    inline auto make_hash(const i8& v) noexcept {
         return fnv::hash<sizeof(v)>()(v);
     }
     template<>
-    inline auto make_hash(const u8& v) {
+    inline auto make_hash(const u8& v) noexcept {
         return fnv::hash<sizeof(v)>()(v);
     }
     template<>
-    inline auto make_hash(const float& v) {
+    inline auto make_hash(const float& v) noexcept {
         return fnv::hash<sizeof(v)>()(v);
     }
     template<>
-    inline auto make_hash(const double& v) {
+    inline auto make_hash(const double& v) noexcept {
         return fnv::hash<sizeof(v)>()(v);
     }
     template<>
-    inline auto make_hash(const string& v) {
+    inline auto make_hash(const string& v) noexcept {
         return fnv::hash<8>()(v.c_str(), v.size());
     }
     template<>
-    inline auto make_hash(const string_view& v) {
+    inline auto make_hash(const string_view& v) noexcept {
         return fnv::hash<8>()(v.c_str(), v.size());
     }
     template<class T>
-    inline auto make_hash(const array_view<T>& v) {
+    inline auto make_hash(const array_view<T>& v) noexcept {
         u64 ret = {};
         for (uint i = 0; i < v.size(); ++i)
             ret += fnv::hash<sizeof(T)>()(v[i]);
         return ret;
     }
     template<class T, uint N>
-    inline auto make_hash(const bounded_array<T, N>& v) {
+    inline auto make_hash(const bounded_array<T, N>& v) noexcept {
         u64 ret = {};
         for (uint i = 0; i < v.size(); ++i)
             ret += fnv::hash<sizeof(T)>()(v[i]);
         return ret;
     }
     template<class T>
-    inline auto make_hash(scoped_ptr<T>&& sp) {
+    inline auto make_hash(scoped_ptr<T>&& sp) noexcept {
         return (u64)sp.get() / sizeof(T);
     }
     template<class T>
-    inline auto make_hash(const ref_ptr<T>& rp) {
+    inline auto make_hash(const ref_ptr<T>& rp) noexcept {
         return (u64)rp.get() / sizeof(T);
     }
     template<class T>
-    inline auto make_hash(const weak_ptr<T>& rp) {
+    inline auto make_hash(const weak_ptr<T>& rp) noexcept {
         return (u64)rp.get() / sizeof(T);
     }
     template<class F, class S>
-    inline auto make_hash(const pair<F, S>& p) {
+    inline auto make_hash(const pair<F, S>& p) noexcept {
         return (make_hash(p.first) & 0xffff) | (make_hash(p.second) << 16);
     }
 }

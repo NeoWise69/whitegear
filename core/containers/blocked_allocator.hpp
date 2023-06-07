@@ -61,13 +61,13 @@ namespace wg {
     template<class T>
     class blocked_allocator {
     public:
-        inline blocked_allocator() = default;
-        inline blocked_allocator(uint initial_capacity) {
+        inline blocked_allocator() noexcept = default;
+        inline blocked_allocator(uint initial_capacity) noexcept {
             if (initial_capacity) {
                 mAllocator = allocator_create(sizeof(T), initial_capacity);
             }
         }
-        inline ~blocked_allocator() {
+        inline ~blocked_allocator() noexcept {
             if (mAllocator) // maybe we're not initialized allocator properly, like in a default constructor.
                 allocator_destroy(mAllocator);
         }
@@ -83,7 +83,7 @@ namespace wg {
             new(p) T(std::forward<Args>(args)...);
             return p;
         }
-        void free(T* p) {
+        void free(T* p) noexcept {
             (p)->~T();
             allocator_free(mAllocator, p);
         }
