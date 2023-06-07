@@ -50,7 +50,7 @@ namespace wg {
                     renderable->set_transform_matrix_ptr(p_data->p_transform);
                 }
 
-                renderable->render(mGraphics);
+                mRenderablesToDraw.push(renderable.get());
                 world_stats.vertices_per_frame += renderable->get_num_vertices();
                 world_stats.indices_per_frame += renderable->get_num_indices();
                 ++world_stats.draw_calls;
@@ -102,9 +102,19 @@ namespace wg {
         world_stats.vertices_per_frame = 0;
 
         mFrameData->bind(mGraphics);
+        mRenderablesToDraw.reset();
     }
 
     void rendering_engine_directx::on_end_tick() {
+
+        /**
+         * Here draw all queued renderables,
+         * at the end of rendering engine
+         * execution process.
+         */
+         for (auto& r : mRenderablesToDraw) {
+             r.render(mGraphics);
+         }
 
         // mGraphics.end_render_to_texture_buffer();
         mGraphics.end_frame();

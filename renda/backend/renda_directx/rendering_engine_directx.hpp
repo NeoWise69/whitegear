@@ -16,6 +16,7 @@
 #include "dx_info_manager.hpp"
 #include "dx_renderable.hpp"
 #include "core/time.hpp"
+#include "core/containers/reused_queue.hpp"
 
 #if WG_WINDOWS
 
@@ -41,9 +42,16 @@ namespace wg {
         viewport* mViewport;
 
         time_point mFrameStartTime = 0;
-
-        hashmap<entity_t, ref_ptr<dx_renderable>> mRenderables;
         scoped_ptr<dx_bindable_base> mFrameData;
+
+        /**
+         * This is not so good for rendering,
+         * because we wanna e.g turn off some
+         * renderables, and do this without
+         * any conditional checks.
+         */
+        hashmap<entity_t, ref_ptr<dx_renderable>> mRenderables;
+        reused_queue<dx_renderable> mRenderablesToDraw;
     };
 }
 
