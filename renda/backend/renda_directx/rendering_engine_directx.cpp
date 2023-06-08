@@ -112,8 +112,8 @@ namespace wg {
          * at the end of rendering engine
          * execution process.
          */
-         for (auto& r : mRenderablesToDraw) {
-             r.render(mGraphics);
+         for (auto it = mRenderablesToDraw.begin(); it != mRenderablesToDraw.end(); ++it) {
+             it->render(mGraphics);
          }
 
         // mGraphics.end_render_to_texture_buffer();

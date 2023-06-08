@@ -92,9 +92,17 @@ namespace wg {
              */
             inline T* operator->() const { return ptr->p_object; }
             /**
+             * Arrow operator.
+             */
+            inline T* operator->() { return ptr->p_object; }
+            /**
              * Star operator for de-referencing
              */
             inline T& operator*() const { return *(ptr->p_object); }
+            /**
+             * Star operator for de-referencing
+             */
+            inline T& operator*() { return *(ptr->p_object); }
             /**
              * Postfix inc operator for next element access.
              */
@@ -190,9 +198,9 @@ namespace wg {
          * Simple range functions.
          */
         inline iterator begin() const noexcept { return iterator(p_head); }
-        inline iterator end() const noexcept { return iterator(p_tail->p_next); }
+        inline iterator end() const noexcept { return iterator((p_tail && p_tail->p_object) ? p_tail->p_next : p_tail); }
         inline iterator begin() noexcept { return iterator(p_head); }
-        inline iterator end() noexcept { return iterator(p_tail ? p_tail->p_next : p_tail); }
+        inline iterator end() noexcept { return iterator((p_tail && p_tail->p_object) ? p_tail->p_next : p_tail); }
 
     private:
         node* p_head = nullptr;
