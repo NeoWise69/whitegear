@@ -127,7 +127,7 @@ namespace wg {
             }
         }; // !iterator
 
-        typedef pair<key_value, value_type> pair_type;
+        typedef pair<key_type, value_type> pair_type;
 
         // definition down below
         inline hashmap() noexcept {

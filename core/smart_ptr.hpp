@@ -11,10 +11,10 @@
 
 #include <core/typedefs.hpp>
 #include <core/ref_counted.hpp>
+#include <core/utils.hpp>
 
 #include <memory>
 #include <cassert>
-#include "utils.hpp"
 
 namespace wg {
     /**
@@ -387,7 +387,6 @@ namespace wg {
     private:
         scoped_ptr(const scoped_ptr&);
         scoped_ptr& operator=(const scoped_ptr&);
-        friend void swap(scoped_ptr<T>& a, scoped_ptr<T>& b);
 
         T* ptr = nullptr;
     };

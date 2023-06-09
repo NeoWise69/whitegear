@@ -69,15 +69,8 @@ namespace wg {
     inline constexpr A max(A x, B y, C z, D w) noexcept {
         return max(max(x, y), max(z, w));
     }
-    /**
-     * Swap utility
-     */
-    template<class T>
-    inline void swap(T& a, T& b) noexcept {
-        T t = a;
-        a = b;
-        b = t;
-    }
+
+
     template<class F, class S>
     struct pair {
         inline pair() noexcept {}
@@ -87,7 +80,6 @@ namespace wg {
         F first;
         S second;
     };
-
     template<class F, class S>
     inline bool operator==(const pair<F, S>& a, const pair<F, S>& b) noexcept {
         return
@@ -146,6 +138,16 @@ namespace wg {
         inline static bool equal(const T* a, const T* b) noexcept { return a == b; }
         inline static bool nequal(const T* a, const T* b) noexcept { return a != b; }
     };
+
+    /**
+     * Swap utility
+     */
+    template<class T>
+    inline void swap(T& a, T& b) noexcept {
+        T t = std::move(a);
+        a = std::move(b);
+        b = std::move(t);
+    }
 }
 
-#endif //WHITEGEAR_UTILS_HPP
+#endif //WHITEGEAR_UTILS_DX11_HPP

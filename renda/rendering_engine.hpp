@@ -15,11 +15,20 @@
 #include <scene/world.hpp>
 #include <math/geometry.hpp>
 
+#include <renda/api/gpu_device.hpp>
+#include <renda/api/swapchain.hpp>
+#include <renda/api/target_buffer.hpp>
+#include <core/time.hpp>
+#include <math/free_camera.hpp>
+#include <renda/drawing/renderable.hpp>
+#include <core/containers/reused_queue.hpp>
+
 #define WG_SHADER_PREFIX_PATH "./editor_shaders/"
 
 namespace wg {
     class rendering_engine {
     public:
+
         struct create_info {
             window* p_window;
             viewport* p_viewport;
@@ -27,6 +36,7 @@ namespace wg {
         };
 
         virtual ~rendering_engine() = default;
+        rendering_engine(const rendering_engine::create_info& create_info);
 
         struct mesh_render_data {
             const mat4* p_transform;
@@ -36,13 +46,13 @@ namespace wg {
             scalar delta_time;
             bool* p_regenerate_bound;
         };
-        virtual bool draw_mesh(const mesh_render_data* p_data) = 0;
+        bool draw_mesh(const mesh_render_data* p_data);
         struct mesh_load_data {
             string_view filepath;
             entity_t entity;
             world_registry* p_registry;
         };
-        virtual void load_mesh(const mesh_load_data* load_data) = 0;
+        void load_mesh(const mesh_load_data* load_data);
         struct common_mesh_create_info {
             enum type_t : uint {
                 COMMON_MESH_CUBE,
@@ -51,21 +61,33 @@ namespace wg {
             entity_t entity;
             world_registry* p_registry;
         };
-        virtual void create_common_mesh(const common_mesh_create_info* create_data) = 0;
-        virtual void unload_mesh(entity_t entity_id) = 0;
+        void create_common_mesh(const common_mesh_create_info* create_data);
+        void unload_mesh(entity_t entity_id);
 
-        virtual void on_begin_tick() = 0;
-        virtual void on_end_tick() = 0;
+        void on_begin_tick();
+        void on_end_tick();
 
-        virtual frustum_view get_frustum() const = 0;
+        frustum_view get_frustum() const;
 
-        static rendering_engine* create(const rendering_engine::create_info& create_info);
+        world* get_parent_world() { return mParent; }
+        const world* get_parent_world() const { return mParent; }
+        void set_parent_world(world* p_parent) { mParent = p_parent; }
 
-        inline world* get_parent_world() { return mParent; }
-        inline const world* get_parent_world() const { return mParent; }
-        inline void set_parent_world(world* p_parent) { mParent = p_parent; }
-
+        inline const mat4& get_view_matrix() const { return mGlobalCamera.get_view_matrix(); }
+        inline const viewport& get_viewport() const { return mViewport; }
+        inline viewport& get_viewport() { return mViewport; }
     protected:
+        renda::gpu_device device = {};
+        renda::swapchain swapchain = {};
+        renda::target_buffer screen_buffer = {};
+
+        scoped_ptr<renda::gpu_resource> mFrameData = nullptr;
+        hashmap<entity_t, ref_ptr<renda::renderable>> mRenderables;
+        reused_queue<renda::renderable> mRenderablesToDraw;
+
+        free_camera mGlobalCamera = {{0, 0, 3}};
+        viewport mViewport = {};
+        time_point mFrameStartTime = 0;
         world* mParent = nullptr;
     };
 }

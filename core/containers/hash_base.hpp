@@ -9,8 +9,8 @@
 #ifndef WHITEGEAR_HASH_BASE_HPP
 #define WHITEGEAR_HASH_BASE_HPP
 
-#include "core/hash.hpp"
-#include "core/utils.hpp"
+#include <core/hash.hpp>
+#include <core/utils.hpp>
 #include "blocked_allocator.hpp"
 
 namespace wg {
@@ -67,6 +67,13 @@ namespace wg {
         uint size() const noexcept;
         uint get_num_buckets() const noexcept;
         bool empty() const noexcept;
+
+        inline void swap(hash_base& b) {
+            wg::swap(mHead, b.mHead);
+            wg::swap(mTail, b.mTail);
+            wg::swap(mPtrs, b.mPtrs);
+            wg::swap(mAllocator, b.mAllocator);
+        }
     protected:
         inline void _set_size(uint n) noexcept {
             if (mPtrs) {
@@ -84,16 +91,12 @@ namespace wg {
         hash_node_base** mPtrs = nullptr;
         allocator_block* mAllocator = nullptr;
 
-        friend void wg::swap(hash_base&, hash_base&) noexcept;
     };
 }
 namespace wg {
     template<>
     inline void swap(hash_base& a, hash_base& b) noexcept {
-        swap(a.mHead, b.mHead);
-        swap(a.mTail, b.mTail);
-        swap(a.mPtrs, b.mPtrs);
-        swap(a.mAllocator, b.mAllocator);
+        a.swap(b);
     }
 }
 

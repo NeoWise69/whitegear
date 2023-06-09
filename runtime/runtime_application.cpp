@@ -54,7 +54,7 @@ namespace wg {
             info.p_window = &mWindow;
             info.p_viewport = &mViewport;
 
-            mRenda = rendering_engine::create(info);
+            mRenda = new rendering_engine(info);
         }
         mCore.add_module<scene_module>(mRenda);
 

@@ -6,14 +6,11 @@
  * report this source code leak and delete all copies of source code from all your machines.
  ******************************************************************************/
 
-#include "core.hpp"
 #include "logger.hpp"
-
 
 #include <mutex>
 #include <cstdarg>
 #include <chrono>
-#include <iostream>
 #include <ctime>
 
 namespace wg {

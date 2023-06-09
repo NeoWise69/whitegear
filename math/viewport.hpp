@@ -115,7 +115,7 @@ namespace wg {
         /**
          * Get calculated projection matrix.
          */
-        inline mat4 get_projection_matrix() const { return mProjectionMatrix; }
+        inline const mat4& get_projection_matrix() const { return mProjectionMatrix; }
         /**
          * Access to width.
          */

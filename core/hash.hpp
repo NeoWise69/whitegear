@@ -251,7 +251,7 @@ namespace wg {
     }
     template<class F, class S>
     inline auto make_hash(const pair<F, S>& p) noexcept {
-        return (make_hash(p.first) & 0xffff) | (make_hash(p.second) << 16);
+        return (make_hash<F>(p.first) & 0xffff) | (make_hash<S>(p.second) << 16);
     }
 }
 

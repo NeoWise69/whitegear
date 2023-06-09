@@ -22,6 +22,12 @@ namespace wg {
     typedef long long i64;
     typedef unsigned long long u64;
     typedef float real;
+    /**
+     * IObject is a non-typed pointer to
+     * Internal Object, that client code
+     * doesn't know about.
+     */
+    typedef void* i_object;
 }
 
 static_assert((sizeof(wg::i8) == 1) && (sizeof(wg::u8) == 1), "incompatible type sizes and layouts!");
