@@ -75,4 +75,8 @@ namespace wg {
         return fwrite(data, size, 1, F(mInternal));
     }
 
+    bool file::exists(const string_view &filename) {
+        return file().open(filename) != FILE_ERROR_NOT_FOUND;
+    }
+
 }

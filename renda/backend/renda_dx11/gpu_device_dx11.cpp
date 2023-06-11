@@ -10,7 +10,7 @@
 #include <graphics/window.hpp>
 #include <math/viewport.hpp>
 
-#include "minimal.hpp"
+#include "minimal_dx11.hpp"
 
 namespace wg::renda {
 

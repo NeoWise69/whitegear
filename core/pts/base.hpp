@@ -17,9 +17,12 @@
 #define WHITEGEAR_PTS_BASE_HPP
 
 #include <core/core.hpp>
-#include <iterator>
 
 namespace wg {
+    class file;
+}
+
+namespace wg::pts {
     inline constexpr const uint MAX_NAME = 64u;
     inline constexpr const uint MAX_CHILDREN = 128u;
     /**
@@ -28,15 +31,15 @@ namespace wg {
      * can have a single parent and multiple children at the same time.
      * Just like usual filesystem :)
      */
-    class pts_entry {
+    class entry {
     public:
-        inline pts_entry() noexcept : mIsDirectory(), mName(), mNameLen(), mIsCompressed(),
+        inline entry() noexcept : mIsDirectory(), mName(), mNameLen(), mIsCompressed(),
                             mMetaSize(), mMetaData(), mStartPos(), mBlobSize(),
                             pParent(), ppChildren(), mNumChildren()
         {}
-        inline virtual ~pts_entry() noexcept {}
+        inline virtual ~entry() noexcept {}
 
-        inline pts_entry(const pts_entry& o) noexcept {
+        inline entry(const entry& o) noexcept {
             mIsDirectory = o.mIsDirectory;
             mNameLen = o.mNameLen;
             mIsCompressed = o.mIsCompressed;
@@ -67,7 +70,7 @@ namespace wg {
             // !copy children
         }
 
-        inline pts_entry(bool is_dir, const char* name, uint start, uint size) noexcept :
+        inline entry(bool is_dir, const char* name, uint start, uint size) noexcept :
             mIsDirectory(is_dir), mIsCompressed(), mMetaSize(), mMetaData(), mStartPos(start), mBlobSize(size),
             mNumChildren(), pParent(), ppChildren()
         {
@@ -89,7 +92,7 @@ namespace wg {
              * with 'down->top' model.
              */
             for (uint i = 0; i < MAX_CHILDREN && i < mNumChildren; ++i) {
-                pts_entry* child = ppChildren[i];
+                pts::entry* child = ppChildren[i];
                 child->release();
             }
 
@@ -103,16 +106,16 @@ namespace wg {
 
         /**
          * Addicts a new child object to children list, but if there is no
-         * empty space for new ones, it reserves single entry for a new
-         * directory entry, in order to not to stuck with 'filled space'
+         * empty space for new ones, it reserves single pts::entry for a new
+         * directory pts::entry, in order to not to stuck with 'filled space'
          * PTS structure that can't grow.
-         * @return pointer to created child inside this entry, otherwise NULL.
+         * @return pointer to created child inside this pts::entry, otherwise NULL.
          */
-        inline pts_entry* add_child(const pts_entry& child) noexcept {
+        inline pts::entry* add_child(const pts::entry& child) noexcept {
             if (((mNumChildren + 1) >= MAX_CHILDREN) && !child.mIsDirectory) return nullptr;
 
             const auto id = mNumChildren++;
-            ppChildren[id] = new pts_entry(child);
+            ppChildren[id] = new pts::entry(child);
             ppChildren[id]->pParent = this;
             return ppChildren[id];
         }
@@ -122,7 +125,7 @@ namespace wg {
          */
         inline uint get_address() const noexcept { return mStartPos; }
         /**
-         * Size(in bytes) of data which is pointed by entry.
+         * Size(in bytes) of data which is pointed by pts::entry.
          */
         inline uint get_size() const noexcept { return mBlobSize; }
         inline uint get_children_count() const noexcept { return mNumChildren; }
@@ -130,8 +133,8 @@ namespace wg {
 
         inline string_view get_name() const noexcept { return { mName, mNameLen }; }
 
-        inline pts_entry* get_child(uint i) const noexcept { return ppChildren[i]; }
-        inline pts_entry* get_parent() const noexcept { return pParent; }
+        inline pts::entry* get_child(uint i) const noexcept { return ppChildren[i]; }
+        inline pts::entry* get_parent() const noexcept { return pParent; }
 
         inline bool is_root() const noexcept { return pParent == nullptr; }
         inline bool is_dir() const noexcept { return mIsDirectory; }
@@ -151,7 +154,7 @@ namespace wg {
         /**
          * Search for a child with name, and returns its pointer, otherwise nullptr.
          */
-        inline pts_entry* find_child(const char* name) noexcept {
+        inline pts::entry* find_child(const char* name) const noexcept {
             for (uint i = 0; i < MAX_CHILDREN && i < mNumChildren; ++i) {
                 if (ppChildren[i] && ppChildren[i]->get_name() == name)
                     return ppChildren[i];
@@ -159,9 +162,23 @@ namespace wg {
             return nullptr;
         }
 
+        inline uint get_last_address() const {
+            return queue_child_max_address((entry*)(this));
+        }
+
     private:
-        bool mIsDirectory;      // whether is this entry a directory or a file.
-        char mName[MAX_NAME];  // store name of an entry.
+        inline static uint queue_child_max_address(entry* e) {
+            const auto count = e->get_children_count();
+            uint result = e->get_address();
+            for (uint i = 0; i < count; ++i) {
+                auto child = e->get_child(i);
+                result = max(result, queue_child_max_address(child));
+            }
+            return result;
+        }
+
+        bool mIsDirectory;      // whether is this pts::entry a directory or a file.
+        char mName[MAX_NAME];  // store name of an pts::entry.
         u8 mNameLen;            // META, not stored at all.
         bool mIsCompressed;     // whether is this file compressed or not.
         uint mMetaSize;         // size of additional meta info structure.
@@ -169,16 +186,18 @@ namespace wg {
         uint mStartPos;    // start position of a data blob.
         uint mBlobSize;         // size (in bytes) of a data blob.
 
-        pts_entry* pParent;     // pointer to the parent entry (NULL in root)
-        pts_entry* ppChildren[MAX_CHILDREN]; // array of pointers to the children entries.
+        pts::entry* pParent;     // pointer to the parent pts::entry (NULL in root)
+        pts::entry* ppChildren[MAX_CHILDREN]; // array of pointers to the children entries.
         uint mNumChildren;      // number of children
 
-        friend void read_entry(class file* fp, pts_entry* e);
+        friend void read_entry(file* fp, pts::entry* e);
     };
 
-    inline pts_entry* pts_entry_create_dir(const char* name) noexcept {
-        return new pts_entry(true, name, 0, 0);
+}
+namespace wg {
+    inline pts::entry* create_dir_entry(const char *name) noexcept {
+        return new pts::entry(true, name, 0, 0);
     }
 }
 
-#endif //WHITEGEAR_PTS_BASE_HPP
+#endif //WHITEGEAR_BASE_HPP

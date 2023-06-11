@@ -13,16 +13,17 @@
 #include <core/containers/string_view.hpp>
 #include <core/io.hpp>
 
-namespace wg {
-    class pts_entry;
+namespace wg::pts {
+    class entry;
     /**
      * BLOB is a simple data handler class
      * that helps with managing data inside blob file.
      */
-    class pts_blob {
+    class blob {
     public:
-        explicit pts_blob(const string_view& filename);
-        ~pts_blob() = default;
+        explicit blob(const string_view& filename);
+        inline blob() noexcept = default;
+        ~blob() = default;
 
         /**
          * Get pointer to the data block, starting from 'start'
@@ -33,7 +34,7 @@ namespace wg {
          * Get pointer to the data block, based on 'entry'
          * !!![WARNING] DONT FORGET TO DELETE[] DATA!!!
          */
-        u8* get_data(const pts_entry* e) const;
+        u8* get_data(const pts::entry* e) const;
 
         bool reopen(const string_view& filename);
         /**
@@ -49,4 +50,4 @@ namespace wg {
     };
 }
 
-#endif //WHITEGEAR_PTS_BLOB_HPP
+#endif //WHITEGEAR_BLOB_HPP

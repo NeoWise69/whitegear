@@ -6,23 +6,22 @@
  * report this source code leak and delete all copies of source code from all your machines.
  ******************************************************************************/
 
-#include <core/pts/pts_blob.hpp>
-#include "pts_base.hpp"
-#include <fstream>
+#include <core/pts/blob.hpp>
+#include "base.hpp"
 
-namespace wg {
+namespace wg::pts {
 
-    pts_blob::pts_blob(const wg::string_view &filename) : mFile() {
+    blob::blob(const wg::string_view &filename) : mFile() {
         reopen(filename);
     }
 
-    void pts_blob::release() {
+    void blob::release() {
         if (mFile.is_opened()) {
             mFile.close();
         }
     }
 
-    bool pts_blob::reopen(const wg::string_view &filename) {
+    bool blob::reopen(const wg::string_view &filename) {
         file t(filename, "ab+");
         if (!t.is_opened()) return false;
         release();
@@ -30,7 +29,7 @@ namespace wg {
         return true;
     }
 
-    u8* pts_blob::get_data(uint start, uint size) const {
+    u8* blob::get_data(uint start, uint size) const {
         if (!mFile.is_opened()) return nullptr;
         mFile.seek(start);
         u8* data = new u8[size]();
@@ -38,11 +37,11 @@ namespace wg {
         return data;
     }
 
-    u8 *pts_blob::get_data(const pts_entry *e) const {
+    u8 *blob::get_data(const pts::entry *e) const {
         return e ? get_data(e->get_address(), e->get_size()) : nullptr;
     }
 
-    uint pts_blob::write(const u8 *data, uint size) {
+    uint blob::write(const u8 *data, uint size) {
         if (!mFile.is_opened()) return uint(-1);
         mFile.seek(0, SEEK_DIR_END);
         const uint pos = mFile.pos();

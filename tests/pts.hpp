@@ -9,9 +9,9 @@
 #ifndef WHITEGEAR_PTS_HPP
 #define WHITEGEAR_PTS_HPP
 
-#include <core/pts/pts_base.hpp>
-#include <core/pts/pts_blob.hpp>
-#include <core/pts/pts_io.hpp>
+#include <core/pts/base.hpp>
+#include <core/pts/blob.hpp>
+#include <core/pts/io.hpp>
 
 auto pts_test() -> bool {
     using namespace wg;

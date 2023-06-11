@@ -9,7 +9,7 @@
 #include <renda/api/target_buffer.hpp>
 #include <renda/api/gpu_device.hpp>
 
-#include "minimal.hpp"
+#include "minimal_dx11.hpp"
 
 namespace wg::renda {
     target_buffer::~target_buffer() noexcept {

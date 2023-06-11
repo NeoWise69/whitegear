@@ -26,10 +26,10 @@ namespace wg {
             im->mWidth = w;
             im->mHeight = h;
             if (c == 3) {
-                im->mChannels = RGB32_FLOAT;
+                im->mFormat = FORMAT_RGB32_FLOAT;
             }
             else {
-                im->mChannels = RGBA32_FLOAT;
+                im->mFormat = FORMAT_RGBA32_FLOAT;
             }
         }
         else {
@@ -38,10 +38,10 @@ namespace wg {
             im->mWidth = w;
             im->mHeight = h;
             if (c == 3) {
-                im->mChannels = RGB8_UNORM;
+                im->mFormat = FORMAT_RGB8_UNORM;
             }
             else {
-                im->mChannels = RGBA8_UNORM;
+                im->mFormat = FORMAT_RGBA8_UNORM;
             }
         }
 
@@ -51,28 +51,28 @@ namespace wg {
     image_ref image::load_from_memory(const void *p_image_data, uint image_size) {
         auto* im = new image();
 
-        if (stbi_is_hdr_from_memory((u8*)p_image_data, image_size)) {
+        if (stbi_is_hdr_from_memory((u8*)p_image_data, int(image_size))) {
             int w, h, c;
-            im->mData = (void*)stbi_loadf_from_memory((u8*)p_image_data, image_size, &w, &h, &c, 0);
+            im->mData = (void*)stbi_loadf_from_memory((u8*)p_image_data, int(image_size), &w, &h, &c, 0);
             im->mWidth = w;
             im->mHeight = h;
             if (c == 3) {
-                im->mChannels = RGB32_FLOAT;
+                im->mFormat = FORMAT_RGB32_FLOAT;
             }
             else {
-                im->mChannels = RGBA32_FLOAT;
+                im->mFormat = FORMAT_RGBA32_FLOAT;
             }
         }
         else {
             int w, h, c;
-            im->mData = (void*)stbi_load_from_memory((u8*)p_image_data, image_size, &w, &h, &c, 0);
+            im->mData = (void*)stbi_load_from_memory((u8*)p_image_data, int(image_size), &w, &h, &c, 0);
             im->mWidth = w;
             im->mHeight = h;
             if (c == 3) {
-                im->mChannels = RGB8_UNORM;
+                im->mFormat = FORMAT_RGB8_UNORM;
             }
             else {
-                im->mChannels = RGBA8_UNORM;
+                im->mFormat = FORMAT_RGBA8_UNORM;
             }
         }
 
@@ -80,12 +80,12 @@ namespace wg {
     }
 
     uint image::get_num_channels() const noexcept {
-        switch (mChannels) {
-            case RGB32_FLOAT:
-            case RGB8_UNORM:
+        switch (mFormat) {
+            case FORMAT_RGB32_FLOAT:
+            case FORMAT_RGB8_UNORM:
                 return 3;
-            case RGBA32_FLOAT:
-            case RGBA8_UNORM:
+            case FORMAT_RGBA32_FLOAT:
+            case FORMAT_RGBA8_UNORM:
                 return 4;
             default:
                 return 0;
@@ -94,10 +94,26 @@ namespace wg {
 
     image_ref image::generate(const image::generate_info &gen_info) {
         WG_NOT_IMPLEMENTED
+        static u8 s_empty_data[1] = { 0xff };
         return new image{
-            nullptr,
+            s_empty_data,
             1u, 1u,
-            RGB8_UNORM
+            FORMAT_RGB8_UNORM
         };
+    }
+
+    uint image::get_pixel_size() const {
+        switch (mFormat) {
+            case FORMAT_RGB32_FLOAT:
+                return sizeof(float[3]);
+            case FORMAT_RGB8_UNORM:
+                return sizeof(u8[3]);
+            case FORMAT_RGBA32_FLOAT:
+                return sizeof(float[4]);
+            case FORMAT_RGBA8_UNORM:
+                return sizeof(u8[4]);
+            default:
+                return 0;
+        }
     }
 }

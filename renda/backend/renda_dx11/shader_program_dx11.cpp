@@ -8,7 +8,7 @@
 
 #include <renda/api/gpu_resource.hpp>
 
-#include "minimal.hpp"
+#include "minimal_dx11.hpp"
 
 namespace wg::renda {
     shader_program::shader_program(const gpu_device& device, e_shader_type t, const string_view& filename) noexcept {

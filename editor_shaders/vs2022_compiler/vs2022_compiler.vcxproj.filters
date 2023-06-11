@@ -15,8 +15,8 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\ps_basic.hlsl" />
-    <FxCompile Include="..\vs_basic.hlsl" />
+    <FxCompile Include="..\ps_vertex_color.hlsl" />
+    <FxCompile Include="..\vs_vertex_color.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\common.hlsl" />

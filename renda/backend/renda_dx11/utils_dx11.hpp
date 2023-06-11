@@ -10,7 +10,7 @@
 #define WHITEGEAR_UTILS_DX11_HPP
 
 #include <renda/api/common.hpp>
-#include "minimal.hpp"
+#include "minimal_dx11.hpp"
 
 namespace wg::renda {
     DXGI_FORMAT format_to_dxgi_format(e_format format);

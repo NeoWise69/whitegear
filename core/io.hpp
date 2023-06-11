@@ -42,7 +42,7 @@ namespace wg {
          * 1 - Accidentally you'll try to get access to the same file handle
          *     from several places, which is NOT GOOD AT ALL.
          *
-         * 2 - When you're filehandle #2 is closed, filehandle #1 which is
+         * 2 - When you're file handle #2 is closed, file handle #1 which is
          *     a parent of #2's, doesn't know about this, and the next time
          *     #1 will try to get access to a file, the program will crash
          *     due to this weird situation.
@@ -66,6 +66,8 @@ namespace wg {
 
         size_t read(void* data, size_t size) const;
         size_t write(const void* data, size_t size) const;
+
+        static bool exists(const string_view& filename);
     private:
         void* mInternal;
     };

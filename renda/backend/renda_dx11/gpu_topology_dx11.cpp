@@ -8,7 +8,7 @@
 
 #include <renda/api/gpu_resource.hpp>
 
-#include "minimal.hpp"
+#include "minimal_dx11.hpp"
 
 namespace wg::renda {
     namespace {

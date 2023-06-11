@@ -1,5 +1,13 @@
 
-SET(Renda_SOURCES renderer_api.cpp drawing/constant_buffer_per_frame.cpp drawing/renderable.cpp drawing/constant_buffer_per_object.cpp drawing/common_cube_renderable.cpp)
+SET(Renda_SOURCES
+        renderer_api.cpp
+        rendering_engine.cpp
+        vertex_layout.cpp
+        drawing/constant_buffer_per_frame.cpp
+        drawing/renderable.cpp
+        drawing/constant_buffer_per_object.cpp
+        drawing/common_cube_renderable.cpp
+        )
 
 ADD_LIBRARY(wg_renda STATIC ${Renda_SOURCES})
 

@@ -12,6 +12,10 @@
 #include <renda/api/common.hpp>
 #include <renda/api/gpu_device.hpp>
 
+namespace wg {
+    class image;
+}
+
 namespace wg::renda {
     class gpu_resource : public ref_counted {
     public:
@@ -107,6 +111,22 @@ namespace wg::renda {
         i_object handle = nullptr;
         e_bind_target target = BIND_TARGET_NONE;
         uint size = {};
+    };
+
+    class texture : public gpu_resource {
+    public:
+        inline texture() noexcept = default;
+        ~texture() noexcept override;
+
+        texture(const gpu_device& device, const image& im) noexcept;
+
+        void bind(gpu_device& device) const noexcept override;
+
+        inline i_object get_view() const {
+            return handle;
+        }
+    private:
+        i_object handle = nullptr;
     };
 
 }

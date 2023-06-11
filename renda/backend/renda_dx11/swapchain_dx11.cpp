@@ -10,7 +10,7 @@
 #include <renda/api/target_buffer.hpp>
 #include <graphics/window.hpp>
 
-#include "minimal.hpp"
+#include "minimal_dx11.hpp"
 
 #include <GLFW/glfw3.h>
 #define GLFW_EXPOSE_NATIVE_WIN32

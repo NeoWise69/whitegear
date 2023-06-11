@@ -11,6 +11,7 @@
 
 #include <core/typedefs.hpp>
 #include <core/smart_ptr.hpp>
+#include <core/required.hpp>
 
 namespace wg {
     typedef class image* image_ref;
@@ -24,15 +25,9 @@ namespace wg {
             PATTERN_BLACK,
             PATTERN_CHESS,
         };
-        enum channels_t : u8 {
-            RGBA8_UNORM,    /* u8 [r,g,b,a] */
-            RGBA32_FLOAT,   /* f32 [r,g,b,a] */
-            RGB8_UNORM,     /* u8 [r,g,b] */
-            RGB32_FLOAT,    /* f32 [r,g,b] */
-        };
         struct generate_info {
             pattern_t pattern;
-            channels_t channels;
+            e_format format;
             uint width;
             uint height;
         };
@@ -46,8 +41,8 @@ namespace wg {
         inline uint get_height() const  noexcept{
             return mHeight;
         }
-        inline channels_t get_channels() const  noexcept{
-            return mChannels;
+        inline e_format get_format() const  noexcept{
+            return mFormat;
         }
         uint get_num_channels() const noexcept;
         inline void* get_data() const  noexcept{
@@ -63,14 +58,16 @@ namespace wg {
         inline uint get_pixel_u32(uint x, uint y) const {
             return ((uint*)mData)[x + y * mWidth];
         }
+
+        uint get_pixel_size() const;
     private:
-        inline image(void *const p_data, uint width, uint height, channels_t channels) noexcept
-            : mData(p_data), mWidth(width), mHeight(height), mChannels(channels) {}
+        inline image(void *const p_data, uint width, uint height, e_format format) noexcept
+            : mData(p_data), mWidth(width), mHeight(height), mFormat(format) {}
 
         void* mData = nullptr;
         uint mWidth = {},
              mHeight = {};
-        channels_t mChannels = {};
+        e_format mFormat = {};
     };
 }
 

@@ -9,22 +9,22 @@
 #ifndef WHITEGEAR_PTS_IO_HPP
 #define WHITEGEAR_PTS_IO_HPP
 
-#include <core/pts/pts_base.hpp>
+#include <core/pts/base.hpp>
 
-namespace wg {
+namespace wg::pts {
     /**
      * Simple serialization routine for saving pts tree structure to file.
      * @param e Pointer to a valid pts entry.
      * @param filename Path to not-readonly location on disk.
      * @return true on success, otherwise false.
      */
-    bool pts_entry_write_to_file(const pts_entry* e, const string_view& filename);
+    bool write_entry_to_file(const entry* e, const string_view& filename);
     /**
      * Simple deserialization routine for loading pts tree structure from disk.
      * @param e A valid pointer to pts entry tree root.
      * @return true on success, otherwise false.
      */
-    bool pts_entry_load_from_file(pts_entry* e, const string_view& filename);
+    bool load_entry_from_file(entry* e, const string_view& filename);
 }
 
-#endif //WHITEGEAR_PTS_IO_HPP
+#endif //WHITEGEAR_IO_HPP

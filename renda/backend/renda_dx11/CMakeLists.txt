@@ -1,16 +1,14 @@
 SET(Renda_DX11_SOURCES
-        rendering_engine.cpp
-        gpu_device.cpp
-        swapchain.cpp
-        target_buffer.cpp
-        gpu_topology.cpp
-        vertex_layout.cpp
+        gpu_device_dx11.cpp
+        swapchain_dx11.cpp
+        target_buffer_dx11.cpp
+        gpu_topology_dx11.cpp
         utils_dx11.cpp
         geometry_buffer_dx11.cpp
-        shader_program.cpp
-        vertex_input_layout.cpp
+        shader_program_dx11.cpp
+        vertex_input_layout_dx11.cpp
         constant_buffer_base_dx11.cpp
-        )
+        texture_dx11.cpp)
 
 ADD_LIBRARY(wg_renda_dx11 STATIC ${Renda_DX11_SOURCES})
 

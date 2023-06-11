@@ -9,7 +9,7 @@
 #ifndef WHITEGEAR_COMMON_HPP
 #define WHITEGEAR_COMMON_HPP
 
-#include <core/typedefs.hpp>
+#include <core/required.hpp>
 #include <core/containers/bounded_array.hpp>
 #include <math/vertex.hpp>
 #include <initializer_list>
@@ -34,6 +34,7 @@ namespace wg::renda {
         GPU_RESOURCE_CONSTANT_BUFFER        = 0x00010000,
         GPU_RESOURCE_VERTEX_CONSTANT_BUFFER = 0x00011000,
         GPU_RESOURCE_PIXEL_CONSTANT_BUFFER  = 0x00011100,
+        GPU_RESOURCE_TEXTURE                = 0x00100000,
     };
     enum e_topology : uint {
         TOPOLOGY_NONE           = 0x00000000,
@@ -44,29 +45,6 @@ namespace wg::renda {
     enum e_attribute_rate : uint {
         ATTRIBUTE_PER_VERTEX,
         ATTRIBUTE_PER_INSTANCE,
-    };
-    enum e_format : uint {
-        FORMAT_NONE,
-
-        FORMAT_RGBA32_FLOAT,
-        FORMAT_RGBA32_UINT,
-        FORMAT_RGBA32_SINT,
-        FORMAT_RGB32_FLOAT,
-        FORMAT_RGB32_UINT,
-        FORMAT_RGB32_SINT,
-        FORMAT_RG32_FLOAT,
-        FORMAT_RG32_UINT,
-        FORMAT_RG32_SINT,
-        FORMAT_D32_FLOAT,
-        FORMAT_R32_FLOAT,
-        FORMAT_R32_UINT,
-        FORMAT_R32_SINT,
-
-        FORMAT_RGBA8_UNORM,
-        FORMAT_RGBA8_SNORM,
-        FORMAT_RGBA8_UINT,
-        FORMAT_RGBA8_SINT,
-        FORMAT_D24_UNORM_S8_UINT,
     };
     struct vertex_layout {
         struct attribute {

@@ -8,7 +8,7 @@
 
 #include <renda/api/gpu_resource.hpp>
 
-#include "minimal.hpp"
+#include "minimal_dx11.hpp"
 
 namespace wg::renda {
     constant_buffer::constant_buffer(const gpu_device &device, const memory_data_t &mem, e_bind_target tar) noexcept {

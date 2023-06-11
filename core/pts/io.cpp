@@ -6,11 +6,11 @@
  * report this source code leak and delete all copies of source code from all your machines.
  ******************************************************************************/
 
-#include <core/pts/pts_io.hpp>
+#include <core/pts/io.hpp>
 #include <core/io.hpp>
 
-namespace wg {
-    void write_entry(file* fp, const pts_entry* e) {
+namespace wg::pts {
+    void write_entry(wg::file* fp, const entry* e) {
         const auto name = e->get_name();
         union {
             struct {
@@ -45,7 +45,7 @@ namespace wg {
         }
     }
 
-    void read_entry(file* fp, pts_entry* e) {
+    void read_entry(wg::file* fp, entry* e) {
 
         union {
             uint solid = {};
@@ -82,29 +82,26 @@ namespace wg {
         }
 
         for (uint i = 0; i < num_children; ++i) {
-            pts_entry child = {};
+            entry child = {};
             read_entry(fp, &child);
             e->add_child(child);
         }
 
     }
 
-    bool pts_entry_write_to_file(const pts_entry* e, const string_view& filename) {
+    bool write_entry_to_file(const entry* e, const string_view& filename) {
         if (e && !filename.empty()) {
-
             file f(filename, "wb");
             // start recursive write routine
             write_entry(&f, e);
-
             f.close();
             return true;
         }
         return false;
     }
 
-    bool pts_entry_load_from_file(pts_entry* e, const string_view& filename) {
+    bool load_entry_from_file(entry* e, const string_view& filename) {
         if (e && !filename.empty()) {
-
             file f(filename, "rb");
             read_entry(&f, e);
             f.close();

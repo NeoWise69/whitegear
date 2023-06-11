@@ -6,7 +6,7 @@
  * report this source code leak and delete all copies of source code from all your machines.
  ******************************************************************************/
 
-#include <renda/api/common.hpp>
+#include "renda/api/common.hpp"
 
 namespace wg::renda {
     namespace {
@@ -48,6 +48,9 @@ namespace wg::renda {
         }
         else if (vertex_size > 32 && vertex_size < 64) {
             vertex_size = 64;
+        }
+        else if (vertex_size > 64 && vertex_size < 128) {
+            vertex_size = 128;
         }
     }
 
