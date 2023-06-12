@@ -55,7 +55,7 @@ namespace wg::renda {
     }
 
     vertex_layout vertex_layout::create_for(vertex_type type) {
-        if (type == VERTEX_TYPE_MESH) {
+        if (type == VERTEX_TYPE_COL) {
             return {
                     { "POSITION", FORMAT_RGBA32_FLOAT },
                     { "COLOR", FORMAT_RGBA8_UNORM },

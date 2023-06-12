@@ -17,12 +17,14 @@
 namespace wg {
     enum vertex_type : u32 {
         VERTEX_TYPE_NONE,
-        VERTEX_TYPE_MESH,
+        VERTEX_TYPE_COL,
+        VERTEX_TYPE_TEX,
     };
     template<uint Type> struct vertex_t;
 
     using base_vertex_t = vertex_t<VERTEX_TYPE_NONE>;
-    using mesh_vertex_t = vertex_t<VERTEX_TYPE_MESH>;
+    using col_vertex_t = vertex_t<VERTEX_TYPE_COL>;
+    using tex_vertex_t = vertex_t<VERTEX_TYPE_TEX>;
 
     template<>
     struct vertex_t<VERTEX_TYPE_NONE> {
@@ -30,9 +32,15 @@ namespace wg {
     };
 
     template<>
-    struct vertex_t<VERTEX_TYPE_MESH> {
+    struct vertex_t<VERTEX_TYPE_COL> {
         vec4 v_position = {};
         color32 v_color = {};
+    };
+
+    template<>
+    struct vertex_t<VERTEX_TYPE_TEX> {
+        vec4 v_position = {};
+        vec2 v_texcoord = {};
     };
 
     struct material_data_t {

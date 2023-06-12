@@ -84,6 +84,16 @@ namespace wg::renda {
         BIND_TARGET_VERTEX_SHADER_STAGE,
         BIND_TARGET_PIXEL_SHADER_STAGE,
     };
+    enum e_sampler_mode : uint {
+        SAMPLER_MODE_REPEAT,
+        SAMPLER_MODE_MIRROR,
+        SAMPLER_MODE_CLAMP,
+        SAMPLER_MODE_BORDER,
+    };
+    enum e_sampler_filtering : uint {
+        SAMPLER_FILTERING_NONE,
+        SAMPLER_FILTERING_LINEAR,
+    };
 }
 
 #endif //WHITEGEAR_COMMON_HPP

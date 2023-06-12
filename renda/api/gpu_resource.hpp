@@ -122,7 +122,23 @@ namespace wg::renda {
 
         void bind(gpu_device& device) const noexcept override;
 
-        inline i_object get_view() const {
+        inline i_object get_handle() const {
+            return handle;
+        }
+    private:
+        i_object handle = nullptr;
+    };
+
+    class sampler : public gpu_resource {
+    public:
+        inline sampler() noexcept = default;
+        ~sampler() noexcept override;
+
+        sampler(const gpu_device& device, e_sampler_mode sampler_mode = SAMPLER_MODE_REPEAT, e_sampler_filtering sampler_filtering = SAMPLER_FILTERING_LINEAR) noexcept;
+
+        void bind(gpu_device& device) const noexcept override;
+
+        inline i_object get_handle() const {
             return handle;
         }
     private:

@@ -20,6 +20,7 @@ namespace wg {
     enum file_error {
         FILE_ERROR_OK,
         FILE_ERROR_NOT_FOUND,
+        FILE_ERROR_TWIN_OPEN,
     };
     /**
      * Enumeration for definition of seek direction,

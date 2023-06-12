@@ -27,12 +27,12 @@ namespace wg {
     }
 
     void plain_text::save() const {
-        pts::write_entry_to_file(&tree, "TXTSRCTREE.bin");
+        pts::write_entry_to_file(&tree, "TXTSRC.tbl");
 
     }
 
     void plain_text::load() {
-        pts::load_entry_from_file(&tree, "TXTSRCTREE.bin");
+        pts::load_entry_from_file(&tree, "TXTSRC.tbl");
     }
 
     bool plain_text::is_initialized() const {

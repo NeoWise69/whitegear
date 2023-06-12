@@ -40,6 +40,8 @@ namespace wg {
         const auto err = fopen_s(F2(&mInternal), filename.c_str(), attr);
         if (err == ENOENT)
             return FILE_ERROR_NOT_FOUND;
+        else if (err == EACCES)
+            return FILE_ERROR_TWIN_OPEN;
         return FILE_ERROR_OK;
 #elif WG_UNIX
         mInternal = P(fopen(filename.c_str(), attr));
@@ -76,7 +78,12 @@ namespace wg {
     }
 
     bool file::exists(const string_view &filename) {
-        return file().open(filename) != FILE_ERROR_NOT_FOUND;
+        file tmp = {};
+        file_error e = tmp.open(filename);
+        if (tmp.is_opened()) {
+            tmp.close();
+        }
+        return e != FILE_ERROR_NOT_FOUND;
     }
 
 }

@@ -46,4 +46,39 @@ namespace wg::renda {
             attr.step_rate});
         }
     }
+
+    D3D11_FILTER sampler_filter_to_d3d11_filter(e_sampler_filtering filter) {
+        switch (filter) {
+            case SAMPLER_FILTERING_LINEAR:
+                return D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+            case SAMPLER_FILTERING_NONE:
+            default:
+                return D3D11_FILTER_MIN_MAG_MIP_POINT;
+        }
+    }
+    D3D11_TEXTURE_ADDRESS_MODE sampler_mode_to_d3d11_address_mode(e_sampler_mode mode) {
+        switch (mode) {
+            case SAMPLER_MODE_REPEAT: return D3D11_TEXTURE_ADDRESS_WRAP;
+            case SAMPLER_MODE_BORDER: return D3D11_TEXTURE_ADDRESS_BORDER;
+            case SAMPLER_MODE_CLAMP: return D3D11_TEXTURE_ADDRESS_CLAMP;
+            case SAMPLER_MODE_MIRROR: return D3D11_TEXTURE_ADDRESS_MIRROR;
+        }
+    }
+
+    const char *sampler_filter_to_string(e_sampler_filtering filter) {
+        switch (filter) {
+            case SAMPLER_FILTERING_LINEAR: return "LINEAR FILTERING";
+            case SAMPLER_FILTERING_NONE:
+            default: return "NO FILTERING";
+        }
+    }
+
+    const char *sampler_mode_to_string(e_sampler_mode mode) {
+        switch (mode) {
+            case SAMPLER_MODE_REPEAT: return "REPEAT";
+            case SAMPLER_MODE_BORDER: return "BORDER";
+            case SAMPLER_MODE_CLAMP: return "CLAMP";
+            case SAMPLER_MODE_MIRROR: return "MIRROR";
+        }
+    }
 }

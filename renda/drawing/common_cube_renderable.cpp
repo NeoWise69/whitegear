@@ -16,7 +16,7 @@ namespace wg::renda {
                                                    const string_view &ps) noexcept {
         num_vertices = 8u;
         if (!SInitialized) {
-            static const auto cube_geometry = wg::geometry_buffer<VERTEX_TYPE_MESH>::get_cube();
+            static const auto cube_geometry = wg::geometry_buffer<VERTEX_TYPE_COL>::get_cube();
             bounding_box = geometry::box::generate_bounding(cube_geometry.get_vertices(), cube_geometry.get_num_vertices());
             // get vertex layout
             vertex_layout vl = {

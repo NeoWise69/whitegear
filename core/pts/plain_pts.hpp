@@ -18,7 +18,7 @@ namespace wg {
         inline static plain_text& instance() {
             static plain_text inst = {};
             inst.blob.reopen("TXTSRC.bin");
-            if (!file::exists("TXTSRCTREE.bin")) {
+            if (!file::exists("TXTSRC.tbl")) {
                 inst.save();
             }
             inst.load();

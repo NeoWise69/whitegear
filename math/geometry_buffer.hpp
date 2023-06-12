@@ -103,9 +103,9 @@ namespace wg {
     };
 
     template<>
-    inline const geometry_buffer<VERTEX_TYPE_MESH>& geometry_buffer<VERTEX_TYPE_MESH>::get_cube() {
+    inline const geometry_buffer<VERTEX_TYPE_COL>& geometry_buffer<VERTEX_TYPE_COL>::get_cube() {
         static bool mIsInitialized = false;
-        static geometry_buffer<VERTEX_TYPE_MESH> cube_buffer(8, 36);
+        static geometry_buffer<VERTEX_TYPE_COL> cube_buffer(8, 36);
         if (!mIsInitialized) {
             cube_buffer.emplace_vertex(vec4(1.0f,1.0f,1.0f, 1.0f), color32(000, 000, 000, 255));    // 07
             cube_buffer.emplace_vertex(vec4(-1.0f,1.0f,1.0f, 1.0f), color32(255, 255, 255, 255));   // 06
