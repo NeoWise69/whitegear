@@ -131,7 +131,7 @@ namespace wg::renda {
         inline sampler() noexcept = default;
         ~sampler() noexcept override;
 
-        sampler(const gpu_device& device, e_sampler_mode sampler_mode = SAMPLER_MODE_REPEAT, e_sampler_filtering sampler_filtering = SAMPLER_FILTERING_NONE) noexcept;
+        sampler(const gpu_device& device, e_sampler_mode sampler_mode = SAMPLER_MODE_REPEAT, e_sampler_filtering sampler_filtering = SAMPLER_FILTERING_LINEAR) noexcept;
 
         void bind(gpu_device& device) const noexcept override;
 
