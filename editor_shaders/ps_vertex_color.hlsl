@@ -1,3 +1,5 @@
-float4 S_Main(float4 color : COLOR) : SV_TARGET {
-    return color;
+#include "common.hlsl"
+
+float4 S_Main(pixel_data px) : SV_TARGET {
+    return px.vt.color;
 }

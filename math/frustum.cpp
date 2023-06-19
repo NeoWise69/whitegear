@@ -122,12 +122,12 @@ namespace wg {
         return true;
     }
 
-    geometry::box geometry::box::generate_bounding(const col_vertex_t *vertices, u64 num_vertices) {
+    geometry::box geometry::box::generate_bounding(const mesh_vertex *vertices, u64 num_vertices) {
         vec3 minAABB = vec3(std::numeric_limits<scalar>::max());
         vec3 maxAABB = vec3(std::numeric_limits<scalar>::min());
         for (u64 i = 0; i < num_vertices; ++i)
         {
-            auto& pos = vertices[i].v_position;
+            auto& pos = vertices[i].position;
 
             minAABB.x = fmin(minAABB.x, pos.x);
             minAABB.y = fmin(minAABB.y, pos.y);

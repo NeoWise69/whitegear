@@ -39,6 +39,32 @@ namespace wg {
         FORMAT_RGB8_SINT,
         FORMAT_D24_UNORM_S8_UINT,
     };
+    /**
+     * 0000-0000-0000-0000
+     */
+    class uuid {
+    public:
+        uuid() noexcept;
+
+        static const uuid invalid;
+        inline static constexpr uint max_length = 19u;
+
+        inline constexpr auto get() const noexcept { return card.data; }
+        inline constexpr u64 sum() const noexcept {
+            u64 s = 0;
+            for (auto& v : card.data) s += v;
+            return s;
+        }
+    private:
+        constexpr uuid(bool) noexcept;
+
+        struct cardholder {
+            u8 data[max_length] = {};
+        };
+        static constexpr cardholder generate_card();
+
+        const cardholder card = {};
+    };
 }
 
 #endif //WHITEGEAR_REQUIRED_HPP

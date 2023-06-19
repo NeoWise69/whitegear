@@ -7,29 +7,28 @@
  ******************************************************************************/
 
 #include <renda/api/gpu_resource.hpp>
-#include <core/image.hpp>
 
 #include "minimal_dx11.hpp"
 #include "utils_dx11.hpp"
 
 namespace wg::renda {
-    texture::texture(const wg::renda::gpu_device &device, const wg::image &im) noexcept {
+    texture::texture(const gpu_device& device, const ref_ptr<image>& im) noexcept {
         auto& srv = (ID3D11ShaderResourceView*&)(handle);
         auto d3d = (ID3D11Device*)(device.get_device_instance());
 
         D3D11_TEXTURE2D_DESC desc = {};
-        desc.Width = im.get_width();
-        desc.Height = im.get_height();
+        desc.Width = im->get_width();
+        desc.Height = im->get_height();
         desc.MipLevels = 1u;
         desc.ArraySize = 1u;
-        desc.Format = format_to_dxgi_format(im.get_format());
+        desc.Format = format_to_dxgi_format(im->get_format());
         desc.SampleDesc.Count = 1u;
         desc.Usage = D3D11_USAGE_DEFAULT;
         desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 
         D3D11_SUBRESOURCE_DATA sd = {};
-        sd.pSysMem = im.get_data();
-        sd.SysMemPitch = im.get_width() * im.get_pixel_size();
+        sd.pSysMem = im->get_data();
+        sd.SysMemPitch = im->get_width() * im->get_pixel_size();
         wrl::ComPtr<ID3D11Texture2D> t2d = nullptr;
         ret_t(d3d->CreateTexture2D(&desc, &sd, &t2d));
 

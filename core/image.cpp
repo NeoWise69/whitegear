@@ -18,7 +18,7 @@ namespace wg {
     }
 
     image_ref image::load_from_file(const char *p_filename) {
-        auto* im = new image();
+        auto im = make_ref<image>();
 
         if (stbi_is_hdr(p_filename)) {
             int w, h, c;
@@ -49,7 +49,7 @@ namespace wg {
     }
 
     image_ref image::load_from_memory(const void *p_image_data, uint image_size) {
-        auto* im = new image();
+        auto im = make_ref<image>();
 
         if (stbi_is_hdr_from_memory((u8*)p_image_data, int(image_size))) {
             int w, h, c;
@@ -94,12 +94,15 @@ namespace wg {
 
     image_ref image::generate(const image::generate_info &gen_info) {
         WG_NOT_IMPLEMENTED
-        static u8 s_empty_data[1] = { 0xff };
-        return new image{
+        static u8 s_empty_data[16] = { 0xff, 0xff, 0xff, 0xff,
+                                     0xff, 0xff, 0xff, 0xff,
+                                     0xff, 0xff, 0xff, 0xff,
+                                     0xff, 0xff, 0xff, 0xff };
+        return make_ref<image>(
             s_empty_data,
-            1u, 1u,
-            FORMAT_RGB8_UNORM
-        };
+            2u, 2u,
+            FORMAT_RGBA8_UNORM
+        );
     }
 
     uint image::get_pixel_size() const {

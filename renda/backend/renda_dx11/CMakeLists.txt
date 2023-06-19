@@ -8,7 +8,8 @@ SET(Renda_DX11_SOURCES
         shader_program_dx11.cpp
         vertex_input_layout_dx11.cpp
         constant_buffer_base_dx11.cpp
-        texture_dx11.cpp sampler_dx11.cpp)
+        texture_dx11.cpp
+        sampler_dx11.cpp)
 
 ADD_LIBRARY(wg_renda_dx11 STATIC ${Renda_DX11_SOURCES})
 

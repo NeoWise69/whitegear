@@ -11,10 +11,7 @@
 
 #include <renda/api/common.hpp>
 #include <renda/api/gpu_device.hpp>
-
-namespace wg {
-    class image;
-}
+#include <core/image.hpp>
 
 namespace wg::renda {
     class gpu_resource : public ref_counted {
@@ -118,7 +115,7 @@ namespace wg::renda {
         inline texture() noexcept = default;
         ~texture() noexcept override;
 
-        texture(const gpu_device& device, const image& im) noexcept;
+        texture(const gpu_device& device, const ref_ptr<image>& im) noexcept;
 
         void bind(gpu_device& device) const noexcept override;
 
@@ -134,7 +131,7 @@ namespace wg::renda {
         inline sampler() noexcept = default;
         ~sampler() noexcept override;
 
-        sampler(const gpu_device& device, e_sampler_mode sampler_mode = SAMPLER_MODE_REPEAT, e_sampler_filtering sampler_filtering = SAMPLER_FILTERING_LINEAR) noexcept;
+        sampler(const gpu_device& device, e_sampler_mode sampler_mode = SAMPLER_MODE_REPEAT, e_sampler_filtering sampler_filtering = SAMPLER_FILTERING_NONE) noexcept;
 
         void bind(gpu_device& device) const noexcept override;
 

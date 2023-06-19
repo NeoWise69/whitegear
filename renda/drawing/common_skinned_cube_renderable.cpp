@@ -6,25 +6,35 @@
  * report this source code leak and delete all copies of source code from all your machines.
  ******************************************************************************/
 
-#include <renda/drawing/common_cube_renderable.hpp>
+#include <renda/drawing/common_skinned_cube_renderable.hpp>
 #include <math/geometry_buffer.hpp>
-#include <renda/drawing/constant_buffer_per_object.hpp>
+#include "renda/resource_storage.hpp"
+#include "constant_buffer_per_object.hpp"
 
 namespace wg::renda {
     static bool SInitialized = false;
-    common_cube_renderable::common_cube_renderable(const gpu_device &device, const string_view &vs,
-                                                   const string_view &ps) noexcept {
-        num_vertices = 8u;
+    common_skinned_cube_renderable::common_skinned_cube_renderable(const wg::renda::gpu_device &device,
+                                                                   const wg::string_view &vs,
+                                                                   const wg::string_view &ps) noexcept {
+        num_vertices = 14u;
         if (!SInitialized) {
             static const auto cube_buffer = wg::geometry_buffer::get_cube();
             bounding_box = geometry::box::generate_bounding(cube_buffer.get_vertices(), cube_buffer.get_num_vertices());
-            // get vertex layout
             const auto vl = vertex_layout::create_for_mesh();
             { // add vertex buffer
                 geometry_buffer::create_info ci = {};
                 ci.memory.p_memory = cube_buffer.get_vertices();
                 ci.count = cube_buffer.get_num_vertices();
                 add_static_bind(make_ref<geometry_buffer>(device, BUFFER_TYPE_VERTEX_BUFFER, ci, &vl));
+            }
+            {
+                // add texture resource
+                auto& rs = resource_storage::global();
+                add_static_bind(rs["image:default_cube"]);
+            }
+            {
+                // add texture sampler
+                add_static_bind(make_ref<sampler>(device));
             }
             i_object vs_code = nullptr;
             { // add vertex shader
@@ -48,13 +58,14 @@ namespace wg::renda {
                 add_static_bind(make_ref<topology>(TOPOLOGY_TRIANGLE_LIST));
             }
 
+
             SInitialized = true;
         }
         else {
             set_index_from_static();
         }
-
-        { // add per object buffer
+        {
+            // add material
             add_bind(make_ref<constant_buffer_per_object>(device, uint(sizeof(material_data_t)), this));
         }
     }

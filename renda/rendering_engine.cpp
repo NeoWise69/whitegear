@@ -9,7 +9,10 @@
 #include <renda/rendering_engine.hpp>
 #include <renda/drawing/common_cube_renderable.hpp>
 #include <renda/drawing/constant_buffer_per_frame.hpp>
-#include "core/pts/plain_pts.hpp"
+#include <core/pts/plain_pts.hpp>
+#include <renda/resource_storage.hpp>
+#include <core/image.hpp>
+#include "renda/drawing/common_skinned_cube_renderable.hpp"
 
 namespace wg {
     rendering_engine::rendering_engine(const rendering_engine::create_info &ci) {
@@ -17,6 +20,8 @@ namespace wg {
         mViewport.update(); // update to get invalidate projection matrix immediately
 
         device.initialize(ci.p_window);
+        initialize_defaults();
+
         mFrameData = make_scoped<renda::constant_buffer_per_frame>(device,
                                                               &mViewport.get_projection_matrix(),
                                                               &mGlobalCamera.get_view_matrix());
@@ -85,22 +90,11 @@ namespace wg {
             world_stats.vertices_on_scene += 8;
             world_stats.indices_on_scene += 36;
 
-            static auto& pt = plain_text::instance();
             string vs_path = {};
-            if (!pt.get("VS_vertex_color", vs_path)) {
-                pt.load();
-
-                vs_path = WG_SHADER_PREFIX_PATH"compiled/vs_vertex_color.cso";
-                pt.set("VS_vertex_color", vs_path);
-            }
             string ps_path = {};
-            if (!pt.get("PS_vertex_color", ps_path)) {
-                ps_path = WG_SHADER_PREFIX_PATH"compiled/ps_vertex_color.cso";
-                pt.set("PS_vertex_color", ps_path);
-
-                pt.save();
-            }
-            renderable = make_ref<renda::common_cube_renderable>(device, vs_path.c_str(), ps_path.c_str());
+            vs_path = WG_SHADER_PREFIX_PATH"compiled/vs_vertex_color.cso";
+            ps_path = WG_SHADER_PREFIX_PATH"compiled/ps_vertex_texture.cso";
+            renderable = make_ref<renda::common_skinned_cube_renderable>(device, vs_path.c_str(), ps_path.c_str());
         }
     }
 
@@ -156,6 +150,14 @@ namespace wg {
 
     frustum_view rendering_engine::get_frustum() const {
         return { mViewport.get_projection_matrix(), get_view_matrix() };
+    }
+
+    void rendering_engine::initialize_defaults() {
+        auto& rs = renda::resource_storage::global();
+
+        if (!rs.exists("image:default_cube")) {
+            rs["image:default_cube"] = make_ref<renda::texture>(device, image::load_from_file("editor_resources/defcube.png"));
+        }
     }
 
 }

@@ -7,3 +7,9 @@
 [submodule "deps/DXErr"]
 	path = deps/DXErr
 	url = https://github.com/NeoWise69/dxerr-multibyte.git
+[submodule "out/build/x64-debug/deps/glfw"]
+	path = out/build/x64-debug/deps/glfw
+	url = https://github.com/glfw/glfw.git
+[submodule "out/build/x64-debug/deps/yaml-cpp"]
+	path = out/build/x64-debug/deps/yaml-cpp
+	url = https://github.com/jbeder/yaml-cpp.git

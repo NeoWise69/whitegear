@@ -17,6 +17,7 @@
   <ItemGroup>
     <FxCompile Include="..\ps_vertex_color.hlsl" />
     <FxCompile Include="..\vs_vertex_color.hlsl" />
+    <FxCompile Include="..\ps_vertex_texture.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\common.hlsl" />

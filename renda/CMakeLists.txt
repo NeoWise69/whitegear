@@ -7,7 +7,7 @@ SET(Renda_SOURCES
         drawing/renderable.cpp
         drawing/constant_buffer_per_object.cpp
         drawing/common_cube_renderable.cpp
-        )
+        drawing/common_skinned_cube_renderable.cpp resource_storage.hpp resource_storage.cpp)
 
 ADD_LIBRARY(wg_renda STATIC ${Renda_SOURCES})
 

@@ -63,7 +63,7 @@ namespace wg::renda {
             calculate_attribute_offsets();
         }
 
-        static vertex_layout create_for(vertex_type type);
+        static vertex_layout create_for_mesh();
 
         bounded_array<attribute, 16> attributes = {};
         uint vertex_size = {};
@@ -93,6 +93,7 @@ namespace wg::renda {
     enum e_sampler_filtering : uint {
         SAMPLER_FILTERING_NONE,
         SAMPLER_FILTERING_LINEAR,
+        SAMPLER_FILTERING_TRILINEAR
     };
 }
 

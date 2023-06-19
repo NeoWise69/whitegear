@@ -15,32 +15,13 @@
 #include <math/color.hpp>
 
 namespace wg {
-    enum vertex_type : u32 {
-        VERTEX_TYPE_NONE,
-        VERTEX_TYPE_COL,
-        VERTEX_TYPE_TEX,
-    };
-    template<uint Type> struct vertex_t;
-
-    using base_vertex_t = vertex_t<VERTEX_TYPE_NONE>;
-    using col_vertex_t = vertex_t<VERTEX_TYPE_COL>;
-    using tex_vertex_t = vertex_t<VERTEX_TYPE_TEX>;
-
-    template<>
-    struct vertex_t<VERTEX_TYPE_NONE> {
-        vec4 v_position = {};
-    };
-
-    template<>
-    struct vertex_t<VERTEX_TYPE_COL> {
-        vec4 v_position = {};
-        color32 v_color = {};
-    };
-
-    template<>
-    struct vertex_t<VERTEX_TYPE_TEX> {
-        vec4 v_position = {};
-        vec2 v_texcoord = {};
+    struct mesh_vertex {
+        vec4 position;
+        vec2 texcoord;
+        color32 color;
+        vec3 normal;
+        vec3 tangent;
+        vec3 bitangent;
     };
 
     struct material_data_t {

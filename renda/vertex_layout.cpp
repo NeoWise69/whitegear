@@ -54,18 +54,14 @@ namespace wg::renda {
         }
     }
 
-    vertex_layout vertex_layout::create_for(vertex_type type) {
-        if (type == VERTEX_TYPE_COL) {
-            return {
-                    { "POSITION", FORMAT_RGBA32_FLOAT },
-                    { "COLOR", FORMAT_RGBA8_UNORM },
-            };
-        }
-        /**
-         * Minimal required vertex type just for geometry processing(at least)
-         */
+    vertex_layout vertex_layout::create_for_mesh() {
         return {
-                { "POSITION", FORMAT_RGBA32_FLOAT },
+                { "SV_POSITION", FORMAT_RGBA32_FLOAT },
+                { "TEXCOORD", FORMAT_RG32_FLOAT },
+                { "COLOR", FORMAT_RGBA8_UNORM },
+                { "NORMAL", FORMAT_RGB32_FLOAT },
+                { "TANGENT", FORMAT_RGB32_FLOAT },
+                { "BITANGENT", FORMAT_RGB32_FLOAT }
         };
     }
 }

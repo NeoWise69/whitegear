@@ -115,14 +115,20 @@ namespace wg {
         GTimeStats.world_tick_time = end - start;
 
         auto& world_stats = stats();
-        out
-        .trace("frame_time=%.2fms, tick_time=%.2fms frame_begin_time=%.2fms frame_end_time=%.2fms world_tick_time=%.2fms",
-               GTimeStats.frame_time.get(time_point::milliseconds),
-               GTimeStats.tick_time.get(time_point::milliseconds),
-               GTimeStats.frame_begin_time.get(time_point::milliseconds),
-               GTimeStats.frame_end_time.get(time_point::milliseconds),
-               GTimeStats.world_tick_time.get(time_point::milliseconds)
-               );
+        static double timer = 0;
+        timer += GTimeStats.delta_time.get(time_point::seconds);
+
+        if (timer >= 1.0f) {
+            out
+                    .trace("frame_time=%.2fms, tick_time=%.2fms frame_begin_time=%.2fms frame_end_time=%.2fms world_tick_time=%.2fms",
+                           GTimeStats.frame_time.get(time_point::milliseconds),
+                           GTimeStats.tick_time.get(time_point::milliseconds),
+                           GTimeStats.frame_begin_time.get(time_point::milliseconds),
+                           GTimeStats.frame_end_time.get(time_point::milliseconds),
+                           GTimeStats.world_tick_time.get(time_point::milliseconds)
+                    );
+            timer = 0.0f;
+        }
 
         return true;
     }

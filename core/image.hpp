@@ -14,11 +14,14 @@
 #include <core/required.hpp>
 
 namespace wg {
-    typedef class image* image_ref;
-    class image {
+    typedef ref_ptr<class image> image_ref;
+    class image : public ref_counted {
     public:
         inline image() = default;
         ~image();
+
+        inline image(void *const p_data, uint width, uint height, e_format format) noexcept
+                : mData(p_data), mWidth(width), mHeight(height), mFormat(format) {}
 
         enum pattern_t : u8 {
             PATTERN_WHITE,
@@ -61,9 +64,6 @@ namespace wg {
 
         uint get_pixel_size() const;
     private:
-        inline image(void *const p_data, uint width, uint height, e_format format) noexcept
-            : mData(p_data), mWidth(width), mHeight(height), mFormat(format) {}
-
         void* mData = nullptr;
         uint mWidth = {},
              mHeight = {};

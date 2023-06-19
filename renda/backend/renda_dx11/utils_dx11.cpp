@@ -38,19 +38,23 @@ namespace wg::renda {
         for (uint i = 0; i < src_attributes.size(); ++i) {
             const vertex_layout::attribute& attr = src_attributes[i];
             dst.emplace_back(
-                D3D11_INPUT_ELEMENT_DESC{attr.semantic_name, 0u,
-            format_to_dxgi_format(attr.format),
-            0u,
-            uint(attr.offset),
-            D3D11_INPUT_CLASSIFICATION(attr.attribute_rate),
-            attr.step_rate});
-        }
+                D3D11_INPUT_ELEMENT_DESC{
+                    attr.semantic_name, 0u,
+                    format_to_dxgi_format(attr.format),
+                    0u,
+                    uint(attr.offset),
+                    D3D11_INPUT_CLASSIFICATION(attr.attribute_rate),
+                    attr.step_rate}
+                );
+            }
     }
 
     D3D11_FILTER sampler_filter_to_d3d11_filter(e_sampler_filtering filter) {
         switch (filter) {
             case SAMPLER_FILTERING_LINEAR:
                 return D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+            case SAMPLER_FILTERING_TRILINEAR:
+                return D3D11_FILTER_ANISOTROPIC;
             case SAMPLER_FILTERING_NONE:
             default:
                 return D3D11_FILTER_MIN_MAG_MIP_POINT;

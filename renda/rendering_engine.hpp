@@ -76,7 +76,9 @@ namespace wg {
         inline const mat4& get_view_matrix() const { return mGlobalCamera.get_view_matrix(); }
         inline const viewport& get_viewport() const { return mViewport; }
         inline viewport& get_viewport() { return mViewport; }
-    protected:
+    private:
+        void initialize_defaults();
+
         renda::gpu_device device = {};
         renda::swapchain swapchain = {};
         renda::target_buffer screen_buffer = {};

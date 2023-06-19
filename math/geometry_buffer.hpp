@@ -14,11 +14,8 @@
 #include <new>
 
 namespace wg {
-    template<uint VertexType>
     class geometry_buffer {
     public:
-        typedef vertex_t<VertexType> vertex_type_t;
-
         inline geometry_buffer() = default;
         inline ~geometry_buffer() {
             if (cb) {
@@ -32,7 +29,7 @@ namespace wg {
         }
         inline geometry_buffer(uint num_vertices, uint num_indices) {
             cb = new control_block{
-                new vertex_type_t[num_vertices]{},
+                new mesh_vertex[num_vertices]{},
                 0,
                 new uint[num_indices]{},
                 0,
@@ -46,7 +43,7 @@ namespace wg {
         template<class...Args>
         inline void emplace_vertex(Args&&...args) {
             if (cb) {
-                new(&cb->mVertices[cb->mNumVertices++]) vertex_type_t{std::forward<Args>(args)...};
+                new(&cb->mVertices[cb->mNumVertices++]) mesh_vertex{std::forward<Args>(args)...};
             }
         }
 
@@ -74,7 +71,7 @@ namespace wg {
             if (cb) {
                 return cb->mVertices[at];
             }
-            return vertex_type_t{};
+            return mesh_vertex{};
         }
 
         inline auto get_vertices(uint* p_num_vertices = nullptr) const {
@@ -83,16 +80,16 @@ namespace wg {
                     *p_num_vertices = cb->mNumVertices;
                 return cb->mVertices;
             }
-            return (vertex_type_t*)nullptr;
+            return (mesh_vertex*)nullptr;
         }
 
         inline uint get_num_vertices() const { return cb ? cb->mNumVertices : 0u; }
 
-        inline static const geometry_buffer<VertexType>& get_cube() { return {}; }
+        static const geometry_buffer& get_cube();
 
     private:
         struct control_block {
-            vertex_type_t *mVertices = nullptr;
+            mesh_vertex *mVertices = nullptr;
             uint mNumVertices = {};
 
             uint* mIndices = nullptr;
@@ -102,69 +99,72 @@ namespace wg {
         } *cb;
     };
 
-    template<>
-    inline const geometry_buffer<VERTEX_TYPE_COL>& geometry_buffer<VERTEX_TYPE_COL>::get_cube() {
+    inline const geometry_buffer& geometry_buffer::get_cube() {
         static bool mIsInitialized = false;
-        static geometry_buffer<VERTEX_TYPE_COL> cube_buffer(8, 36);
+        static geometry_buffer cube_buffer(14, 36);
         if (!mIsInitialized) {
-            cube_buffer.emplace_vertex(vec4(1.0f,1.0f,1.0f, 1.0f), color32(000, 000, 000, 255));    // 07
-            cube_buffer.emplace_vertex(vec4(-1.0f,1.0f,1.0f, 1.0f), color32(255, 255, 255, 255));   // 06
-            cube_buffer.emplace_vertex(vec4(1.0f,-1.0f,1.0f, 1.0f), color32(000, 255, 255, 255));   // 05
-            cube_buffer.emplace_vertex(vec4(-1.0f,-1.0f,1.0f, 1.0f), color32(255, 255, 000, 255));  // 04
-            cube_buffer.emplace_vertex(vec4(1.0f,1.0f,-1.0f, 1.0f), color32(000, 000, 255, 255));   // 03
-            cube_buffer.emplace_vertex(vec4(-1.0f,1.0f,-1.0f, 1.0f), color32(000, 255, 000, 255));  // 02
-            cube_buffer.emplace_vertex(vec4(1.0f,-1.0f,-1.0f, 1.0f), color32(255, 000, 000, 255));  // 01
-            cube_buffer.emplace_vertex(vec4(-1.0f,-1.0f,-1.0f, 1.0f), color32(255, 000, 255, 255)); // 00
+            constexpr auto side = real(1);
+            random_engine re;
 
-            cube_buffer.emplace_index(0); cube_buffer.emplace_index(2); cube_buffer.emplace_index(1);
-            cube_buffer.emplace_index(2); cube_buffer.emplace_index(3); cube_buffer.emplace_index(1);
-            cube_buffer.emplace_index(1); cube_buffer.emplace_index(3); cube_buffer.emplace_index(5);
-            cube_buffer.emplace_index(3); cube_buffer.emplace_index(7); cube_buffer.emplace_index(5);
-            cube_buffer.emplace_index(2); cube_buffer.emplace_index(6); cube_buffer.emplace_index(3);
-            cube_buffer.emplace_index(3); cube_buffer.emplace_index(6); cube_buffer.emplace_index(7);
-            cube_buffer.emplace_index(4); cube_buffer.emplace_index(5); cube_buffer.emplace_index(7);
-            cube_buffer.emplace_index(4); cube_buffer.emplace_index(7); cube_buffer.emplace_index(6);
-            cube_buffer.emplace_index(0); cube_buffer.emplace_index(4); cube_buffer.emplace_index(2);
-            cube_buffer.emplace_index(2); cube_buffer.emplace_index(4); cube_buffer.emplace_index(6);
-            cube_buffer.emplace_index(0); cube_buffer.emplace_index(1); cube_buffer.emplace_index(4);
-            cube_buffer.emplace_index(1); cube_buffer.emplace_index(5); cube_buffer.emplace_index(4);
+            cube_buffer.emplace_vertex(vec4(-side,-side,-side, 1.0f),   vec2(2.0f / 3.0f, 0.0f / 4.0f), color32(u8(re(0xff)), u8(re(0xff)), u8(re(0xff)), 0xff), vec3(0), vec3(0), vec3(0)); // 14
+            cube_buffer.emplace_vertex(vec4(side,-side,-side, 1.0f),    vec2(1.0f / 3.0f, 0.0f / 4.0f), color32(u8(re(0xff)), u8(re(0xff)), u8(re(0xff)), 0xff), vec3(0), vec3(0), vec3(0)); // 13
+            cube_buffer.emplace_vertex(vec4(-side,side,-side, 1.0f),    vec2(2.0f / 3.0f, 1.0f / 4.0f), color32(u8(re(0xff)), u8(re(0xff)), u8(re(0xff)), 0xff), vec3(0), vec3(0), vec3(0)); // 12
+            cube_buffer.emplace_vertex(vec4(side,side,-side, 1.0f),     vec2(1.0f / 3.0f, 1.0f / 4.0f), color32(u8(re(0xff)), u8(re(0xff)), u8(re(0xff)), 0xff), vec3(0), vec3(0), vec3(0)); // 11
+            cube_buffer.emplace_vertex(vec4(-side,-side,side, 1.0f),    vec2(2.0f / 3.0f, 3.0f / 4.0f), color32(u8(re(0xff)), u8(re(0xff)), u8(re(0xff)), 0xff), vec3(0), vec3(0), vec3(0)); // 10
+            cube_buffer.emplace_vertex(vec4(side,-side,side, 1.0f),     vec2(1.0f / 3.0f, 3.0f / 4.0f), color32(u8(re(0xff)), u8(re(0xff)), u8(re(0xff)), 0xff), vec3(0), vec3(0), vec3(0)); // 09
+            cube_buffer.emplace_vertex(vec4(-side,side,side, 1.0f),     vec2(2.0f / 3.0f, 2.0f / 4.0f), color32(u8(re(0xff)), u8(re(0xff)), u8(re(0xff)), 0xff), vec3(0), vec3(0), vec3(0)); // 08
+            cube_buffer.emplace_vertex(vec4(side,side,side, 1.0f),      vec2(1.0f / 3.0f, 2.0f / 4.0f), color32(u8(re(0xff)), u8(re(0xff)), u8(re(0xff)), 0xff), vec3(0), vec3(0), vec3(0)); // 07
+            cube_buffer.emplace_vertex(vec4(-side,-side,-side, 1.0f),   vec2(2.0f / 3.0f, 4.0f / 4.0f), color32(u8(re(0xff)), u8(re(0xff)), u8(re(0xff)), 0xff), vec3(0), vec3(0), vec3(0)); // 06
+            cube_buffer.emplace_vertex(vec4(side,-side,-side, 1.0f),    vec2(1.0f / 3.0f, 4.0f / 4.0f), color32(u8(re(0xff)), u8(re(0xff)), u8(re(0xff)), 0xff), vec3(0), vec3(0), vec3(0)); // 05
+            cube_buffer.emplace_vertex(vec4(-side,-side,-side, 1.0f),   vec2(3.0f / 3.0f, 1.0f / 4.0f), color32(u8(re(0xff)), u8(re(0xff)), u8(re(0xff)), 0xff), vec3(0), vec3(0), vec3(0)); // 04
+            cube_buffer.emplace_vertex(vec4(-side,-side,side, 1.0f),    vec2(3.0f / 3.0f, 2.0f / 4.0f), color32(u8(re(0xff)), u8(re(0xff)), u8(re(0xff)), 0xff), vec3(0), vec3(0), vec3(0)); // 03
+            cube_buffer.emplace_vertex(vec4(side,-side,-side, 1.0f),    vec2(0.0f / 3.0f, 1.0f / 4.0f), color32(u8(re(0xff)), u8(re(0xff)), u8(re(0xff)), 0xff), vec3(0), vec3(0), vec3(0)); // 02
+            cube_buffer.emplace_vertex(vec4(side,-side,side, 1.0f),     vec2(0.0f / 3.0f, 2.0f / 4.0f), color32(u8(re(0xff)), u8(re(0xff)), u8(re(0xff)), 0xff), vec3(0), vec3(0), vec3(0)); // 01
+
+            // THESE INDICES ARE NOT ORDERED! DO NOT EDIT!!!!!
+            cube_buffer.emplace_index(13);
+            cube_buffer.emplace_index(7);
+            cube_buffer.emplace_index(12);
+            cube_buffer.emplace_index(7);
+            cube_buffer.emplace_index(3);
+            cube_buffer.emplace_index(12);
+            cube_buffer.emplace_index(6);
+            cube_buffer.emplace_index(11);
+            cube_buffer.emplace_index(2);
+            cube_buffer.emplace_index(11);
+            cube_buffer.emplace_index(10);
+            cube_buffer.emplace_index(2);
+            cube_buffer.emplace_index(6);
+            cube_buffer.emplace_index(7);
+            cube_buffer.emplace_index(4);
+            cube_buffer.emplace_index(7);
+            cube_buffer.emplace_index(5);
+            cube_buffer.emplace_index(4);
+            cube_buffer.emplace_index(7);
+            cube_buffer.emplace_index(6);
+            cube_buffer.emplace_index(3);
+            cube_buffer.emplace_index(3);
+            cube_buffer.emplace_index(6);
+            cube_buffer.emplace_index(2);
+            cube_buffer.emplace_index(9);
+            cube_buffer.emplace_index(8);
+            cube_buffer.emplace_index(5);
+            cube_buffer.emplace_index(5);
+            cube_buffer.emplace_index(8);
+            cube_buffer.emplace_index(4);
+            cube_buffer.emplace_index(1);
+            cube_buffer.emplace_index(3);
+            cube_buffer.emplace_index(2);
+            cube_buffer.emplace_index(1);
+            cube_buffer.emplace_index(2);
+            cube_buffer.emplace_index(0);
+
             mIsInitialized = true;
         }
 
         return cube_buffer;
     }
 
-    template<>
-    inline const geometry_buffer<VERTEX_TYPE_NONE>& geometry_buffer<VERTEX_TYPE_NONE>::get_cube() {
-        static bool mIsInitialized = false;
-        static geometry_buffer<VERTEX_TYPE_NONE> cube_buffer(8, 36);
-        if (!mIsInitialized) {
-            cube_buffer.emplace_vertex(vec4(-1.0f,-1.0f,-1.0f, 1.0f));
-            cube_buffer.emplace_vertex(vec4(1.0f,-1.0f,-1.0f, 1.0f));
-            cube_buffer.emplace_vertex(vec4(-1.0f,1.0f,-1.0f, 1.0f));
-            cube_buffer.emplace_vertex(vec4(1.0f,1.0f,-1.0f, 1.0f));
-            cube_buffer.emplace_vertex(vec4(-1.0f,-1.0f,1.0f, 1.0f));
-            cube_buffer.emplace_vertex(vec4(1.0f,-1.0f,1.0f, 1.0f));
-            cube_buffer.emplace_vertex(vec4(-1.0f,1.0f,1.0f, 1.0f));
-            cube_buffer.emplace_vertex(vec4(1.0f,1.0f,1.0f, 1.0f));
-
-            cube_buffer.emplace_index(0); cube_buffer.emplace_index(2); cube_buffer.emplace_index(1);
-            cube_buffer.emplace_index(2); cube_buffer.emplace_index(3); cube_buffer.emplace_index(1);
-            cube_buffer.emplace_index(1); cube_buffer.emplace_index(3); cube_buffer.emplace_index(5);
-            cube_buffer.emplace_index(3); cube_buffer.emplace_index(7); cube_buffer.emplace_index(5);
-            cube_buffer.emplace_index(2); cube_buffer.emplace_index(6); cube_buffer.emplace_index(3);
-            cube_buffer.emplace_index(3); cube_buffer.emplace_index(6); cube_buffer.emplace_index(7);
-            cube_buffer.emplace_index(4); cube_buffer.emplace_index(5); cube_buffer.emplace_index(7);
-            cube_buffer.emplace_index(4); cube_buffer.emplace_index(7); cube_buffer.emplace_index(6);
-            cube_buffer.emplace_index(0); cube_buffer.emplace_index(4); cube_buffer.emplace_index(2);
-            cube_buffer.emplace_index(2); cube_buffer.emplace_index(4); cube_buffer.emplace_index(6);
-            cube_buffer.emplace_index(0); cube_buffer.emplace_index(1); cube_buffer.emplace_index(4);
-            cube_buffer.emplace_index(1); cube_buffer.emplace_index(5); cube_buffer.emplace_index(4);
-            mIsInitialized = true;
-        }
-
-        return cube_buffer;
-    }
 }
 
 #endif //WHITEGEAR_GEOMETRY_BUFFER_HPP
