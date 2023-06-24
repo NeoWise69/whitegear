@@ -15,9 +15,21 @@ struct pixel_data {
 
 cbuffer material_data_t {
 	float4x4 model_matrix;
+    float3 tint_color;
+    float3 ambient_color;
+    float3 albedo_map_color;
 };
+
+static const float albedo_map_intensity = 1.0f;
+static const float attenuation_const = 1.0f;
+static const float attenuation_linear = 1.0f;
+static const float attenuation_quadratic = 1.0f;
 
 cbuffer frame_data_t {
     float4x4 projection_matrix;
     float4x4 view_matrix;
+};
+
+cbuffer lighting_data_t {
+    float3 light_position;
 };

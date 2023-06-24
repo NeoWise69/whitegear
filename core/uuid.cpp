@@ -21,7 +21,7 @@ namespace wg {
     constexpr uuid::cardholder uuid::generate_card() {
         cardholder card = {};
 
-        constexpr u8 numset[] = { '0','1','2','3','4','5','6','7','8','9' };
+        constexpr u8 numset[] = { '0','1','2','3','4','5','6','7','8','9', 'a', 'b', 'c', 'd', 'e', 'f' };
         constexpr uint numset_size = sizeof(numset) / sizeof(numset[0]);
 
         for (u8 i = 1; i < max_length + 1; ++i) {

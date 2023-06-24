@@ -7,11 +7,8 @@
  ******************************************************************************/
 
 #include <renda/rendering_engine.hpp>
-#include <renda/drawing/common_cube_renderable.hpp>
 #include <renda/drawing/constant_buffer_per_frame.hpp>
-#include <core/pts/plain_pts.hpp>
 #include <renda/resource_storage.hpp>
-#include <core/image.hpp>
 #include "renda/drawing/common_skinned_cube_renderable.hpp"
 
 namespace wg {

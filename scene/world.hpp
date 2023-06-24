@@ -52,6 +52,18 @@ namespace wg {
             world_registry* registry = nullptr;
         };
 
+        class entities_update_system : public scene_system {
+        public:
+            WG_DECL_SCENE_SYSTEM()
+
+            inline entities_update_system(world_registry* reg) : registry(reg) {}
+
+            bool update(world_tick_data &data);
+
+        private:
+            world_registry* registry = nullptr;
+        };
+
         class controls {
         public:
             inline controls() = default;
@@ -126,6 +138,7 @@ namespace wg {
 
         ref_ptr<rendering_system> renderingSystem = nullptr;
         ref_ptr<common_mesh_rendering_system> commonMeshRenderingSystem = nullptr;
+        ref_ptr<entities_update_system> update_system = nullptr;
     };
 }
 

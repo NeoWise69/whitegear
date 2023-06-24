@@ -27,6 +27,7 @@ namespace wg {
 
         commonMeshRenderingSystem = registry.register_scene_system<common_mesh_rendering_system>(&registry);
         renderingSystem = registry.register_scene_system<rendering_system>(&registry);
+        update_system = registry.register_scene_system<entities_update_system>(&registry);
         if (!renderingSystem) {
             out
             .error("Failed to register_scene_system<rendering_system>()!");
@@ -35,6 +36,11 @@ namespace wg {
         if (!commonMeshRenderingSystem) {
             out
             .error("Failed to register_scene_system<common_mesh_rendering_system>()!");
+            return false;
+        }
+        if (!update_system) {
+            out
+            .error("Failed to register_scene_system<entities_update_system>()!");
             return false;
         }
         {   /* setup rendering_system components model */
@@ -47,6 +53,11 @@ namespace wg {
             fp.set(i32(registry.get_component_type<component_transform>()));
             fp.set(i32(registry.get_component_type<component_common_geometry>()));
             registry.assign_scene_system_footprint<common_mesh_rendering_system>(fp);
+        }
+        {   /* setup entities_update_system components model */
+            footprint fp;
+            fp.set(i32(registry.get_component_type<component_transform>()));
+            registry.assign_scene_system_footprint<entities_update_system>(fp);
         }
 
         return true;
@@ -99,6 +110,8 @@ namespace wg {
 
         const auto start = time_point::now();
 
+        if (!update_system->update(data))
+            return false;
         if (!commonMeshRenderingSystem->render_common_meshes(renda, data))
             return false;
         if (!renderingSystem->render_scene(renda, data))
@@ -132,4 +145,5 @@ namespace wg {
 
         return true;
     }
+
 }
